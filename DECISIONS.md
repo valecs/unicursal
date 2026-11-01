@@ -1,9 +1,10 @@
 # UX decisions log
 
-Running record of app-design decisions. "Settled" items are agreed; "Proposed"
-items are recommendations awaiting sign-off; "Open" items need research.
+Running record of app-design decisions. Nothing here is final yet.
+"First pass" items are initial answers, open to revision; "Proposed" items are
+recommendations awaiting a response; "Open" items need research.
 
-## Settled
+## First pass
 
 | # | Topic | Decision |
 |---|---|---|
