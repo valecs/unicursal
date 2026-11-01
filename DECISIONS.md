@@ -10,23 +10,26 @@ recommendations awaiting a response; "Open" items need research.
 |---|---|---|
 | 1 | Audience | Primary: a parent/teacher making an activity sheet for someone else. Secondary: adult puzzlers / colouring-book fans → a **"Surprise me"** mode that never shows the picture until asked. |
 | 1b | Medium | Solved on paper with pencil / marker / pen. On-screen answer view exists only so the maker can check the result. |
-| 2 | Platform | Native Android (Kotlin + Compose) wrapping a portable Rust core. |
+| 2 | Platform | Portable Rust core. Front end under reconsideration: see PWA-first proposal. |
+| 2b | Core port | "Surface-level" conversion: same interface/behaviour as the Python prototype, idiomatic Rust inside. Port the invariant tests first. |
 | 5 | Preflight | Auto-fix wherever a reasonable fix exists; block when none does. A manual mode turns auto-fixes off. |
 | 7 | Size control | Detail *is* difficulty. 3–4 presets plus free-form; cells by default, mm in manual mode. Preflight tells the user which features vanish at the chosen difficulty. |
-| 11 | Styles | Both Classic (rectilinear grid) and Flow. Branching mazes exist in the prototype for Classic only. |
+| 11 | Styles | Both Classic (rectilinear grid) and Flow. Branching mazes exist in the prototype for Classic only; the dead-end heuristic is **off by default** (opt-in `--deadend-fix`) until its bug is fixed. |
+| 12 | Output | Configurable paper size; PDF output at true scale; portrait/landscape auto (follows picture) or forced. Prototype: `--paper`, `--orientation auto\|portrait\|landscape`. |
 | 8 | Answer key | Not printed. Saved with the puzzle (viewable in the app); printing it is at most an overflow action. |
 | 9 | Advanced controls | Camera-style **Auto / Manual** split. Manual covers mm, seed, flow parameters, colours, turning off preflight fixes. |
 | 10 | Scope | On-screen solving is out. Sharing is maybe. |
 
 ## Proposed (awaiting sign-off)
 
-- **Picture sources (v1):** photo via subject segmentation, symbol/emoji
-  search, text, finger drawing → all feed one silhouette editor + preflight.
-- **PWA as a second front end** on the same Rust core (WASM), aimed at
-  desktop/teacher printing, iOS stopgap, and opening shared puzzles. Native
-  Android stays the flagship. Core requirements this implies now: no filesystem
-  or required threads, a stepwise/cancellable flow API with progress, and
-  SVG + PDF output produced by the core itself.
+- **Picture sources (v1):** AI "describe it", image file (1-bit, connected),
+  text, grid drawing → all feed preflight. No photo segmentation in v1.
+- **PWA first** on the Rust core (WASM). Serves Android, iOS, desktop
+  printing and shared-puzzle links from one build; ship to Play later as a
+  Trusted Web Activity if wanted. Native Android becomes a later option, not
+  the plan. Photo segmentation dropped from v1. Core requirements: no
+  filesystem or required threads, a stepwise/cancellable flow API with
+  progress, SVG + PDF output produced by the core itself.
 - **Shuffle = swipe:** the preview is a horizontal pager of seeds; swiping
   generates the next layout. Press-and-hold to peek at the answer.
 
@@ -45,7 +48,7 @@ Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture
   ghost 0/3 at Easy (6×8), 3/3 at Medium (11×15); cat 0/4 at Easy (6×7),
   2/4 (1-cell eyes) at Medium (11×13), 4/4 at Hard. At Easy, only the outline
   carries the picture.
-- **Bug:** branching-maze mode fails "solution covers the picture" for ~1 in 3
-  seeds (e.g. `ghost --mode maze --corridor 7 --seed 1`). Passes with
-  `--no-deadend-fix`, so the dead-end reduction is opening walls into the
-  solution path.
+- **Bug:** with the dead-end heuristic on, branching-maze mode fails "solution
+  covers the picture" for ~1 in 3 seeds (e.g. `ghost --mode maze --corridor 7
+  --seed 1 --deadend-fix`); the heuristic opens walls into the solution path.
+  Now off by default; tracked by a strict-xfail test.

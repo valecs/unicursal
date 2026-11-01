@@ -286,7 +286,7 @@ def build_labyrinth(fg, rng):
     return grid, fine_fg, (a, b, side)
 
 
-def build_maze(fg, rng, reduce_deadends=True):
+def build_maze(fg, rng, reduce_deadends=False):
     """Okamoto-Uehara: Hamiltonian path in the foreground, then a random
     spanning tree of everything else that keeps that path as the solution."""
     m, n = fg.shape
@@ -688,7 +688,9 @@ def main():
                          "see guide above). Default 8")
     ap.add_argument("--paper", default="letter",
                     help="letter, legal, tabloid, a4, a3, or e.g. 8.5x11in, "
-                         "200x250mm. Orientation follows the image.")
+                         "200x250mm. See --orientation.")
+    ap.add_argument("--orientation", choices=["auto", "portrait", "landscape"],
+                    default="auto", help="page orientation; auto follows the image")
     ap.add_argument("--paper-margin", type=float, default=12.7,
                     help="blank margin at the paper edge, mm (default 12.7 = 0.5in)")
     ap.add_argument("--cells", type=int, default=None,
@@ -701,8 +703,9 @@ def main():
                     help="treat light pixels as the picture")
     ap.add_argument("--no-bridges", action="store_true",
                     help="keep only the largest piece instead of joining pieces")
-    ap.add_argument("--no-deadend-fix", action="store_true",
-                    help="maze mode: skip the dead-end pairing heuristic")
+    ap.add_argument("--deadend-fix", action="store_true",
+                    help="maze mode: apply the dead-end pairing heuristic. Off by "
+                         "default: it can open walls into the solution path")
     ap.add_argument("--fill", default="#e0218a", help="solution fill colour")
     ap.add_argument("--curvy", action="store_true",
                     help="round the corners and bend the sheet so paths curve")
@@ -736,8 +739,10 @@ def main():
 
     paper = parse_paper(args.paper)
     img_w, img_h = Image.open(args.image).size
-    if (img_w > img_h) != (paper[0] > paper[1]):
-        paper = (paper[1], paper[0])                 # match image orientation
+    landscape = {"auto": img_w > img_h, "portrait": False,
+                 "landscape": True}[args.orientation]
+    if landscape != (paper[0] > paper[1]):
+        paper = (paper[1], paper[0])
     avail = (paper[0] - 2 * args.paper_margin, paper[1] - 2 * args.paper_margin)
     if args.cells is None:
         pitch = args.corridor
@@ -756,7 +761,7 @@ def main():
     if args.mode == "labyrinth":
         grid, fine_fg, opening = build_labyrinth(fg, rng)
     else:
-        grid, fine_fg, opening = build_maze(fg, rng, not args.no_deadend_fix)
+        grid, fine_fg, opening = build_maze(fg, rng, args.deadend_fix)
 
     # solution = cells on the open corridor from the entrance
     path = trace_path(grid, opening[0], fine_fg)

@@ -5,6 +5,7 @@ checks a port must keep passing; run with:  python3 -m pytest -q tests
 import os
 import random
 import sys
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -156,3 +157,22 @@ def test_page_is_true_scale():
            'height="50.00pt" viewBox="0 0 100.000 50.000"><rect/></svg>')
     out = P.place_on_page(svg, (215.9, 279.4))
     assert 'width="612.00pt" height="792.00pt"' in out
+
+
+SHAPES = Path(__file__).resolve().parent.parent / "shapes"
+
+
+@pytest.mark.parametrize("seed", range(10))
+def test_maze_default_solution_covers_picture(seed):
+    fg = P.largest_component(P.load_mask(str(SHAPES / "ghost.png"), 15))
+    grid, fine_fg, opening = P.build_maze(fg, random.Random(seed))
+    assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
+
+
+@pytest.mark.xfail(strict=True, reason="dead-end heuristic opens walls into the "
+                   "solution path; off by default until fixed")
+def test_maze_deadend_fix_known_bug():
+    fg = P.largest_component(P.load_mask(str(SHAPES / "ghost.png"), 15))
+    for seed in range(10):
+        grid, fine_fg, opening = P.build_maze(fg, random.Random(seed), True)
+        assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
