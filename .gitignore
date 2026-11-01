@@ -1,0 +1,6 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+# generator output (examples/ is curated and committed)
+/*.svg
+/*.pdf

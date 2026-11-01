@@ -1,0 +1,5 @@
+numpy
+Pillow
+scipy
+pytest
+# system: rsvg-convert (librsvg) for SVG->PDF and the flow leak check
