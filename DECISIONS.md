@@ -22,6 +22,11 @@ recommendations awaiting a response; "Open" items need research.
 
 - **Picture sources (v1):** photo via subject segmentation, symbol/emoji
   search, text, finger drawing → all feed one silhouette editor + preflight.
+- **PWA as a second front end** on the same Rust core (WASM), aimed at
+  desktop/teacher printing, iOS stopgap, and opening shared puzzles. Native
+  Android stays the flagship. Core requirements this implies now: no filesystem
+  or required threads, a stepwise/cancellable flow API with progress, and
+  SVG + PDF output produced by the core itself.
 - **Shuffle = swipe:** the preview is a horizontal pager of seeds; swiping
   generates the next layout. Press-and-hold to peek at the answer.
 
