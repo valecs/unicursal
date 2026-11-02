@@ -2,5 +2,6 @@ numpy
 Pillow
 scipy
 pytest
+hypothesis
 # system: rsvg-convert (librsvg) for SVG->PDF and the flow leak check
 anthropic  # experiments/llm_pixel.py (Claude)
