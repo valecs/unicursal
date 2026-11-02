@@ -28,4 +28,6 @@ cargo run -p unicursal-cli -- shapes/ghost.png --preset medium --seed 3 --out gh
 cargo test --workspace
 ```
 
-Licensed under the [GNU AGPL v3 or later](LICENSE).
+## License
+
+[GNU AGPL v3 or later](LICENSE).
