@@ -1,27 +1,30 @@
 //! The CLI end to end: files written, prototype flags and presets honoured.
 
 use std::path::{Path, PathBuf};
-use std::process::{Command, Output};
 
-fn shapes() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("../../shapes")
+use assert_cmd::Command;
+use tempfile::TempDir;
+
+fn shape(name: &str) -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../shapes")
+        .join(format!("{name}.png"))
 }
 
-fn tmpdir(name: &str) -> PathBuf {
-    let d = std::env::temp_dir().join(format!("unicursal-cli-{name}-{}", std::process::id()));
-    let _ = std::fs::remove_dir_all(&d);
-    std::fs::create_dir_all(&d).unwrap();
-    d
+fn unicursal() -> Command {
+    Command::cargo_bin("unicursal").unwrap()
 }
 
-fn run(args: &[&str]) -> Output {
-    Command::new(env!("CARGO_BIN_EXE_unicursal"))
+/// Run in a fresh temporary directory, so outputs land there.
+fn run_in(dir: &TempDir, args: &[&str]) -> std::process::Output {
+    unicursal()
+        .current_dir(dir.path())
         .args(args)
         .output()
         .unwrap()
 }
 
-fn text(o: &Output) -> String {
+fn text(o: &std::process::Output) -> String {
     format!(
         "{}{}",
         String::from_utf8_lossy(&o.stdout),
@@ -31,18 +34,20 @@ fn text(o: &Output) -> String {
 
 #[test]
 fn writes_puzzle_and_solution_svg_and_pdf() {
-    let d = tmpdir("files");
-    let out = d.join("ghost");
-    let img = shapes().join("ghost.png");
-    let o = run(&[
-        img.to_str().unwrap(),
-        "--preset",
-        "medium",
-        "--seed",
-        "3",
-        "--out",
-        out.to_str().unwrap(),
-    ]);
+    let d = TempDir::new().unwrap();
+    let img = shape("ghost");
+    let o = run_in(
+        &d,
+        &[
+            img.to_str().unwrap(),
+            "--preset",
+            "medium",
+            "--seed",
+            "3",
+            "--out",
+            "ghost",
+        ],
+    );
     assert!(o.status.success(), "{}", text(&o));
     for f in [
         "ghost.svg",
@@ -50,15 +55,15 @@ fn writes_puzzle_and_solution_svg_and_pdf() {
         "ghost_solution.svg",
         "ghost_solution.pdf",
     ] {
-        let bytes = std::fs::read(d.join(f)).unwrap();
+        let bytes = std::fs::read(d.path().join(f)).unwrap();
         assert!(!bytes.is_empty(), "{f}");
     }
     assert!(
-        std::fs::read(d.join("ghost.pdf"))
+        std::fs::read(d.path().join("ghost.pdf"))
             .unwrap()
             .starts_with(b"%PDF-")
     );
-    let svg = std::fs::read_to_string(d.join("ghost.svg")).unwrap();
+    let svg = std::fs::read_to_string(d.path().join("ghost.svg")).unwrap();
     assert!(
         svg.contains("13x17 cells · 7.0 mm corridors · seed 3"),
         "{svg}"
@@ -68,43 +73,45 @@ fn writes_puzzle_and_solution_svg_and_pdf() {
 
 #[test]
 fn same_seed_same_files() {
-    let d = tmpdir("seed");
-    let img = shapes().join("cat.png");
+    let d = TempDir::new().unwrap();
+    let img = shape("cat");
     for name in ["a", "b"] {
-        let out = d.join(name);
-        let o = run(&[
-            img.to_str().unwrap(),
-            "--mode",
-            "maze",
-            "--seed",
-            "11",
-            "--out",
-            out.to_str().unwrap(),
-        ]);
-        assert!(o.status.success(), "{}", text(&o));
+        unicursal()
+            .current_dir(d.path())
+            .args([
+                img.to_str().unwrap(),
+                "--mode",
+                "maze",
+                "--seed",
+                "11",
+                "--out",
+                name,
+            ])
+            .assert()
+            .success();
     }
     assert_eq!(
-        std::fs::read(d.join("a.pdf")).unwrap(),
-        std::fs::read(d.join("b.pdf")).unwrap()
+        std::fs::read(d.path().join("a.pdf")).unwrap(),
+        std::fs::read(d.path().join("b.pdf")).unwrap()
     );
 }
 
 #[test]
 fn explicit_flags_override_the_preset() {
-    let d = tmpdir("override");
-    let out = d.join("g");
-    let img = shapes().join("ghost.png");
-    let o = run(&[
-        img.to_str().unwrap(),
-        "--preset",
-        "easy",
-        "--corridor",
-        "5",
-        "--seed",
-        "1",
-        "--out",
-        out.to_str().unwrap(),
-    ]);
+    let d = TempDir::new().unwrap();
+    let img = shape("ghost");
+    let o = run_in(
+        &d,
+        &[
+            img.to_str().unwrap(),
+            "--preset",
+            "easy",
+            "--corridor",
+            "5",
+            "--seed",
+            "1",
+        ],
+    );
     assert!(o.status.success(), "{}", text(&o));
     assert!(
         text(&o).contains("corridor spacing 5.00 mm"),
@@ -115,7 +122,7 @@ fn explicit_flags_override_the_preset() {
 
 #[test]
 fn lists_presets_in_file_order() {
-    let o = run(&["--list-presets"]);
+    let o = unicursal().arg("--list-presets").output().unwrap();
     assert!(o.status.success());
     let names: Vec<String> = String::from_utf8_lossy(&o.stdout)
         .lines()
@@ -126,26 +133,24 @@ fn lists_presets_in_file_order() {
 
 #[test]
 fn unknown_preset_and_unported_styles_fail_cleanly() {
-    let img = shapes().join("ghost.png");
+    let d = TempDir::new().unwrap();
+    let img = shape("ghost");
     let img = img.to_str().unwrap();
-    let o = run(&[img, "--preset", "extreme"]);
-    assert!(!o.status.success());
-    assert!(
-        text(&o).contains("unknown preset 'extreme'"),
-        "{}",
-        text(&o)
-    );
-    let o = run(&[img, "--flow"]);
-    assert!(!o.status.success());
-    assert!(
-        text(&o).contains("not in the Rust core yet"),
-        "{}",
-        text(&o)
-    );
-    let o = run(&[img, "--flow", "--mode", "maze"]);
-    assert!(
-        text(&o).contains("flow needs mode labyrinth"),
-        "{}",
-        text(&o)
+    for (args, msg) in [
+        (vec![img, "--preset", "extreme"], "unknown preset 'extreme'"),
+        (vec![img, "--flow"], "not in the Rust core yet"),
+        (
+            vec![img, "--flow", "--mode", "maze"],
+            "flow needs mode labyrinth",
+        ),
+    ] {
+        let o = run_in(&d, &args);
+        assert!(!o.status.success(), "{args:?}");
+        assert!(text(&o).contains(msg), "{args:?}: {}", text(&o));
+    }
+    assert_eq!(
+        std::fs::read_dir(d.path()).unwrap().count(),
+        0,
+        "no files on failure"
     );
 }

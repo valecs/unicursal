@@ -19,3 +19,7 @@ workspace = true
 [[bin]]
 name = "unicursal"
 path = "src/main.rs"
+
+[dev-dependencies]
+assert_cmd = "2.2.2"
+tempfile = "3.27.0"

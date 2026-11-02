@@ -15,8 +15,6 @@ pub mod render;
 pub mod rng;
 pub mod scene;
 
-use std::fmt;
-
 pub use mask::{GreyImage, Mask};
 pub use maze::{Built, Grid, Opening, Side};
 pub use params::{Mode, Orientation, Params, Preset};
@@ -27,49 +25,36 @@ pub use scene::{Color, Scene};
 /// change alters any golden hash (`tests/golden.rs`).
 pub const GENERATOR_VERSION: u32 = 1;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, thiserror::Error)]
 pub enum Error {
+    #[error("bad image: {0}")]
     BadImage(String),
+    #[error("image has no foreground pixels")]
     EmptyPicture,
+    #[error("unknown paper '{0}' (try letter, a4, or e.g. 8.5x11in / 200x200mm)")]
     BadPaper(String),
+    #[error("bad colour '{0}' (use #rgb or #rrggbb)")]
     BadColor(String),
+    #[error("bad option: {0}")]
     BadOption(String),
+    #[error("bad preset: {0}")]
     BadPreset(String),
+    #[error(
+        "{pitch} mm corridors leave only {cols}x{rows} picture cells on this paper; \
+         use a smaller corridor or bigger paper"
+    )]
     TooSmall {
         pitch: f64,
         cols: usize,
         rows: usize,
     },
     /// A style the port doesn't have yet (#10 milestones).
+    #[error("{0} is not in the Rust core yet")]
     NotYetPorted(&'static str),
     /// A broken invariant: a bug.
+    #[error("internal error: {0}")]
     Internal(String),
 }
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Error::BadImage(m) => write!(f, "bad image: {m}"),
-            Error::EmptyPicture => write!(f, "image has no foreground pixels"),
-            Error::BadPaper(s) => write!(
-                f,
-                "unknown paper '{s}' (try letter, a4, or e.g. 8.5x11in / 200x200mm)"
-            ),
-            Error::BadColor(s) => write!(f, "bad colour '{s}' (use #rgb or #rrggbb)"),
-            Error::BadOption(m) => write!(f, "bad option: {m}"),
-            Error::BadPreset(m) => write!(f, "bad preset: {m}"),
-            Error::TooSmall { pitch, cols, rows } => write!(
-                f,
-                "{pitch} mm corridors leave only {cols}x{rows} picture cells on this paper; \
-                 use a smaller corridor or bigger paper"
-            ),
-            Error::NotYetPorted(s) => write!(f, "{s} is not in the Rust core yet"),
-            Error::Internal(m) => write!(f, "internal error: {m}"),
-        }
-    }
-}
-
-impl std::error::Error for Error {}
 
 /// A generated puzzle: construction, sizes, and the two printable pages.
 #[derive(Clone, Debug)]
@@ -192,4 +177,33 @@ pub fn generate(img: &GreyImage, p: &Params) -> Result<Puzzle, Error> {
         footer,
         notes,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Error;
+
+    #[test]
+    fn error_messages_tell_the_user_what_to_do() {
+        let e = Error::TooSmall {
+            pitch: 40.0,
+            cols: 2,
+            rows: 3,
+        };
+        assert_eq!(
+            e.to_string(),
+            "40 mm corridors leave only 2x3 picture cells on this paper; \
+             use a smaller corridor or bigger paper"
+        );
+        assert_eq!(
+            Error::BadPaper("napkin".into()).to_string(),
+            "unknown paper 'napkin' (try letter, a4, or e.g. 8.5x11in / 200x200mm)"
+        );
+        assert_eq!(
+            Error::NotYetPorted("the flow style").to_string(),
+            "the flow style is not in the Rust core yet"
+        );
+        let boxed: Box<dyn std::error::Error> = Box::new(Error::EmptyPicture);
+        assert_eq!(boxed.to_string(), "image has no foreground pixels");
+    }
 }
