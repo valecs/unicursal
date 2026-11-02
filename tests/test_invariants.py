@@ -149,12 +149,12 @@ def test_paper_sizing():
     assert P.parse_paper("letter") == (215.9, 279.4)
     w, h = P.parse_paper("8.5x11in")
     assert abs(w - 215.9) < 1e-6 and abs(h - 279.4) < 1e-6
-    # ghost case: 12x16 picture cells on letter at 7 mm
+    # ghost case: the frame fills the printable area of letter at 7 mm
     avail = (215.9 - 2 * 12.7, 279.4 - 2 * 12.7)
-    nmax = int(avail[0] / 7 - 2 * P.MARGIN) // 2
-    mmax = int(avail[1] / 7 - 2 * P.MARGIN) // 2
-    assert (nmax, mmax) == (12, 16)
-    assert P.cells_to_fit(240, 320, nmax, mmax) == 16
+    nmax, mmax = P.fit_grid(avail, 7)
+    assert (nmax, mmax) == (13, 18)
+    assert 2 * nmax * 7 <= avail[0] and 2 * mmax * 7 <= avail[1]
+    assert P.cells_to_fit(240, 320, nmax, mmax) == 17
 
 
 def test_page_is_true_scale():

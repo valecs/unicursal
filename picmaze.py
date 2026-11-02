@@ -630,7 +630,9 @@ def svg_to_pdf(svg_path, pdf_path):
 
 PAPERS = {"letter": (215.9, 279.4), "legal": (215.9, 355.6),
           "tabloid": (279.4, 431.8), "a4": (210.0, 297.0), "a3": (297.0, 420.0)}
-MARGIN = 1.5      # frame-to-edge-of-drawing margin, in corridors
+MARGIN = 1.5      # frame-to-edge-of-drawing margin, in corridors. Holds only the
+                  # entrance stub, so it may overlap the paper margin: sizing
+                  # fits the *frame* to the printable area (see fit_grid).
 PT_PER_MM = 72 / 25.4
 
 
@@ -647,6 +649,12 @@ def parse_paper(spec):
     return float(m[1]) * k, float(m[2]) * k
 
 
+def fit_grid(avail, pitch):
+    """Largest picture-cell grid (nmax, mmax) whose frame fits in `avail` mm at
+    corridor spacing `pitch` mm (each picture cell is 2 corridors)."""
+    return int(avail[0] / pitch) // 2, int(avail[1] / pitch) // 2
+
+
 def cells_to_fit(img_w, img_h, nmax, mmax):
     """Largest --cells value whose coarse grid fits in nmax x mmax."""
     for c in range(max(nmax, mmax), 0, -1):
@@ -659,7 +667,7 @@ def cells_to_fit(img_w, img_h, nmax, mmax):
     return 0
 
 
-def place_on_page(svg, paper_mm, footer=None):
+def place_on_page(svg, paper_mm, footer=None, footer_top=False):
     """Centre a renderer's SVG on a page of the given size (true scale)."""
     import re
     PW, PH = paper_mm[0] * PT_PER_MM, paper_mm[1] * PT_PER_MM
@@ -671,7 +679,8 @@ def place_on_page(svg, paper_mm, footer=None):
             f'height="{PH:.2f}pt" viewBox="0 0 {PW:.3f} {PH:.3f}">'
             f'<rect width="100%" height="100%" fill="#fff"/>')
     if footer:
-        head += (f'<text x="{PW/2:.2f}" y="{PH - 14:.2f}" text-anchor="middle" '
+        fy = 14 + 5 if footer_top else PH - 14   # keep clear of the entrance side
+        head += (f'<text x="{PW/2:.2f}" y="{fy:.2f}" text-anchor="middle" '
                  f'font-family="sans-serif" font-size="7" fill="#999">{footer}</text>')
     head += (f'<svg x="{x:.3f}" y="{y:.3f}" width="{w:.3f}" height="{h:.3f}" '
              f'viewBox="0 0 {m[3]} {m[4]}" overflow="visible">')
@@ -797,8 +806,7 @@ def main():
     avail = (paper[0] - 2 * args.paper_margin, paper[1] - 2 * args.paper_margin)
     if args.cells is None:
         pitch = args.corridor
-        nmax = int(avail[0] / pitch - 2 * MARGIN) // 2
-        mmax = int(avail[1] / pitch - 2 * MARGIN) // 2
+        nmax, mmax = fit_grid(avail, pitch)
         cells = cells_to_fit(img_w, img_h, nmax, mmax)
         if cells < 4:
             sys.exit(f"error: {pitch} mm corridors leave only {nmax}x{mmax} picture "
@@ -822,7 +830,7 @@ def main():
     assert sol.sum() == fine_fg.sum(), "solution does not cover the picture"
 
     if pitch is None:
-        pitch = min(avail[0] / (grid.W + 2 * MARGIN), avail[1] / (grid.H + 2 * MARGIN))
+        pitch = min(avail[0] / grid.W, avail[1] / grid.H)
     cell = pitch * PT_PER_MM
     footer = (f"{grid.W // 2}x{grid.H // 2} cells · {pitch:.1f} mm corridors · "
               f"seed {seed}")
@@ -831,7 +839,7 @@ def main():
 
     def emit(name, svg):
         with open(name + ".svg", "w") as f:
-            f.write(place_on_page(svg, paper, footer))
+            f.write(place_on_page(svg, paper, footer, footer_top=opening[2] == "S"))
         ok = svg_to_pdf(name + ".svg", name + ".pdf")
         print(f"wrote {name}.svg" + (f" and {name}.pdf" if ok else ""))
     if args.flow:

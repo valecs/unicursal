@@ -20,7 +20,7 @@ recommendations awaiting a response; "Open" items need research.
 | 8 | Answer key | Not printed. Saved with the puzzle (viewable in the app); printing it is at most an overflow action. |
 | 9 | Advanced controls | Camera-style **Auto / Manual** split. Manual covers mm, seed, flow parameters, colours, turning off preflight fixes. |
 | 10 | Scope | On-screen solving is out. Sharing is maybe. |
-| 14 | Printed page | Minimal: the maze, start/finish marks (#2), and the existing one-line footer. No title, name/date lines or instructions (classroom extras are out of scope). A small 5 cm check mark in the footer is still proposed (#1) as the guard against fit-to-page printing. |
+| 14 | Printed page | Minimal: the maze, start/finish marks (#2), and the existing one-line footer. No title, name/date lines or instructions (classroom extras are out of scope). A small 5 cm check mark in the footer is still proposed (#1) as the guard against fit-to-page printing. **Space goes to the maze**: the frame fills the printable area (the entrance stub sits in the paper margin), and the footer moves to the side away from the entrance. On Letter: Easy 7×9 → 8×11, Medium 12×16 → 13×17, Hard 30×40 → 31×41 (ghost). |
 | 13 | Voids | Solid black by default; puzzles must print well in black and white. Ink-saving is not a priority. (`--ink-saver`, light voids with outlined corridors, exists in the prototype but stays off and out of the UI.) |
 
 ## Proposed (awaiting sign-off)
