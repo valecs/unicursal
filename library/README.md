@@ -4,8 +4,17 @@ The ready-made pictures that ship with the app and power **Surprise me**
 offline (DECISIONS 19, 20; issue #14). Claude draws, checks and selects
 them in batch, the way the prototype's `shapes/` were drawn.
 
-Status: **planning.** Nothing below is built yet. Open questions are on the
-draft PR.
+Status: **spike** (three Thanksgiving subjects through draw → check →
+review). Open questions are on the draft PR.
+
+```
+uv run library/build.py              # build missing masters, judge new masks, report
+uv run library/build.py turkey --remaster
+uv run pytest -q tests/test_library.py
+```
+
+Output (not committed): `library/out/sheet.png` (contact sheet),
+`report.json`, `library.json` (the provisional package).
 
 ## Gate
 
@@ -43,21 +52,37 @@ just a sample.
 - A lint catches duplicates: overlapping names or judge keywords, and
   masters whose masks overlap too closely.
 
-## Layout (proposed)
+## Layout
 
 One set of files per subject, so batch PRs don't conflict:
 
 ```
 library/
   tags.toml                  controlled tag vocabulary
+  judge.json                 judge verdicts, keyed by mask hash (committed cache)
   subjects/<id>.toml         name, tags, judge keywords, notes
-  subjects/<id>.<master>     the master drawing (format: see PR, question 1)
+  subjects/<id>.svg          source drawing (owner: SVG)
+  subjects/<id>.png          master bitmap, built from the SVG; canonical, committed
   subjects/<id>.easy.txt     optional override, ASCII pixel art at the exact grid
   subjects/<id>.medium.txt   optional override
+  subjects/<id>.medium.a4.txt  optional paper-specific override (wins on that paper)
   build.py                   rasterize, check, judge, package, report
 ```
 
 `<id>` is a stable slug (`turkey`, `star-5`, `lantern-paper`).
+
+**Masters are drawn as SVG** (owner's call), black on white. `build.py`
+rasterizes the SVG, crops to the subject, makes it touch one edge (the
+`edge` in its TOML, bottom by default; the entrance goes there) with a fixed
+margin on the other sides (DECISIONS 18), and downsamples to the 1-bit master
+at 2× the Hard grid. The master PNG is committed: it is what ships, and it
+must not drift when `rsvg-convert` changes. `build.py --remaster <id>`
+regenerates it deliberately.
+
+**Thanksgiving subjects also go into `shapes/`** (owner) as ready-to-print
+prototype inputs: `shapes/<id>.png` (the master) and `shapes/<id>.easy.png` /
+`.medium.png` (overrides at 1 pixel per cell, which `picmaze.py` uses
+unchanged at that preset).
 
 ## Sizes
 
@@ -70,6 +95,8 @@ Grids the provisional presets give, automatic orientation, Letter / A4:
 | 1:2 | 6×11 / 6×12 | 9×18 / 10×19 | 21×42 / 22×45 |
 
 Easy and Medium usually match across papers, so one override covers both.
+Wide subjects are the exception (the pilgrim hat: Medium 18×12 on Letter,
+19×13 on A4); they get paper-specific overrides.
 `build.py` lists the exact target grids per subject and flags overrides that
 no longer match one (e.g. after #8). A forced orientation (Manual) falls back
 to the downsampled master.

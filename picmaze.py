@@ -700,6 +700,19 @@ def cells_to_fit(img_w, img_h, nmax, mmax):
     return 0
 
 
+def page_grid(img_w, img_h, paper, corridor, orientation="auto", paper_margin=12.7):
+    """Size a picture on paper: returns (paper turned to the orientation,
+    printable area, --cells value) for an img_w x img_h image at `corridor` mm.
+    "auto" orientation follows the image. cells < 4 means it doesn't fit."""
+    landscape = {"auto": img_w > img_h, "portrait": False,
+                 "landscape": True}[orientation]
+    if landscape != (paper[0] > paper[1]):
+        paper = (paper[1], paper[0])
+    avail = (paper[0] - 2 * paper_margin, paper[1] - 2 * paper_margin)
+    nmax, mmax = fit_grid(avail, corridor)
+    return paper, avail, cells_to_fit(img_w, img_h, nmax, mmax)
+
+
 SCALE_BAR_MM = 50  # printed check line: if it doesn't measure this, the page was scaled
 
 
@@ -847,18 +860,14 @@ def main():
     seed = args.seed if args.seed is not None else random.randrange(10**6)
     rng = random.Random(seed)
 
-    paper = parse_paper(args.paper)
     img_w, img_h = Image.open(args.image).size
-    landscape = {"auto": img_w > img_h, "portrait": False,
-                 "landscape": True}[args.orientation]
-    if landscape != (paper[0] > paper[1]):
-        paper = (paper[1], paper[0])
-    avail = (paper[0] - 2 * args.paper_margin, paper[1] - 2 * args.paper_margin)
+    paper, avail, cells = page_grid(img_w, img_h, parse_paper(args.paper),
+                                    args.corridor, args.orientation,
+                                    args.paper_margin)
     if args.cells is None:
         pitch = args.corridor
-        nmax, mmax = fit_grid(avail, pitch)
-        cells = cells_to_fit(img_w, img_h, nmax, mmax)
         if cells < 4:
+            nmax, mmax = fit_grid(avail, pitch)
             sys.exit(f"error: {pitch} mm corridors leave only {nmax}x{mmax} picture "
                      f"cells on this paper; use a smaller --corridor or bigger --paper")
     else:

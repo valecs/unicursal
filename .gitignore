@@ -5,3 +5,5 @@ __pycache__/
 /*.svg
 /*.pdf
 .venv/
+# library build output (contact sheets, package, report)
+/library/out/

@@ -1,0 +1,7 @@
+name = "Pumpkin"
+keywords = ["pumpkin", "squash", "gourd"]
+tags = ["thanksgiving", "halloween", "autumn", "food", "farm", "plants"]
+edge = "S"
+notes = "Plain pumpkin, no face (the jack-o'-lantern is its own subject)."
+# Spike: Easy (11x8) fails in 6 hand-drawn tries (crown, submarine, mailbox,
+# cherries, apple); a leaf at Medium reads as "apple", so the override has none.

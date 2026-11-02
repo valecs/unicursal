@@ -1,0 +1,10 @@
+name = "Turkey"
+keywords = ["turkey"]
+tags = ["thanksgiving", "birds", "farm", "animals", "autumn"]
+edge = "S"
+notes = "Side view, tail fanned, standing."
+# Spike: the master took 6 drafts (thin neck -> "peacock", separate spiky
+# feathers -> "rooster", head touching the fan -> lost). Medium and Easy:
+# 11 pixel-art tries, best judge answers "chicken", "baby chick", "hedgehog".
+# turkey.medium.txt is the best candidate by eye (judge: hedgehog), kept for
+# owner review.
