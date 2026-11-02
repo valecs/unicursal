@@ -204,3 +204,13 @@ def test_preset_supplies_defaults_and_flags_override():
     a = P.parse_args_with_preset(P.build_parser(),
                                  ["x.png", "--preset", "easy", "--corridor", "5"])
     assert a.corridor == 5
+
+
+def test_deadend_fix_is_on_by_default():
+    """#7: the owner chose the dead-end heuristic as the default for mazes."""
+    import inspect
+    assert inspect.signature(P.build_maze).parameters["reduce_deadends"].default is True
+    a = P.parse_args_with_preset(P.build_parser(), ["x.png", "--mode", "maze"])
+    assert a.deadend_fix is True
+    a = P.parse_args_with_preset(P.build_parser(), ["x.png", "--no-deadend-fix"])
+    assert a.deadend_fix is False

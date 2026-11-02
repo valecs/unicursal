@@ -287,7 +287,7 @@ def build_labyrinth(fg, rng):
     return grid, fine_fg, (a, b, side)
 
 
-def build_maze(fg, rng, reduce_deadends=False):
+def build_maze(fg, rng, reduce_deadends=True):
     """Okamoto-Uehara: Hamiltonian path in the foreground, then a random
     spanning tree of everything else that keeps that path as the solution."""
     m, n = fg.shape
@@ -776,9 +776,9 @@ def build_parser():
                     help="treat light pixels as the picture")
     ap.add_argument("--no-bridges", action="store_true",
                     help="keep only the largest piece instead of joining pieces")
-    ap.add_argument("--deadend-fix", action="store_true",
-                    help="maze mode: apply the dead-end pairing heuristic (fewer, "
-                         "paired dead ends; off by default)")
+    ap.add_argument("--no-deadend-fix", dest="deadend_fix", action="store_false",
+                    help="maze mode: skip the dead-end pairing heuristic (on by "
+                         "default: fewer, paired dead ends)")
     ap.add_argument("--fill", default="#e0218a", help="solution fill colour")
     ap.add_argument("--curvy", action="store_true",
                     help="round the corners and bend the sheet so paths curve")
