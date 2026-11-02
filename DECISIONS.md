@@ -1,6 +1,7 @@
 # UX decisions log
 
 Running record of app-design decisions. Nothing here is final yet.
+Open items are tracked as GitHub issues; see WORKFLOW.md for how instances coordinate.
 "First pass" items are initial answers, open to revision; "Proposed" items are
 recommendations awaiting a response; "Open" items need research.
 
@@ -19,6 +20,7 @@ recommendations awaiting a response; "Open" items need research.
 | 8 | Answer key | Not printed. Saved with the puzzle (viewable in the app); printing it is at most an overflow action. |
 | 9 | Advanced controls | Camera-style **Auto / Manual** split. Manual covers mm, seed, flow parameters, colours, turning off preflight fixes. |
 | 10 | Scope | On-screen solving is out. Sharing is maybe. |
+| 13 | Voids | Solid black by default; puzzles must print well in black and white. Ink-saving is not a priority. (`--ink-saver`, light voids with outlined corridors, exists in the prototype but stays off and out of the UI.) |
 
 ## Proposed (awaiting sign-off)
 
