@@ -1,0 +1,38 @@
+# Green CI means a PR is safe to merge: every job below must pass (the `ci`
+# job at the end aggregates them, for branch protection).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  python:
+    name: Python prototype (pytest)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: System dependencies (rsvg-convert)
+        run: sudo apt-get update && sudo apt-get install -y librsvg2-bin
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --all-extras --locked
+      - run: uv run pytest -q
+
+  ci:
+    name: CI
+    if: always()
+    needs: [python]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: All jobs passed
+        run: |
+          echo '${{ toJSON(needs) }}' | jq -e 'all(.[]; .result == "success")'
