@@ -5,6 +5,7 @@ checks a port must keep passing; run with:  python3 -m pytest -q tests
 import os
 import random
 import sys
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -135,6 +136,11 @@ def test_flow_is_sealed_and_wide_enough(ring_png):
     svg = F.render_flow_svg(strands, grid.H, grid.W, cell, margin=P.MARGIN)
     ok, k = F.verify_regions(svg, grid.H, grid.W, cell, len(strands), margin=P.MARGIN)
     assert ok, f"{k} open regions for {len(strands)} strands (a wall leaks)"
+    # ink saver: light voids + outlined corridors must be just as sealed
+    svg = F.render_flow_svg(strands, grid.H, grid.W, cell, margin=P.MARGIN,
+                            void="#cfcfcf", outline=True)
+    ok, k = F.verify_regions(svg, grid.H, grid.W, cell, len(strands), margin=P.MARGIN)
+    assert ok, f"ink saver: {k} open regions for {len(strands)} strands"
     widths = F.corridor_widths(strands, grid.H, grid.W)
     assert widths.min() > 0.6   # in corridor-spacing units
 
@@ -156,3 +162,39 @@ def test_page_is_true_scale():
            'height="50.00pt" viewBox="0 0 100.000 50.000"><rect/></svg>')
     out = P.place_on_page(svg, (215.9, 279.4))
     assert 'width="612.00pt" height="792.00pt"' in out
+
+
+SHAPES = Path(__file__).resolve().parent.parent / "shapes"
+
+
+@pytest.mark.parametrize("seed", range(10))
+def test_maze_default_solution_covers_picture(seed):
+    fg = P.largest_component(P.load_mask(str(SHAPES / "ghost.png"), 15))
+    grid, fine_fg, opening = P.build_maze(fg, random.Random(seed))
+    assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
+
+
+@pytest.mark.xfail(strict=True, reason="dead-end heuristic opens walls into the "
+                   "solution path; off by default until fixed")
+def test_maze_deadend_fix_known_bug():
+    fg = P.largest_component(P.load_mask(str(SHAPES / "ghost.png"), 15))
+    for seed in range(10):
+        grid, fine_fg, opening = P.build_maze(fg, random.Random(seed), True)
+        assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
+
+
+PRESETS = Path(__file__).resolve().parent.parent / "presets.toml"
+
+
+def test_presets_only_set_known_options():
+    dests = {a.dest for a in P.build_parser()._actions}
+    for name, p in P.load_presets(PRESETS).items():
+        assert set(p) - P.PRESET_META <= dests, name
+
+
+def test_preset_supplies_defaults_and_flags_override():
+    a = P.parse_args_with_preset(P.build_parser(), ["x.png", "--preset", "easy"])
+    assert a.corridor == P.load_presets(PRESETS)["easy"]["corridor"]
+    a = P.parse_args_with_preset(P.build_parser(),
+                                 ["x.png", "--preset", "easy", "--corridor", "5"])
+    assert a.corridor == 5

@@ -38,6 +38,7 @@ Requires numpy, Pillow; scipy for component labelling; reportlab for PDF.
 """
 import argparse
 import random
+import os
 import sys
 
 import numpy as np
@@ -286,7 +287,7 @@ def build_labyrinth(fg, rng):
     return grid, fine_fg, (a, b, side)
 
 
-def build_maze(fg, rng, reduce_deadends=True):
+def build_maze(fg, rng, reduce_deadends=False):
     """Okamoto-Uehara: Hamiltonian path in the foreground, then a random
     spanning tree of everything else that keeps that path as the solution."""
     m, n = fg.shape
@@ -679,16 +680,59 @@ def place_on_page(svg, paper_mm, footer=None):
 
 # --------------------------------------------------------------- main ------
 
-def main():
+PRESET_META = {"label", "tool"}          # display-only keys in presets.toml
+
+
+def load_presets(path):
+    import tomllib
+    with open(path, "rb") as f:
+        return tomllib.load(f).get("preset", {})
+
+
+def parse_args_with_preset(ap, argv=None):
+    """Parse argv; a --preset supplies defaults that explicit flags override."""
+    pre = argparse.ArgumentParser(add_help=False)
+    pre.add_argument("--preset")
+    pre.add_argument("--presets", default=os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "presets.toml"))
+    pre.add_argument("--list-presets", action="store_true")
+    known, _ = pre.parse_known_args(argv)
+    if known.list_presets:
+        for name, p in load_presets(known.presets).items():
+            opts = ", ".join(f"{k}={v}" for k, v in p.items() if k not in PRESET_META)
+            print(f"{name:10} {p.get('label', ''):8} {p.get('tool', ''):26} {opts}")
+        sys.exit(0)
+    if known.preset:
+        presets = load_presets(known.presets)
+        if known.preset not in presets:
+            ap.error(f"unknown preset '{known.preset}' (have: {', '.join(presets)})")
+        dests = {a.dest for a in ap._actions}
+        vals = {k: v for k, v in presets[known.preset].items() if k not in PRESET_META}
+        bad = set(vals) - dests
+        if bad:
+            ap.error(f"preset '{known.preset}' sets unknown options: {', '.join(sorted(bad))}")
+        ap.set_defaults(**vals)
+    return ap.parse_args(argv)
+
+
+def build_parser():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("image")
+    ap.add_argument("--preset", help="difficulty preset from presets.toml "
+                    "(e.g. easy, medium, hard); explicit flags override it")
+    ap.add_argument("--presets", help="presets file (default: presets.toml "
+                    "next to this script)")
+    ap.add_argument("--list-presets", action="store_true",
+                    help="list presets and exit")
     ap.add_argument("--corridor", type=float, default=8.0,
                     help="corridor spacing on paper, mm (sets size/difficulty; "
                          "see guide above). Default 8")
     ap.add_argument("--paper", default="letter",
                     help="letter, legal, tabloid, a4, a3, or e.g. 8.5x11in, "
-                         "200x250mm. Orientation follows the image.")
+                         "200x250mm. See --orientation.")
+    ap.add_argument("--orientation", choices=["auto", "portrait", "landscape"],
+                    default="auto", help="page orientation; auto follows the image")
     ap.add_argument("--paper-margin", type=float, default=12.7,
                     help="blank margin at the paper edge, mm (default 12.7 = 0.5in)")
     ap.add_argument("--cells", type=int, default=None,
@@ -701,8 +745,9 @@ def main():
                     help="treat light pixels as the picture")
     ap.add_argument("--no-bridges", action="store_true",
                     help="keep only the largest piece instead of joining pieces")
-    ap.add_argument("--no-deadend-fix", action="store_true",
-                    help="maze mode: skip the dead-end pairing heuristic")
+    ap.add_argument("--deadend-fix", action="store_true",
+                    help="maze mode: apply the dead-end pairing heuristic. Off by "
+                         "default: it can open walls into the solution path")
     ap.add_argument("--fill", default="#e0218a", help="solution fill colour")
     ap.add_argument("--curvy", action="store_true",
                     help="round the corners and bend the sheet so paths curve")
@@ -726,8 +771,17 @@ def main():
                     help="flow: how far (in corridors) the picture's edge may "
                          "drift; lower keeps thin parts crisper (0.3-1.5)")
     ap.add_argument("--void", default="#111", help="flow: colour of the voids")
+    ap.add_argument("--ink-saver", action="store_true",
+                    help="flow: light grey voids with outlined corridors")
     ap.add_argument("--out", default="picmaze")
-    args = ap.parse_args()
+    return ap
+
+
+def main():
+    ap = build_parser()
+    args = parse_args_with_preset(ap)
+    if args.ink_saver and args.void == "#111":
+        args.void = "#cfcfcf"
     if args.flow and args.mode != "labyrinth":
         ap.error("--flow needs --mode labyrinth (it relies on there being no junctions)")
 
@@ -736,8 +790,10 @@ def main():
 
     paper = parse_paper(args.paper)
     img_w, img_h = Image.open(args.image).size
-    if (img_w > img_h) != (paper[0] > paper[1]):
-        paper = (paper[1], paper[0])                 # match image orientation
+    landscape = {"auto": img_w > img_h, "portrait": False,
+                 "landscape": True}[args.orientation]
+    if landscape != (paper[0] > paper[1]):
+        paper = (paper[1], paper[0])
     avail = (paper[0] - 2 * args.paper_margin, paper[1] - 2 * args.paper_margin)
     if args.cells is None:
         pitch = args.corridor
@@ -756,7 +812,7 @@ def main():
     if args.mode == "labyrinth":
         grid, fine_fg, opening = build_labyrinth(fg, rng)
     else:
-        grid, fine_fg, opening = build_maze(fg, rng, not args.no_deadend_fix)
+        grid, fine_fg, opening = build_maze(fg, rng, args.deadend_fix)
 
     # solution = cells on the open corridor from the entrance
     path = trace_path(grid, opening[0], fine_fg)
@@ -796,7 +852,8 @@ def main():
         for name, show in ((args.out, False), (args.out + "_solution", True)):
             svg = flow.render_flow_svg(strands, grid.H, grid.W, cell, void=args.void,
                                        fill=args.fill, show_solution=show,
-                                       entrance=ent, margin=MARGIN)
+                                       entrance=ent, margin=MARGIN,
+                                       outline=args.ink_saver)
             emit(name, svg)
             if not show:
                 puzzle_svg = svg

@@ -216,7 +216,9 @@ def count_crossings(strands):
 
 def render_flow_svg(strands, H, W, cell, rmax=0.55, wall=0.14, margin=2.0,
                     void="#111", fill="#f07a14", show_solution=False,
-                    gap_arc=1.05, entrance=None):
+                    gap_arc=1.05, entrance=None, outline=False):
+    """outline: draw each corridor's edge where it meets a void, so voids can
+    be a light colour (ink saver) without corridors visually leaking into them."""
     ox = oy = margin
     Wt, Ht = (W + 2 * margin) * cell, (H + 2 * margin) * cell
     T = lambda P: (np.asarray(P) + [ox, oy]) * cell
@@ -242,6 +244,9 @@ def render_flow_svg(strands, H, W, cell, rmax=0.55, wall=0.14, margin=2.0,
     tubes = []
     for P, closed, is_sol in strands:
         tubes.append(poly(solP if is_sol else P, closed))
+    if outline:  # black halo under the tubes; only survives where no tube covers it
+        out.append(f'<path fill="none" stroke="#000" stroke-width="{(2*rmax+wall)*cell:.3f}" '
+                   f'stroke-linecap="round" stroke-linejoin="round" d="{"".join(tubes)}"/>')
     out.append(f'<path fill="none" stroke="#fff" stroke-width="{2*rmax*cell:.3f}" '
                f'stroke-linecap="round" stroke-linejoin="round" d="{"".join(tubes)}"/>')
     if show_solution:
@@ -384,7 +389,7 @@ def verify_regions(svg_text, H, W, cell, n_strands, margin=2.0, px_per_cell=30):
         with open(svg_path, "w") as f:
             f.write(svg_text)
         subprocess.run(["rsvg-convert", "-z", f"{zoom:.4f}", "-o", png, svg_path], check=True)
-        a = np.asarray(Image.open(png).convert("L")) > 128
+        a = np.asarray(Image.open(png).convert("L")) > 240   # corridors are pure white; voids any grey
     px = cell * zoom * 96 / 72
     x0, pad = margin * px, 4
     inner = a[int(x0) + pad:int(x0 + H * px) - pad, int(x0) + pad:int(x0 + W * px) - pad]

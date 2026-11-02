@@ -1,0 +1,162 @@
+{
+ "model": "gemini-3.5-flash",
+ "kind": "text",
+ "calls": [
+  {
+   "promptTokenCount": 222,
+   "candidatesTokenCount": 83,
+   "totalTokenCount": 10149,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 222
+    }
+   ],
+   "thoughtsTokenCount": 9844,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 221,
+   "candidatesTokenCount": 63,
+   "totalTokenCount": 4514,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 221
+    }
+   ],
+   "thoughtsTokenCount": 4230,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 216,
+   "candidatesTokenCount": 59,
+   "totalTokenCount": 8478,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 216
+    }
+   ],
+   "thoughtsTokenCount": 8203,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 217,
+   "candidatesTokenCount": 71,
+   "totalTokenCount": 4761,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 217
+    }
+   ],
+   "thoughtsTokenCount": 4473,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 216,
+   "candidatesTokenCount": 47,
+   "totalTokenCount": 6640,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 216
+    }
+   ],
+   "thoughtsTokenCount": 6377,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 216,
+   "candidatesTokenCount": 77,
+   "totalTokenCount": 8829,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 216
+    }
+   ],
+   "thoughtsTokenCount": 8536,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 216,
+   "candidatesTokenCount": 59,
+   "totalTokenCount": 10204,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 216
+    }
+   ],
+   "thoughtsTokenCount": 9929,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 216,
+   "candidatesTokenCount": 73,
+   "totalTokenCount": 5603,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 216
+    }
+   ],
+   "thoughtsTokenCount": 5314,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 216,
+   "candidatesTokenCount": 79,
+   "totalTokenCount": 6974,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 216
+    }
+   ],
+   "thoughtsTokenCount": 6679,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 216,
+   "candidatesTokenCount": 63,
+   "totalTokenCount": 6172,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 216
+    }
+   ],
+   "thoughtsTokenCount": 5893,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 216,
+   "candidatesTokenCount": 54,
+   "totalTokenCount": 8895,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 216
+    }
+   ],
+   "thoughtsTokenCount": 8625,
+   "serviceTier": "standard"
+  },
+  {
+   "promptTokenCount": 216,
+   "candidatesTokenCount": 51,
+   "totalTokenCount": 11524,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 216
+    }
+   ],
+   "thoughtsTokenCount": 11257,
+   "serviceTier": "standard"
+  }
+ ]
+}

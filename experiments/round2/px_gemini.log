@@ -1,0 +1,26 @@
+a cat sitting, seen fr medium c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.015, 'cover': 0.682, 'grid': '12x16', 'error': None}
+a jack-o-lantern pumpk medium c0 {'pieces': 1, 'holes': 3, 'tiny_holes': 0, 'thin': 0.016, 'cover': 0.656, 'grid': '12x16', 'error': None}
+an owl                 medium c0 {'pieces': 1, 'holes': 2, 'tiny_holes': 0, 'thin': 0.014, 'cover': 0.771, 'grid': '12x16', 'error': None}
+a rocket ship          medium c0 {'pieces': 1, 'holes': 1, 'tiny_holes': 0, 'thin': 0.0, 'cover': 0.594, 'grid': '12x16', 'error': None}
+a fish                 medium c0 {'pieces': 1, 'holes': 1, 'tiny_holes': 0, 'thin': 0.021, 'cover': 0.5, 'grid': '16x12', 'error': None}
+a house                medium c0 {'pieces': 1, 'holes': 2, 'tiny_holes': 0, 'thin': 0.017, 'cover': 0.609, 'grid': '12x16', 'error': None}
+an elephant            medium c0 {'pieces': 1, 'holes': 1, 'tiny_holes': 0, 'thin': 0.0, 'cover': 0.656, 'grid': '16x12', 'error': None}
+a butterfly            medium c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.119, 'cover': 0.615, 'grid': '12x16', 'error': None}
+a rabbit               medium c0 {'pieces': 1, 'holes': 1, 'tiny_holes': 0, 'thin': 0.008, 'cover': 0.635, 'grid': '12x16', 'error': None}
+a sailboat             medium c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.038, 'cover': 0.547, 'grid': '12x16', 'error': None}
+a teapot               medium c0 {'pieces': 1, 'holes': 1, 'tiny_holes': 0, 'thin': 0.0, 'cover': 0.578, 'grid': '16x12', 'error': None}
+a turtle               medium c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.018, 'cover': 0.583, 'grid': '16x12', 'error': None}
+tokens: 2604 in, 90139 out (incl. thinking)
+a cat sitting, seen fr easy   c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.043, 'cover': 0.746, 'grid': '7x9', 'error': None}
+a jack-o-lantern pumpk easy   c0 {'pieces': 1, 'holes': 1, 'tiny_holes': 0, 'thin': 0.075, 'cover': 0.635, 'grid': '7x9', 'error': None}
+an owl                 easy   c0 {'pieces': 1, 'holes': 2, 'tiny_holes': 0, 'thin': 0.2, 'cover': 0.714, 'grid': '7x9', 'error': None}
+a rocket ship          easy   c0 {'pieces': 1, 'holes': 2, 'tiny_holes': 2, 'thin': 0.256, 'cover': 0.619, 'grid': '7x9', 'error': None}
+a fish                 easy   c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.189, 'cover': 0.587, 'grid': '9x7', 'error': None}
+a house                easy   c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.05, 'cover': 0.635, 'grid': '7x9', 'error': None}
+an elephant            easy   c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.0, 'cover': 0.714, 'grid': '9x7', 'error': None}
+a butterfly            easy   c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.159, 'cover': 0.698, 'grid': '7x9', 'error': None}
+a rabbit               easy   c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.071, 'cover': 0.667, 'grid': '7x9', 'error': None}
+a sailboat             easy   c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.091, 'cover': 0.524, 'grid': '7x9', 'error': None}
+a teapot               easy   c0 {'pieces': 1, 'holes': 1, 'tiny_holes': 0, 'thin': 0.103, 'cover': 0.619, 'grid': '9x7', 'error': None}
+a turtle               easy   c0 {'pieces': 1, 'holes': 0, 'tiny_holes': 0, 'thin': 0.0, 'cover': 0.651, 'grid': '9x7', 'error': None}
+tokens: 2556 in, 75614 out (incl. thinking)

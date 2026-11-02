@@ -1,0 +1,242 @@
+[
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "castle tower",
+  "pass": false,
+  "candidates": 1,
+  "passing": 0
+ },
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "cat",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "bomb",
+  "pass": false,
+  "candidates": 1,
+  "passing": 0
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "jack-o'-lantern",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "robot",
+  "pass": false,
+  "candidates": 1,
+  "passing": 0
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "an owl",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "rocket",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "space rocket",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "fish",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "needle eye",
+  "pass": false,
+  "candidates": 1,
+  "passing": 0
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "house",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "a house",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "elephant",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "elephant",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "pine tree",
+  "pass": false,
+  "candidates": 1,
+  "passing": 0
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "cat head",
+  "pass": false,
+  "candidates": 1,
+  "passing": 0
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "teapot",
+  "pass": false,
+  "candidates": 1,
+  "passing": 0
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "a rabbit",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "key",
+  "pass": false,
+  "candidates": 1,
+  "passing": 0
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "sailboat",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "teapot",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "teapot",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "turtle",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "turtle",
+  "pass": true,
+  "candidates": 1,
+  "passing": 1
+ }
+]
