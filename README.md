@@ -15,3 +15,7 @@ uv run pytest -q
 ```
 
 Puzzle + answer-key examples are in [`examples/`](examples/).
+
+## License
+
+[GNU AGPL v3 or later](LICENSE).
