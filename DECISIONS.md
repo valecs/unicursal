@@ -75,7 +75,7 @@ Tracked as GitHub issues only (`decision`, `research`, `bug`, `prototype`,
   `round2/sheets/`). Image model at 512 px, stage 1 only, best of 3 candidates;
   judge as round 1, and among passing candidates the one with the cleanest
   preflight metrics is picked. Budget cap $5 for the round, so pixel arms are
-  trimmed (see Todo for the Claude arms).
+  trimmed (Claude arms: see #9).
 
   | Method | Cands | Easy | Medium | Hard | Cost |
   |---|---|---|---|---|---|
