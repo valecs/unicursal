@@ -2,7 +2,7 @@
 
 Picture-labyrinth generator: a silhouette becomes a printable maze whose
 solution, filled in, reveals the picture. Currently a Python prototype
-(`picmaze.py`, `flow.py`) ahead of a Rust core + PWA. Start with `README.md`;
+(`picmaze.py`, `flow.py`) being ported to a Rust core (`crates/`, #10) for a PWA. Start with `README.md`;
 background in `HANDOFF.md`; every product decision in `DECISIONS.md`.
 
 ## Setup and checks
@@ -18,7 +18,14 @@ apt-get update && apt-get install -y librsvg2-bin   # system dep: rsvg-convert (
 uv run pytest -q                         # must pass before every push
 uv run picmaze.py shapes/ghost.png --preset medium --flow --out ghost
 uv run experiments/<script>.py ...
+
+cargo test --workspace                   # Rust core + CLI (toolchain pinned in rust-toolchain.toml)
+cargo clippy --workspace --all-targets -- -D warnings && cargo fmt --all --check
+cargo run -p unicursal-cli -- shapes/ghost.png --preset medium --out ghost
 ```
+
+CI (`.github/workflows/ci.yml`) runs all of these, plus the core's tests on
+aarch64 and wasm32. Green CI means a PR is safe to merge.
 
 ## Testing: test-driven, property-based
 
