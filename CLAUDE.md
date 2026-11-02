@@ -24,8 +24,9 @@ cargo clippy --workspace --all-targets -- -D warnings && cargo fmt --all --check
 cargo run -p unicursal-cli -- shapes/ghost.png --preset medium --out ghost
 ```
 
-CI (`.github/workflows/ci.yml`) runs all of these, plus the core's tests on
-aarch64 and wasm32. Green CI means a PR is safe to merge.
+CI (`.github/workflows/ci.yml`) runs these checks, plus the core's tests
+on aarch64 and wasm32, on every PR and push to `main`. Green CI means a PR
+is safe to merge; the `CI` job aggregates the others for branch protection.
 
 ## Testing: test-driven, property-based
 
