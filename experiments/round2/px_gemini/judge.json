@@ -1,0 +1,98 @@
+[
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "cat",
+  "pass": true
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "jack-o'-lantern",
+  "pass": true
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "an owl",
+  "pass": true
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "space rocket",
+  "pass": true
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "needle eye",
+  "pass": false
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "a house",
+  "pass": true
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "elephant",
+  "pass": true
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "cat head",
+  "pass": false
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "a rabbit",
+  "pass": true
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "sailboat",
+  "pass": true
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "teapot",
+  "pass": true
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "turtle",
+  "pass": true
+ }
+]

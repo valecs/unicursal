@@ -16,7 +16,8 @@ Results so far are in `../DECISIONS.md` → Findings.
 
 - **Gemini**: a network secret injects `x-goog-api-key` for
   `generativelanguage.googleapis.com`; scripts send no key.
-- **Claude**: `ANTHROPIC_API_KEY` in the environment (environment variables
+- **Claude**: `ANTHROPIC_API_KEY` (or `UNICURSAL_ANTHROPIC_KEY`, in case the
+  environment filters `ANTHROPIC_*` names) in the environment (environment variables
   reach new sessions only). `api.anthropic.com` bypasses the agent proxy, so a
   header-injection secret would not work for it. The scripts pass
   `base_url="https://api.anthropic.com"` because the cloud environment sets

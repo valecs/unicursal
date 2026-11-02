@@ -1,0 +1,206 @@
+[
+ {
+  "subject": "a cat sitting, seen from the side",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 0,
+     "tiny_holes": 0,
+     "thin": 0.015,
+     "cover": 0.682,
+     "grid": "12x16",
+     "error": null
+    }
+   }
+  },
+  "index": 0
+ },
+ {
+  "subject": "a jack-o-lantern pumpkin",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 3,
+     "tiny_holes": 0,
+     "thin": 0.016,
+     "cover": 0.656,
+     "grid": "12x16",
+     "error": null
+    }
+   }
+  },
+  "index": 1
+ },
+ {
+  "subject": "an owl",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 2,
+     "tiny_holes": 0,
+     "thin": 0.014,
+     "cover": 0.771,
+     "grid": "12x16",
+     "error": null
+    }
+   }
+  },
+  "index": 2
+ },
+ {
+  "subject": "a rocket ship",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 1,
+     "tiny_holes": 0,
+     "thin": 0.0,
+     "cover": 0.594,
+     "grid": "12x16",
+     "error": null
+    }
+   }
+  },
+  "index": 3
+ },
+ {
+  "subject": "a fish",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 1,
+     "tiny_holes": 0,
+     "thin": 0.021,
+     "cover": 0.5,
+     "grid": "16x12",
+     "error": null
+    }
+   }
+  },
+  "index": 4
+ },
+ {
+  "subject": "a house",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 2,
+     "tiny_holes": 0,
+     "thin": 0.017,
+     "cover": 0.609,
+     "grid": "12x16",
+     "error": null
+    }
+   }
+  },
+  "index": 5
+ },
+ {
+  "subject": "an elephant",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 1,
+     "tiny_holes": 0,
+     "thin": 0.0,
+     "cover": 0.656,
+     "grid": "16x12",
+     "error": null
+    }
+   }
+  },
+  "index": 6
+ },
+ {
+  "subject": "a butterfly",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 0,
+     "tiny_holes": 0,
+     "thin": 0.119,
+     "cover": 0.615,
+     "grid": "12x16",
+     "error": null
+    }
+   }
+  },
+  "index": 7
+ },
+ {
+  "subject": "a rabbit",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 1,
+     "tiny_holes": 0,
+     "thin": 0.008,
+     "cover": 0.635,
+     "grid": "12x16",
+     "error": null
+    }
+   }
+  },
+  "index": 8
+ },
+ {
+  "subject": "a sailboat",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 0,
+     "tiny_holes": 0,
+     "thin": 0.038,
+     "cover": 0.547,
+     "grid": "12x16",
+     "error": null
+    }
+   }
+  },
+  "index": 9
+ },
+ {
+  "subject": "a teapot",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 1,
+     "tiny_holes": 0,
+     "thin": 0.0,
+     "cover": 0.578,
+     "grid": "16x12",
+     "error": null
+    }
+   }
+  },
+  "index": 10
+ },
+ {
+  "subject": "a turtle",
+  "stages": {
+   "c0": {
+    "medium": {
+     "pieces": 1,
+     "holes": 0,
+     "tiny_holes": 0,
+     "thin": 0.018,
+     "cover": 0.583,
+     "grid": "16x12",
+     "error": null
+    }
+   }
+  },
+  "index": 11
+ }
+]

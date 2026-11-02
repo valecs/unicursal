@@ -56,7 +56,10 @@ def call_claude(model, turns, effort):
     import anthropic
     # This environment sets ANTHROPIC_BASE_URL for its own use; talk to the
     # public API explicitly.
-    client = anthropic.Anthropic(base_url="https://api.anthropic.com", max_retries=4)
+    # The key may live under a non-ANTHROPIC_ name if the environment filters those.
+    key = os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("UNICURSAL_ANTHROPIC_KEY")
+    client = anthropic.Anthropic(base_url="https://api.anthropic.com", api_key=key,
+                                 max_retries=4)
     with client.messages.stream(
             model=model, max_tokens=32000, output_config={"effort": effort},
             messages=[{"role": r, "content": t} for r, t in turns]) as stream:
