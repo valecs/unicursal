@@ -38,6 +38,7 @@ Requires numpy, Pillow; scipy for component labelling; reportlab for PDF.
 """
 import argparse
 import random
+import os
 import sys
 
 import numpy as np
@@ -679,10 +680,51 @@ def place_on_page(svg, paper_mm, footer=None):
 
 # --------------------------------------------------------------- main ------
 
-def main():
+PRESET_META = {"label", "tool"}          # display-only keys in presets.toml
+
+
+def load_presets(path):
+    import tomllib
+    with open(path, "rb") as f:
+        return tomllib.load(f).get("preset", {})
+
+
+def parse_args_with_preset(ap, argv=None):
+    """Parse argv; a --preset supplies defaults that explicit flags override."""
+    pre = argparse.ArgumentParser(add_help=False)
+    pre.add_argument("--preset")
+    pre.add_argument("--presets", default=os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "presets.toml"))
+    pre.add_argument("--list-presets", action="store_true")
+    known, _ = pre.parse_known_args(argv)
+    if known.list_presets:
+        for name, p in load_presets(known.presets).items():
+            opts = ", ".join(f"{k}={v}" for k, v in p.items() if k not in PRESET_META)
+            print(f"{name:10} {p.get('label', ''):8} {p.get('tool', ''):26} {opts}")
+        sys.exit(0)
+    if known.preset:
+        presets = load_presets(known.presets)
+        if known.preset not in presets:
+            ap.error(f"unknown preset '{known.preset}' (have: {', '.join(presets)})")
+        dests = {a.dest for a in ap._actions}
+        vals = {k: v for k, v in presets[known.preset].items() if k not in PRESET_META}
+        bad = set(vals) - dests
+        if bad:
+            ap.error(f"preset '{known.preset}' sets unknown options: {', '.join(sorted(bad))}")
+        ap.set_defaults(**vals)
+    return ap.parse_args(argv)
+
+
+def build_parser():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("image")
+    ap.add_argument("--preset", help="difficulty preset from presets.toml "
+                    "(e.g. easy, medium, hard); explicit flags override it")
+    ap.add_argument("--presets", help="presets file (default: presets.toml "
+                    "next to this script)")
+    ap.add_argument("--list-presets", action="store_true",
+                    help="list presets and exit")
     ap.add_argument("--corridor", type=float, default=8.0,
                     help="corridor spacing on paper, mm (sets size/difficulty; "
                          "see guide above). Default 8")
@@ -730,7 +772,12 @@ def main():
                          "drift; lower keeps thin parts crisper (0.3-1.5)")
     ap.add_argument("--void", default="#111", help="flow: colour of the voids")
     ap.add_argument("--out", default="picmaze")
-    args = ap.parse_args()
+    return ap
+
+
+def main():
+    ap = build_parser()
+    args = parse_args_with_preset(ap)
     if args.flow and args.mode != "labyrinth":
         ap.error("--flow needs --mode labyrinth (it relies on there being no junctions)")
 

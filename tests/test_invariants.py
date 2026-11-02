@@ -176,3 +176,20 @@ def test_maze_deadend_fix_known_bug():
     for seed in range(10):
         grid, fine_fg, opening = P.build_maze(fg, random.Random(seed), True)
         assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
+
+
+PRESETS = Path(__file__).resolve().parent.parent / "presets.toml"
+
+
+def test_presets_only_set_known_options():
+    dests = {a.dest for a in P.build_parser()._actions}
+    for name, p in P.load_presets(PRESETS).items():
+        assert set(p) - P.PRESET_META <= dests, name
+
+
+def test_preset_supplies_defaults_and_flags_override():
+    a = P.parse_args_with_preset(P.build_parser(), ["x.png", "--preset", "easy"])
+    assert a.corridor == P.load_presets(PRESETS)["easy"]["corridor"]
+    a = P.parse_args_with_preset(P.build_parser(),
+                                 ["x.png", "--preset", "easy", "--corridor", "5"])
+    assert a.corridor == 5

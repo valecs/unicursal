@@ -1,0 +1,24 @@
+# Difficulty presets: data, not code. PROVISIONAL: values are guesses until
+# calibrated with real test prints.
+#
+# Each [preset.<name>] may set any generator option by its CLI name
+# (e.g. corridor, mode, flow_length, paper). Explicit command-line flags
+# override the preset. `label` and `tool` are display metadata for the app.
+#
+# The Rust core should read this same file (serde) so the CLI, the PWA and
+# tests share one source of truth.
+
+[preset.easy]
+label = "Easy"
+tool = "crayons, chunky markers"
+corridor = 11.0
+
+[preset.medium]
+label = "Medium"
+tool = "markers"
+corridor = 7.0
+
+[preset.hard]
+label = "Hard"
+tool = "fine pen, sharp pencil"
+corridor = 3.0
