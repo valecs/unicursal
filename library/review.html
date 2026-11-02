@@ -159,7 +159,8 @@ function build() {
   document.getElementById("lede").textContent =
     `${DATA.subjects.length} subjects from the ${DATA.batch}. For each difficulty, decide whether a child ` +
     `would name the picture from the mask as it prints. Your call overrides the blind judge ` +
-    `for exactly these masks; if a mask is redrawn, it comes back for review.`;
+    `for exactly these masks; if a mask is redrawn, it comes back for review. ` +
+    `Comments on a master go with that drawing.`;
   document.getElementById("foot").innerHTML = "";
   document.getElementById("foot").append(
     "Built ", el("code", { text: DATA.built }), " by ", el("code", { text: "library/build.py --review" }),
@@ -167,10 +168,15 @@ function build() {
   const root = document.getElementById("subjects");
   for (const s of DATA.subjects) {
     const cols = el("div", { class: "cols" });
+    const mk = key(s.id, "master");
+    const mnote = el("textarea", { id: `note-${mk}`, placeholder: "Comment on the drawing (optional)",
+                                   "aria-label": `Comment on the ${s.name} master` });
+    mnote.addEventListener("change", () => saveMaster(s));
     cols.append(el("div", { class: "col" },
       el("h3", { text: "Master" }),
       el("figure", {}, el("div", { class: "tile" }, el("img", { src: s.master.img, alt: `${s.name} master, ${s.master.grid}` })),
-        el("figcaption", { text: `${s.master.grid} source` }))));
+        el("figcaption", { text: `${s.master.grid} source` })),
+      el("div", { class: "call" }, mnote, el("div", { class: "call-state", id: `state-${mk}` }))));
     for (const p of PRESETS) {
       const d = s.presets[p];
       const masks = el("div", { class: "masks" });
@@ -227,6 +233,17 @@ function paint() {
     b.className = "offered " + (offered ? "yes" : "no");
     b.textContent = offered ? "offered" : "not offered";
   }
+  for (const s of DATA.subjects) {
+    const k = key(s.id, "master"), v = state.verdicts[k];
+    const current = v && v.master === s.master.hash;
+    const note = document.getElementById(`note-${k}`), info = document.getElementById(`state-${k}`);
+    note.disabled = !state.canWrite;
+    if (document.activeElement !== note) note.value = (current && v.note) || "";
+    info.className = "call-state" + (v && v.note && !current ? " stale" : "");
+    info.textContent = state.saving[k] ? "Saving…"
+      : v && v.note && !current ? `Your comment was on an earlier drawing: “${v.note}”`
+      : current && v.note ? `Saved ${new Date(v.at).toLocaleDateString()}` : "";
+  }
   document.getElementById("progress").textContent = `${done} of ${total} reviewed`;
 }
 
@@ -247,6 +264,23 @@ async function save(s, p, verdict) {
     state.verdicts[k] = body;
   } catch (e) {
     document.getElementById(`state-${k}`).textContent = "Couldn't save this call. Try again in a moment.";
+    if (e && e.code === "invalid_argument") { state.canWrite = false; }
+  } finally { state.saving[k] = false; paint(); }
+}
+
+async function saveMaster(s) {
+  if (!state.db || !state.canWrite) return;
+  const k = key(s.id, "master");
+  if (state.saving[k]) return;
+  const body = { subject: s.id, master: s.master.hash,
+                 note: document.getElementById(`note-${k}`).value.trim(),
+                 at: new Date().toISOString() };
+  state.saving[k] = true; paint();
+  try {
+    await state.db.collection("verdicts").doc(k).set(body);
+    state.verdicts[k] = body;
+  } catch (e) {
+    document.getElementById(`state-${k}`).textContent = "Couldn't save this comment. Try again in a moment.";
     if (e && e.code === "invalid_argument") { state.canWrite = false; }
   } finally { state.saving[k] = false; paint(); }
 }

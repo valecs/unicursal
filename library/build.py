@@ -313,7 +313,8 @@ def passes(sid, answer):
 
 def load_review():
     """Owner verdicts copied from the review page: {"<id>--<preset>":
-    {"verdict": "yes"|"no", "hashes": [mask hashes reviewed], "note": ...}}."""
+    {"verdict": "yes"|"no", "hashes": [mask hashes reviewed], "note": ...}},
+    plus comments on the drawings: {"<id>--master": {"master": hash, "note": ...}}."""
     p = LIB / "review.json"
     return json.loads(p.read_text()) if p.exists() else {}
 
@@ -427,7 +428,7 @@ def review_data(ids, cache, batch):
                                "judge_pass": all(m["pass"] for m in ml)}
         subjects.append({"id": sid, "name": s["name"], "tags": s["tags"],
                          "notes": s.get("notes", ""),
-                         "master": {"img": data_uri(master),
+                         "master": {"img": data_uri(master), "hash": mask_hash(master),
                                     "grid": f"{master.shape[1]}×{master.shape[0]}"},
                          "presets": presets})
     return {"subjects": subjects, "batch": batch, "judge": JUDGE_MODEL,

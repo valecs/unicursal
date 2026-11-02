@@ -261,6 +261,7 @@ def test_review_page_carries_every_subject_and_mask(tmp_path):
     data = __import__("json").JSONDecoder().raw_decode(page[start:])[0]
     assert [s["id"] for s in data["subjects"]] == SUBJECTS
     for s in data["subjects"]:
+        assert s["master"]["hash"] == L.mask_hash(L.load_master(s["id"]))
         ms = L.masks(s["id"])
         for preset, d in s["presets"].items():
             want = sorted({L.mask_hash(fg) for (p, _), fg in ms.items() if p == preset})
