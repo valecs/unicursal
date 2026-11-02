@@ -136,6 +136,11 @@ def test_flow_is_sealed_and_wide_enough(ring_png):
     svg = F.render_flow_svg(strands, grid.H, grid.W, cell, margin=P.MARGIN)
     ok, k = F.verify_regions(svg, grid.H, grid.W, cell, len(strands), margin=P.MARGIN)
     assert ok, f"{k} open regions for {len(strands)} strands (a wall leaks)"
+    # ink saver: light voids + outlined corridors must be just as sealed
+    svg = F.render_flow_svg(strands, grid.H, grid.W, cell, margin=P.MARGIN,
+                            void="#cfcfcf", outline=True)
+    ok, k = F.verify_regions(svg, grid.H, grid.W, cell, len(strands), margin=P.MARGIN)
+    assert ok, f"ink saver: {k} open regions for {len(strands)} strands"
     widths = F.corridor_widths(strands, grid.H, grid.W)
     assert widths.min() > 0.6   # in corridor-spacing units
 

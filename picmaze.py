@@ -771,6 +771,8 @@ def build_parser():
                     help="flow: how far (in corridors) the picture's edge may "
                          "drift; lower keeps thin parts crisper (0.3-1.5)")
     ap.add_argument("--void", default="#111", help="flow: colour of the voids")
+    ap.add_argument("--ink-saver", action="store_true",
+                    help="flow: light grey voids with outlined corridors")
     ap.add_argument("--out", default="picmaze")
     return ap
 
@@ -778,6 +780,8 @@ def build_parser():
 def main():
     ap = build_parser()
     args = parse_args_with_preset(ap)
+    if args.ink_saver and args.void == "#111":
+        args.void = "#cfcfcf"
     if args.flow and args.mode != "labyrinth":
         ap.error("--flow needs --mode labyrinth (it relies on there being no junctions)")
 
@@ -848,7 +852,8 @@ def main():
         for name, show in ((args.out, False), (args.out + "_solution", True)):
             svg = flow.render_flow_svg(strands, grid.H, grid.W, cell, void=args.void,
                                        fill=args.fill, show_solution=show,
-                                       entrance=ent, margin=MARGIN)
+                                       entrance=ent, margin=MARGIN,
+                                       outline=args.ink_saver)
             emit(name, svg)
             if not show:
                 puzzle_svg = svg
