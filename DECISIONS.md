@@ -11,7 +11,7 @@ recommendations awaiting a response; "Open" items need research.
 | 1 | Audience | Primary: a parent/teacher making an activity sheet for someone else. Secondary: adult puzzlers / colouring-book fans → a **"Surprise me"** mode that never shows the picture until asked. |
 | 1b | Medium | Solved on paper with pencil / marker / pen. On-screen answer view exists only so the maker can check the result. |
 | 2 | Platform | Portable Rust core. Front end under reconsideration: see PWA-first proposal. |
-| 2b | Core port | "Surface-level" conversion: same interface/behaviour as the Python prototype, idiomatic Rust inside. Port the invariant tests first. |
+| 2b | Core port | "Surface-level" conversion: same behaviour and CLI surface as the Python prototype, idiomatic Rust inside (no need to mirror Python's module shape). Cargo workspace: `unicursal-core` (lib: pure, no I/O; grey buffer + params → geometry, SVG, PDF bytes; all tests), `unicursal-cli` (bin: image decoding, files, flags like the prototype's), `unicursal-wasm` (wasm-bindgen API for the PWA). Port the invariant tests first. |
 | 5 | Preflight | Auto-fix wherever a reasonable fix exists; block when none does. A manual mode turns auto-fixes off. |
 | 7 | Size control | Detail *is* difficulty. 3–4 presets plus free-form; cells by default, mm in manual mode. Preflight tells the user which features vanish at the chosen difficulty. |
 | 11 | Styles | Both Classic (rectilinear grid) and Flow. Branching mazes exist in the prototype for Classic only; the dead-end heuristic is **off by default** (opt-in `--deadend-fix`) until its bug is fixed. |
@@ -48,6 +48,9 @@ Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture
   ghost 0/3 at Easy (6×8), 3/3 at Medium (11×15); cat 0/4 at Easy (6×7),
   2/4 (1-cell eyes) at Medium (11×13), 4/4 at Hard. At Easy, only the outline
   carries the picture.
+- **Presets in the mockup:** Easy 11 mm, Medium 7 mm, Hard 3 mm (ghost 30×40,
+  cat 30×34; flow narrowest clear width 2.4 mm). Hard was 4 mm; denser read
+  better. Still to calibrate with real prints.
 - **Bug:** with the dead-end heuristic on, branching-maze mode fails "solution
   covers the picture" for ~1 in 3 seeds (e.g. `ghost --mode maze --corridor 7
   --seed 1 --deadend-fix`); the heuristic opens walls into the solution path.
