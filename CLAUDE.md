@@ -20,6 +20,10 @@ uv run picmaze.py shapes/ghost.png --preset medium --flow --out ghost
 uv run experiments/<script>.py ...
 ```
 
+CI (`.github/workflows/ci.yml`) runs these checks on every PR and push to
+`main`. Green CI means a PR is safe to merge; the `CI` job aggregates the
+others for branch protection.
+
 ## Testing: test-driven, property-based
 
 - **Write the failing test first.** A bug fix starts with a test that
