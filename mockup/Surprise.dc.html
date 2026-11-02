@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Surprise me</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2F55D4}a:hover{color:#1E3FA8}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #EEF0F4; color: #15171C; font-family: 'Figtree', system-ui, sans-serif; overflow: hidden; position: relative;">
+
+  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 20px 0 4px;">
+    <a href="Main.dc.html" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #15171C;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M11 5l-7 7 7 7"></path></svg>
+    </a>
+    <h1 style="margin: 0; font-size: 20px; font-weight: 600;">Surprise me</h1>
+  </header>
+
+  <div style="flex-shrink: 0; padding: 0 20px 8px; display: flex; gap: 8px; flex-wrap: wrap;" role="group" aria-label="Theme">
+    <sc-for list="{{themes}}" as="t" hint-placeholder-count="4">
+      <button type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.fg}}; font-size: 13px; font-weight: 600; cursor: pointer;">{{t.label}}</button>
+    </sc-for>
+  </div>
+
+  <section aria-label="Puzzle" style="flex-shrink: 0; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+    <img src="{{imgSrc}}" alt="{{imgAlt}}" style="display: block; height: 360px; width: 279px; background: #FFFFFF; border-radius: 4px; box-shadow: 0 1px 2px rgba(20,24,40,0.12), 0 6px 18px rgba(20,24,40,0.10); object-fit: contain;">
+    <span style="font-size: 13px; color: #4D5262;">{{caption}}</span>
+  </section>
+
+  <section style="flex-grow: 1; min-height: 0; background: #FFFFFF; border-radius: 24px 24px 0 0; padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 12px;">
+    <div role="group" aria-label="Difficulty" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+      <sc-for list="{{diffs}}" as="d" hint-placeholder-count="3">
+        <button type="button" onClick="{{d.pick}}" aria-pressed="{{d.pressed}}" style="height: 40px; border: 0; border-left: {{d.divider}}; background: {{d.bg}}; color: {{d.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{d.label}}</button>
+      </sc-for>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button type="button" onClick="{{another}}" style="flex-grow: 1; height: 48px; border-radius: 24px; border: 1px solid #C5CAD6; background: #FFFFFF; color: #15171C; font-size: 15px; font-weight: 600; cursor: pointer;">Another one</button>
+      <button type="button" onClick="{{askReveal}}" style="flex-grow: 1; height: 48px; border-radius: 24px; border: 1px solid #C5CAD6; background: #FFFFFF; color: #15171C; font-size: 15px; font-weight: 600; cursor: pointer;">{{revealLabel}}</button>
+    </div>
+    <div style="flex-grow: 1;"></div>
+    <button type="button" style="height: 52px; border-radius: 26px; border: 0; background: #2F55D4; color: #FFFFFF; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3.5h12V9"></path><rect x="3.5" y="9" width="17" height="8" rx="2"></rect><path d="M6 14h12v6.5H6z"></path></svg>
+      Print
+    </button>
+  </section>
+
+  <sc-if value="{{confirming}}" hint-placeholder-val="{{false}}">
+    <div style="position: absolute; top: 0; left: 0; width: 390px; height: 844px; background: rgba(21,23,28,0.5); display: flex; align-items: center; justify-content: center;">
+      <div role="dialog" aria-label="Reveal the answer?" style="width: 310px; background: #FFFFFF; border-radius: 24px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 18px; font-weight: 600;">Reveal the answer?</span>
+        <span style="font-size: 14px; color: #4D5262; line-height: 1.4;">This shows the hidden picture and spoils the surprise.</span>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
+          <button type="button" onClick="{{cancel}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: transparent; color: #2F55D4; font-size: 14px; font-weight: 600; cursor: pointer;">Keep it hidden</button>
+          <button type="button" onClick="{{reveal}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: #2F55D4; color: #FFFFFF; font-size: 14px; font-weight: 600; cursor: pointer;">Reveal</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: 'all', diff: 'medium', n: 1, revealed: false, confirming: false }; }
+  renderVals() {
+    var s = this.state, self = this;
+    var IMG = {
+      medium: ['bd3a626fa1c74a0a1c2891fd879c2442', '7b92561beb917c579ad701c4a6e5a538', '9b515940083f7259ec70a40a07e7b75d'],
+      medium_solution: ['575e17f00f65b64c8a9ca1eb82c4204f', 'ec10eb17edb2ea4abc6a48add2498976', 'd1196b46022f25344b13ef5da411a879'],
+      easy: ['a12df3e91e0109289d4c3cd1c66b7151', '0bb6cbf7852b7f30141a1cbfeb1bd371', '74c9868656130c1524b441c4f5c4cba6'],
+      easy_solution: ['d8e1027bd337bfc2626840f5bed1ad9f', '133f36807fac65e9c6ed32fa062f9be1', '05ae77302451e75f203bc3936aae1f44'],
+      hard: ['9e2ed8333b768df6284116f53179f031', '37ec7859e51a968e8c6fcb667044a019', 'ebb72e656bbbe4e6d43ba7756e124f9a'],
+      hard_solution: ['3365449d90d807ec3b25e333e26c3699', '57c04b0d346f6ff2722338d1bfbedab5', '622668b108fa56ae23512563f5bb7239']
+    };
+    var key = s.diff + (s.revealed ? '_solution' : '');
+    function seg(opts, current, k) {
+      return opts.map(function (o, i) {
+        var on = o.id === current;
+        return { label: o.label, pressed: on ? 'true' : 'false', bg: on ? '#DCE4FF' : '#FFFFFF', fg: on ? '#1A3696' : '#15171C',
+                 divider: i === 0 ? '0' : '1px solid #C5CAD6', pick: function () { var u = {}; u[k] = o.id; u.revealed = false; self.setState(u); } };
+      });
+    }
+    var themes = [['all', 'Any theme'], ['halloween', 'Halloween'], ['animals', 'Animals'], ['vehicles', 'Vehicles']].map(function (t) {
+      var on = t[0] === s.theme;
+      return { label: t[1], pressed: on ? 'true' : 'false', bg: on ? '#DCE4FF' : '#FFFFFF', fg: on ? '#1A3696' : '#15171C',
+               border: on ? '#DCE4FF' : '#C5CAD6', pick: function () { self.setState({ theme: t[0], revealed: false }); } };
+    });
+    return {
+      themes: themes,
+      diffs: seg([{ id: 'easy', label: 'Easy' }, { id: 'medium', label: 'Medium' }, { id: 'hard', label: 'Hard' }], s.diff, 'diff'),
+      imgSrc: '/_blob/' + IMG[key][(s.n - 1) % 3],
+      imgAlt: s.revealed ? 'Answer: a ghost' : 'Puzzle with a hidden picture',
+      caption: s.revealed ? 'It was a ghost.' : 'The picture stays hidden until you reveal it.',
+      revealLabel: s.revealed ? 'Hide answer' : 'Reveal answer',
+      another: function () { self.setState({ n: self.state.n + 1, revealed: false }); },
+      askReveal: function () { if (self.state.revealed) self.setState({ revealed: false }); else self.setState({ confirming: true }); },
+      confirming: !!s.confirming,
+      cancel: function () { self.setState({ confirming: false }); },
+      reveal: function () { self.setState({ confirming: false, revealed: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -28,6 +28,25 @@ button,input{font-family:inherit}
   <div style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 8px 20px 24px; display: flex; flex-direction: column; gap: 24px;">
 
     <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline;">
+        <span style="flex-grow: 1; font-size: 13px; font-weight: 600; color: #4D5262;">Library</span>
+        <span style="font-size: 12px; color: #4D5262;">Works offline</span>
+      </div>
+      <div role="group" aria-label="Themes" style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <sc-for list="{{themes}}" as="t" hint-placeholder-count="4">
+          <button type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.fg}}; font-size: 13px; font-weight: 600; cursor: pointer;">{{t.label}}</button>
+        </sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+        <a href="Main.dc.html" style="aspect-ratio: 1; border-radius: 12px; background: #F3F4F7; display: flex; align-items: center; justify-content: center; border: 2px solid #2F55D4;">
+          <img src="/_blob/b1915d644ac29267ded2a4ebccecb63e" alt="Ghost" style="width: 78%; height: 78%; object-fit: contain; image-rendering: pixelated;">
+        </a>
+        <div style="aspect-ratio: 1; border-radius: 12px; border: 2px dashed #D3D7E0; display: flex; align-items: center; justify-content: center; padding: 8px; box-sizing: border-box; text-align: center; font-size: 12px; color: #4D5262;">Library pictures (#14)</div>
+        <div style="aspect-ratio: 1; border-radius: 12px; border: 2px dashed #D3D7E0;"></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
       <label for="describe" style="font-size: 13px; font-weight: 600; color: #4D5262;">Describe it</label>
       <div style="display: flex; gap: 8px;">
         <input id="describe" type="text" placeholder="a cat sitting, seen from the side" style="flex-grow: 1; min-width: 0; height: 52px; box-sizing: border-box; padding: 0 16px; border-radius: 26px; border: 1px solid #C5CAD6; font-size: 15px; color: #15171C; background: #F7F8FA;">
@@ -35,27 +54,19 @@ button,input{font-family:inherit}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
         </button>
       </div>
-      <span style="font-size: 13px; color: #4D5262; line-height: 1.4;">You get a few silhouettes, each already checked for the difficulty you chose. Pick one, or ask for changes.</span>
+      <span style="font-size: 13px; color: #4D5262; line-height: 1.4;">You get a few silhouettes, each checked at the difficulty you chose. Needs a connection.</span>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 10px;">
-      <span style="font-size: 13px; font-weight: 600; color: #4D5262;">Or start from</span>
+      <span style="font-size: 13px; font-weight: 600; color: #4D5262;">Or use your own</span>
       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
-        <button type="button" style="height: 92px; border-radius: 16px; border: 1px solid #E0E3EA; background: #F7F8FA; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 14px; cursor: pointer; color: #15171C; text-align: left;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="3"></rect><circle cx="12" cy="13" r="3.5"></circle><path d="M8.5 6l1.5-2.5h4L15.5 6"></path></svg>
-          <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Photo</span><span style="font-size: 12px; color: #4D5262;">Cut out the subject</span></span>
-        </button>
-        <button type="button" style="height: 92px; border-radius: 16px; border: 1px solid #E0E3EA; background: #F7F8FA; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 14px; cursor: pointer; color: #15171C; text-align: left;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16z"></path><path d="M13.5 6.5l4 4"></path></svg>
-          <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Draw</span><span style="font-size: 12px; color: #4D5262;">Fill squares on the grid</span></span>
-        </button>
+        <a href="Import.dc.html" style="height: 92px; box-sizing: border-box; border-radius: 16px; border: 1px solid #E0E3EA; background: #F7F8FA; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 14px; color: #15171C; text-decoration: none;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.5a2 2 0 0 0-2-2h-6l-2-2.5H6a2 2 0 0 0-2 2z"></path></svg>
+          <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Image file</span><span style="font-size: 12px; color: #4D5262;">A shape drawn anywhere</span></span>
+        </a>
         <button type="button" style="height: 92px; border-radius: 16px; border: 1px solid #E0E3EA; background: #F7F8FA; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 14px; cursor: pointer; color: #15171C; text-align: left;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6V4.5h14V6"></path><path d="M12 4.5v15"></path><path d="M9 19.5h6"></path></svg>
           <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Text</span><span style="font-size: 12px; color: #4D5262;">A name or a word</span></span>
-        </button>
-        <button type="button" style="height: 92px; border-radius: 16px; border: 1px solid #E0E3EA; background: #F7F8FA; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 14px; cursor: pointer; color: #15171C; text-align: left;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.5a2 2 0 0 0-2-2h-6l-2-2.5H6a2 2 0 0 0-2 2z"></path></svg>
-          <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">Image file</span><span style="font-size: 12px; color: #4D5262;">Black shape on white</span></span>
         </button>
       </div>
     </div>
@@ -63,11 +74,8 @@ button,input{font-family:inherit}
     <div style="display: flex; flex-direction: column; gap: 10px;">
       <span style="font-size: 13px; font-weight: 600; color: #4D5262;">Recent</span>
       <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
-        <a href="Main.dc.html" style="aspect-ratio: 1; border-radius: 12px; background: #F3F4F7; display: flex; align-items: center; justify-content: center; border: 2px solid #2F55D4;">
-          <img src="/_blob/f201f90702fea5baba8e191577b021de" alt="Ghost" style="width: 78%; height: 78%; object-fit: contain; image-rendering: pixelated;">
-        </a>
-        <a href="Main.dc.html" style="aspect-ratio: 1; border-radius: 12px; background: #F3F4F7; display: flex; align-items: center; justify-content: center; border: 2px solid transparent;">
-          <img src="/_blob/9b893be637df985db8e9ccd63bf7cb62" alt="Cat" style="width: 78%; height: 78%; object-fit: contain; image-rendering: pixelated;">
+        <a href="Main.dc.html" style="aspect-ratio: 1; border-radius: 12px; background: #F3F4F7; display: flex; align-items: center; justify-content: center;">
+          <img src="/_blob/8ab23561e8fb08e3cd64b8e94fb39b3a" alt="Cat" style="width: 78%; height: 78%; object-fit: contain; image-rendering: pixelated;">
         </a>
       </div>
     </div>
@@ -76,7 +84,16 @@ button,input{font-family:inherit}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  renderVals() { return {}; }
+  constructor(props) { super(props); this.state = { theme: 'all' }; }
+  renderVals() {
+    var self = this, cur = this.state.theme;
+    var themes = [['all', 'All'], ['halloween', 'Halloween'], ['animals', 'Animals'], ['vehicles', 'Vehicles']].map(function (t) {
+      var on = t[0] === cur;
+      return { label: t[1], pressed: on ? 'true' : 'false', bg: on ? '#DCE4FF' : '#FFFFFF', fg: on ? '#1A3696' : '#15171C',
+               border: on ? '#DCE4FF' : '#C5CAD6', pick: function () { self.setState({ theme: t[0] }); } };
+    });
+    return { themes: themes };
+  }
 }
 </script>
 </body>
