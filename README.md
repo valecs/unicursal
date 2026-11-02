@@ -9,9 +9,9 @@ This is the Python prototype of the generator, ahead of an app build.
 should become automatic, what to expose to users, and porting notes.
 
 ```
-pip install -r requirements.txt        # plus rsvg-convert (librsvg) on PATH
-python3 picmaze.py shapes/ghost.png --flow --corridor 7 --seed 3 --fill "#8fa6d6" --out ghost
-python3 -m pytest -q tests
+uv sync                                # plus rsvg-convert (librsvg) on PATH
+uv run picmaze.py shapes/ghost.png --flow --corridor 7 --seed 3 --fill "#8fa6d6" --out ghost
+uv run pytest -q
 ```
 
 Puzzle + answer-key examples are in [`examples/`](examples/).

@@ -4,3 +4,4 @@ __pycache__/
 # generator output (examples/ is curated and committed)
 /*.svg
 /*.pdf
+.venv/
