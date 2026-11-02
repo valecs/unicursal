@@ -11,7 +11,7 @@ recommendations awaiting a response; "Open" items need research.
 |---|---|---|
 | 1 | Audience | Primary: a parent/teacher making an activity sheet for someone else. Secondary: adult puzzlers / colouring-book fans → a **"Surprise me"** mode that never shows the picture until asked. |
 | 1b | Medium | Solved on paper with pencil / marker / pen. On-screen answer view exists only so the maker can check the result. |
-| 2 | Platform | Portable Rust core. Front end under reconsideration: see PWA-first proposal. |
+| 2 | Platform | **PWA first** (confirmed, #6) on a portable Rust core compiled to WASM. Play Store later via a Trusted Web Activity if wanted. No puzzle backend: static hosting of versioned builds; the only server piece is a thin, stateless proxy for AI "describe it". Core: no filesystem, no required threads, steppable/cancellable flow with progress, SVG + PDF from the core, **deterministic** (no fast-math, no thread-order-dependent sums, pure-Rust libm). |
 | 2b | Core port | "Surface-level" conversion: same behaviour and CLI surface as the Python prototype, idiomatic Rust inside (no need to mirror Python's module shape). Cargo workspace: `unicursal-core` (lib: pure, no I/O; grey buffer + params → geometry, SVG, PDF bytes; all tests), `unicursal-cli` (bin: image decoding, files, flags like the prototype's), `unicursal-wasm` (wasm-bindgen API for the PWA). Port the invariant tests first. |
 | 5 | Preflight | Auto-fix wherever a reasonable fix exists; block when none does. A manual mode turns auto-fixes off. |
 | 7 | Size control | Detail *is* difficulty. Presets are **data** (`presets.toml`, `--preset`, explicit flags override); exact values deferred until test prints. Cells by default, mm in manual mode. Preflight says which features vanish at the chosen difficulty. |
@@ -21,18 +21,22 @@ recommendations awaiting a response; "Open" items need research.
 | 9 | Advanced controls | Camera-style **Auto / Manual** split. Manual covers mm, seed, flow parameters, colours, turning off preflight fixes. |
 | 10 | Scope | On-screen solving is out. Sharing is maybe. |
 | 14 | Printed page | Minimal: the maze, start/finish marks (#2), and the existing one-line footer. No title, name/date lines or instructions (classroom extras are out of scope). A 5 cm check bar in the footer ("5 cm. If not, print at 100% / actual size") guards against fit-to-page printing. **Space goes to the maze**: the frame fills the printable area (the entrance stub sits in the paper margin), and the footer moves to the side away from the entrance. On Letter: Easy 7×9 → 8×11, Medium 12×16 → 13×17, Hard 30×40 → 31×41 (ghost). |
+| 15 | Layouts | 3 layouts generated up front + a "more layouts" action. Ranking is only an internal heuristic for which shows first; no "best match" label (#4). |
+| 16 | Start | One arrow pointing in at the entrance; no Start/End labels (start and end are adjacent) (#2). |
 | 13 | Voids | Solid black by default; puzzles must print well in black and white. Ink-saving is not a priority. (`--ink-saver`, light voids with outlined corridors, exists in the prototype but stays off and out of the UI.) |
 
 ## Proposed (awaiting sign-off)
 
 - **Picture sources (v1):** AI "describe it", image file (1-bit, connected),
   text, grid drawing → all feed preflight. No photo segmentation in v1.
-- **PWA first** on the Rust core (WASM). Serves Android, iOS, desktop
-  printing and shared-puzzle links from one build; ship to Play later as a
-  Trusted Web Activity if wanted. Native Android becomes a later option, not
-  the plan. Photo segmentation dropped from v1. Core requirements: no
-  filesystem or required threads, a stepwise/cancellable flow API with
-  progress, SVG + PDF output produced by the core itself.
+- **Puzzle links** (#5): a URL encodes generator version + settings + seed +
+  picture mask (~150–250 chars) and regenerates the puzzle exactly. Relies on
+  WASM determinism; old versions stay loadable at versioned paths. History =
+  a list of these codes. Sharing = link, plus PDF via the share sheet.
+- **Preflight** (#3): auto-crop so the subject touches one edge (entrance
+  there) with a small margin elsewhere; bridge pieces (highlighted); show
+  details that won't survive by highlighting them (no naming); block only
+  near-empty pictures; failed generations retry silently.
 - **Shuffle = swipe:** the preview is a horizontal pager of seeds; swiping
   generates the next layout. Press-and-hold to peek at the answer.
 
@@ -42,7 +46,6 @@ Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture
 
 - Picture sourcing: AI generation (image model vs. LLM-drawn shapes) needs a
   bake-off; accepting 1-bit connected images as files is a given.
-- Carousel vs. other ways of comparing candidates; needs a prototype test.
 - Calibrating difficulty presets against real test prints.
 
 ## Todo
