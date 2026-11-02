@@ -15,7 +15,7 @@ recommendations awaiting a response; "Open" items need research.
 | 2b | Core port | "Surface-level" conversion: same behaviour and CLI surface as the Python prototype, idiomatic Rust inside (no need to mirror Python's module shape). Cargo workspace: `unicursal-core` (lib: pure, no I/O; grey buffer + params → geometry, SVG, PDF bytes; all tests), `unicursal-cli` (bin: image decoding, files, flags like the prototype's), `unicursal-wasm` (wasm-bindgen API for the PWA). Port the invariant tests first. |
 | 5 | Preflight | Auto-fix wherever a reasonable fix exists; block when none does. A manual mode turns auto-fixes off. |
 | 7 | Size control | Detail *is* difficulty. Presets are **data** (`presets.toml`, `--preset`, explicit flags override); exact values deferred until test prints. Cells by default, mm in manual mode. Preflight says which features vanish at the chosen difficulty. |
-| 11 | Styles | Both Classic (rectilinear grid) and Flow. Branching mazes exist in the prototype for Classic only; the dead-end heuristic is **off by default** (opt-in `--deadend-fix`) until its bug is fixed. |
+| 11 | Styles | Both Classic (rectilinear grid) and Flow. Branching mazes exist in the prototype for Classic only; the dead-end heuristic is **off by default** (opt-in `--deadend-fix`); its bug (#7) is fixed. |
 | 12 | Output | Configurable paper size; PDF output at true scale; portrait/landscape auto (follows picture) or forced. Prototype: `--paper`, `--orientation auto\|portrait\|landscape`. |
 | 8 | Answer key | Not printed. Saved with the puzzle (viewable in the app); printing it is at most an overflow action. |
 | 9 | Advanced controls | Camera-style **Auto / Manual** split. Manual covers mm, seed, flow parameters, colours, turning off preflight fixes. |
@@ -71,10 +71,11 @@ Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture
   readable for simple subjects (pumpkin, rocket). Hard reads well for most;
   Easy reads for none (outline only). Detailed subjects (owl) break into many
   pieces/holes and need simplification or rejection by preflight.
-- **Bug:** with the dead-end heuristic on, branching-maze mode fails "solution
-  covers the picture" for ~1 in 3 seeds (e.g. `ghost --mode maze --corridor 7
-  --seed 1 --deadend-fix`); the heuristic opens walls into the solution path.
-  Now off by default; tracked by a strict-xfail test.
+- **Bug (fixed, #7):** with the dead-end heuristic on, branching mazes lost
+  the solution for ~1 in 3 seeds: the walk from a dead end to its junction ran
+  onto the solution path (path cells look like plain corridor) and cut it
+  there. Branches now stop at the path. 0 failures over 240 mazes; the
+  heuristic halves the number of dead ends.
 - **AI silhouettes, bake-off round 1** (8 subjects; `experiments/`; scored by
   a blind judge, `judge.py`: Gemini 3.1 Flash-Lite sees only the coarse mask and
   names it; pass = right subject):

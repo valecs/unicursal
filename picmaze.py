@@ -324,14 +324,18 @@ def build_maze(fg, rng, reduce_deadends=False):
             parent[rp] = rq
             grid.set(p, q)
     if reduce_deadends:
-        _reduce_deadends(grid, {a, b}, rng)
+        _reduce_deadends(grid, {a, b}, rng, fine_fg)
     return grid, fine_fg, (a, b, side)
 
 
-def _reduce_deadends(grid, protected, rng):
+def _reduce_deadends(grid, protected, rng, fine_fg):
     """Paper section 3.3: while two dead ends u,v are adjacent, cut u's
     branch off at its junction and join it to v instead. Keeps a tree, so
-    the solution is unchanged, and the count of dead ends drops by one."""
+    the solution is unchanged, and the count of dead ends drops by one.
+
+    A branch ends where it meets a junction *or the solution path*: path
+    cells look like ordinary corridor (degree 2), so without that stop the
+    walk would run onto the path and cut it."""
     H, W = grid.H, grid.W
     deg = lambda p: len(grid.open_nbrs(p))
     changed = True
@@ -340,22 +344,23 @@ def _reduce_deadends(grid, protected, rng):
         cells = [(r, c) for r in range(H) for c in range(W)]
         rng.shuffle(cells)
         for u in cells:
-            if u in protected or deg(u) != 1:
+            if u in protected or deg(u) != 1 or fine_fg[u]:
                 continue
             for dr, dc in NBRS:
                 v = (u[0] + dr, u[1] + dc)
                 if not (0 <= v[0] < H and 0 <= v[1] < W):
                     continue
-                if v in protected or deg(v) != 1 or grid.get(u, v):
+                if v in protected or deg(v) != 1 or fine_fg[v] or grid.get(u, v):
                     continue
                 # walk from u to its first junction b_u
                 prev, cur = None, u
                 while True:
                     nx = [q for q in grid.open_nbrs(cur) if q != prev]
-                    if len(grid.open_nbrs(cur)) >= 3 or not nx:
+                    if len(grid.open_nbrs(cur)) >= 3 or fine_fg[cur] or not nx:
                         break
                     prev, cur = cur, nx[0]
-                if len(grid.open_nbrs(cur)) < 3 or prev is None:
+                attach = len(grid.open_nbrs(cur)) >= 3 or fine_fg[cur]
+                if not attach or prev is None:
                     continue  # whole thing is one corridor; leave it
                 if v == cur:
                     continue
@@ -772,8 +777,8 @@ def build_parser():
     ap.add_argument("--no-bridges", action="store_true",
                     help="keep only the largest piece instead of joining pieces")
     ap.add_argument("--deadend-fix", action="store_true",
-                    help="maze mode: apply the dead-end pairing heuristic. Off by "
-                         "default: it can open walls into the solution path")
+                    help="maze mode: apply the dead-end pairing heuristic (fewer, "
+                         "paired dead ends; off by default)")
     ap.add_argument("--fill", default="#e0218a", help="solution fill colour")
     ap.add_argument("--curvy", action="store_true",
                     help="round the corners and bend the sheet so paths curve")

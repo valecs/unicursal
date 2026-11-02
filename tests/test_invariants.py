@@ -179,13 +179,14 @@ def test_maze_default_solution_covers_picture(seed):
     assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
 
 
-@pytest.mark.xfail(strict=True, reason="dead-end heuristic opens walls into the "
-                   "solution path; off by default until fixed")
-def test_maze_deadend_fix_known_bug():
+@pytest.mark.parametrize("seed", range(10))
+def test_maze_deadend_fix_keeps_solution_and_tree(seed):
+    """Regression for #7: the dead-end walk used to run onto the solution path
+    and cut it."""
     fg = P.largest_component(P.load_mask(str(SHAPES / "ghost.png"), 15))
-    for seed in range(10):
-        grid, fine_fg, opening = P.build_maze(fg, random.Random(seed), True)
-        assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
+    grid, fine_fg, opening = P.build_maze(fg, random.Random(seed), True)
+    assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
+    assert n_edges(grid) == grid.H * grid.W - 1
 
 
 PRESETS = Path(__file__).resolve().parent.parent / "presets.toml"
