@@ -3,11 +3,11 @@
 No resampling happens: the model's grid *is* the picture-cell mask, so what it
 draws is what the maze gets. One repair round if the output is malformed
 (wrong size or disconnected). Output feeds judge.py (same file layout and
-metrics.json as silhouette_bakeoff.py; stage name "s1" = first valid drawing).
+metrics.json as silhouette_bakeoff.py; stages c0.. = independent candidates).
 Auth: Gemini via a proxy-injected x-goog-api-key header; Claude via
 ANTHROPIC_API_KEY (anthropic SDK).
 
-Usage: python3 llm_pixel.py OUTDIR [--model M] [--difficulties easy,medium]
+Usage: python3 llm_pixel.py OUTDIR [--model M] [--n 3] [--difficulties easy,medium]
 """
 import argparse
 import json
@@ -31,7 +31,7 @@ from silhouette_bakeoff import SUBJECTS, metrics  # noqa: E402
 # requests get cut by intermediate proxies.
 API = "https://generativelanguage.googleapis.com/v1beta/models/{m}:streamGenerateContent?alt=sse"
 GRIDS = {"easy": (7, 9), "medium": (12, 16), "hard": (30, 40)}   # portrait W x H
-WIDE = ("fish", "elephant")                                      # drawn landscape
+WIDE = ("fish", "elephant", "teapot", "turtle")                                      # drawn landscape
 
 PROMPT = """Draw {s} as pixel art on a grid exactly {w} columns wide and {h} rows tall.
 It is the hidden picture in a children's maze: only the silhouette survives, so
@@ -118,6 +118,12 @@ def main():
     ap.add_argument("--difficulties", default="easy,medium")
     ap.add_argument("--thinking", default="medium",
                     help="Gemini thinkingLevel / Claude effort")
+    ap.add_argument("--n", type=int, default=1,
+                    help="independent candidates per subject x difficulty (stages c0..)")
+    ap.add_argument("--first", type=int, default=0,
+                    help="index of the first candidate (to add c1, c2 to an earlier run)")
+    ap.add_argument("--subjects", default=None,
+                    help="comma-separated subject indices (default: all)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     diffs = a.difficulties.split(",")
@@ -126,7 +132,7 @@ def main():
                                                    "includeThoughts": True}})
 
     def one(job):
-        i, diff = job
+        i, diff, k = job
         s = SUBJECTS[i]
         w, h = GRIDS[diff]
         if any(k in s for k in WIDE):
@@ -143,24 +149,37 @@ def main():
         if grid is None:
             grid = np.zeros((h, w), bool)
         img = Image.fromarray(np.where(grid, 0, 255).astype(np.uint8))
-        img.save(f"{a.out}/{i}_s1_{diff}.png")
+        img.save(f"{a.out}/{i}_c{k}_{diff}.png")
         m, _ = metrics(grid) if grid.any() else ({"pieces": 0}, None)
         m["grid"] = f"{w}x{h}"
         m["error"] = err
-        return i, diff, m, usage
+        return i, diff, k, m, usage
 
-    jobs = [(i, d) for i in range(len(SUBJECTS)) for d in diffs]
+    subj = (list(map(int, a.subjects.split(","))) if a.subjects
+            else range(len(SUBJECTS)))
+    ks = range(a.first, a.first + a.n)
+    jobs = [(i, d, k) for i in subj for d in diffs for k in ks]
     with ThreadPoolExecutor(3) as ex:
         res = list(ex.map(one, jobs))
-    recs = [{"subject": s, "stages": {"s1": {}}} for s in SUBJECTS]
+    recs = [{"subject": s, "stages": {}} for s in SUBJECTS]
+    mpath = f"{a.out}/metrics.json"
+    if os.path.exists(mpath):          # merge with an earlier run
+        for r in json.load(open(mpath)):
+            recs[SUBJECTS.index(r["subject"])]["stages"] = r["stages"]
     tok_in = tok_out = 0
-    for i, d, m, usage in res:
-        recs[i]["stages"]["s1"][d] = m
+    calls = []
+    for i, d, k, m, usage in res:
+        recs[i]["stages"].setdefault(f"c{k}", {})[d] = m
+        calls += usage
         for u in usage:
             tok_in += u.get("promptTokenCount", 0)
             tok_out += u.get("candidatesTokenCount", 0) + u.get("thoughtsTokenCount", 0)
-        print(f"{SUBJECTS[i][:22]:22} {d:6} {m}")
-    json.dump(recs, open(f"{a.out}/metrics.json", "w"), indent=1)
+        print(f"{SUBJECTS[i][:22]:22} {d:6} c{k} {m}")
+    recs = [dict(r, index=i, stages=dict(sorted(r["stages"].items())))
+            for i, r in enumerate(recs) if r["stages"]]
+    json.dump(recs, open(mpath, "w"), indent=1)
+    json.dump({"model": a.model, "kind": "text", "calls": calls},
+              open(f"{a.out}/usage_{a.first}_{int(time.time())}.json", "w"), indent=1)
     print(f"tokens: {tok_in} in, {tok_out} out (incl. thinking)")
 
 

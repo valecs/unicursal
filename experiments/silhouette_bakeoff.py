@@ -8,7 +8,8 @@ redraw so the result survives that transform.
 Every candidate is auto-cropped, masked at each preset's grid, and measured.
 Auth: a proxy-injected x-goog-api-key header (no key is read here).
 
-Usage: python3 silhouette_bakeoff.py OUTDIR [--target medium] [--model M]
+Usage: python3 silhouette_bakeoff.py OUTDIR [--n 3] [--stage2 none|preview|text]
+       [--target medium] [--model M] [--size 512]
 """
 import argparse
 import base64
@@ -16,6 +17,8 @@ import io
 import json
 import os
 import sys
+import time
+import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
@@ -30,7 +33,9 @@ API = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateConte
 
 SUBJECTS = ["a cat sitting, seen from the side", "a jack-o-lantern pumpkin",
             "an owl", "a rocket ship", "a fish", "a house", "an elephant",
-            "a butterfly"]
+            "a butterfly",
+            # round 2
+            "a rabbit", "a sailboat", "a teapot", "a turtle"]
 
 STAGE1 = (
     "A simple, bold icon-style silhouette of {s}: one solid black shape on a "
@@ -72,13 +77,24 @@ def critique(m):
     return " ".join(out) or "it mostly survives, but details are at risk."
 
 
-def call(model, parts, aspect="3:4"):
+def call(model, parts, aspect="3:4", size=None, usage=None):
+    cfg = {"aspectRatio": aspect}
+    if size:
+        cfg["imageSize"] = size
     body = {"contents": [{"parts": parts}],
-            "generationConfig": {"responseModalities": ["IMAGE"],
-                                 "imageConfig": {"aspectRatio": aspect}}}
+            "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": cfg}}
     req = urllib.request.Request(API.format(m=model), data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json"})
-    r = json.load(urllib.request.urlopen(req, timeout=240))
+    for attempt in range(4):
+        try:
+            r = json.load(urllib.request.urlopen(req, timeout=240))
+            break
+        except (urllib.error.URLError, ConnectionError, TimeoutError):
+            if attempt == 3:
+                raise
+            time.sleep(2 ** attempt)
+    if usage is not None:
+        usage.append(r.get("usageMetadata", {}))
     for c in r.get("candidates", []):
         for p in c.get("content", {}).get("parts", []):
             if "inlineData" in p:
@@ -149,15 +165,34 @@ def preview(fg, scale=24):
     return im
 
 
+def mask_all(crop, st, out, i, presets):
+    """Masks + metrics of one cropped candidate at every preset."""
+    crop.save(f"{out}/{i}_{st}_crop.png")
+    res = {}
+    for name, p in presets.items():
+        cells = grid_for(crop, p["corridor"])
+        m, fg = metrics(P.load_mask(f"{out}/{i}_{st}_crop.png", cells))
+        m["grid"] = f"{fg.shape[1]}x{fg.shape[0]}"
+        res[name] = m
+        Image.fromarray(np.where(fg, 0, 255).astype(np.uint8)).save(
+            f"{out}/{i}_{st}_{name}.png")
+    return res
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("out")
     ap.add_argument("--target", default="medium")
     ap.add_argument("--model", default="gemini-3.1-flash-image")
     ap.add_argument("--subjects", type=int, default=len(SUBJECTS))
-    ap.add_argument("--stage2", choices=["preview", "text"], default="preview",
-                    help="feedback for stage 2: the masked grid image, or a "
-                         "written critique from the preflight metrics")
+    ap.add_argument("--stage2", choices=["none", "preview", "text"], default="none",
+                    help="none (round 2 default): stage 1 only; preview: show the "
+                         "model its masked grid and redraw; text: redraw from a "
+                         "written critique of the preflight metrics")
+    ap.add_argument("--n", type=int, default=1,
+                    help="independent stage-1 candidates per subject (stages c0..)")
+    ap.add_argument("--size", default="512", help="imageSize: 512, 1K, 2K")
+    ap.add_argument("--workers", type=int, default=3)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     presets = P.load_presets(os.path.join(os.path.dirname(__file__), "..", "presets.toml"))
@@ -165,13 +200,19 @@ def main():
     # nominal portrait grid for the prompt text
     tw = grid_for(Image.new("L", (3, 4)), tgt)
     th = round(tw * 4 / 3)
+    usage = []
 
-    def one(i):
+    def candidate(job):
+        i, k = job
         s = SUBJECTS[i]
-        rec = {"subject": s, "stages": {}}
-        im1 = call(a.model, [{"text": STAGE1.format(s=s, w=tw, h=th)}])
-        im1.save(f"{a.out}/{i}_s1_raw.png")
+        st = f"c{k}" if a.stage2 == "none" else "s1"
+        im1 = call(a.model, [{"text": STAGE1.format(s=s, w=tw, h=th)}],
+                   size=a.size, usage=usage)
+        im1.save(f"{a.out}/{i}_{st}_raw.png")
         c1 = autocrop(im1)
+        stages = {st: mask_all(c1, st, a.out, i, presets)}
+        if a.stage2 == "none":
+            return i, stages
         c = grid_for(c1, tgt)
         m1, fg1 = metrics(mask_at(c1, c, f"{a.out}/{i}_s1_crop.png"))
         H, W = fg1.shape
@@ -183,26 +224,24 @@ def main():
         else:
             txt = STAGE2_TEXT.format(s=s, w=W, h=H, problems=critique(m1),
                                      px=round(200 / W))
-            rec["critique"] = txt
             parts = [{"text": txt}, png_part(c1.convert("RGB"))]
-        im2 = call(a.model, parts)
+        im2 = call(a.model, parts, size=a.size, usage=usage)
         im2.save(f"{a.out}/{i}_s2_raw.png")
-        c2 = autocrop(im2)
-        for st, crop in (("s1", c1), ("s2", c2)):
-            crop.save(f"{a.out}/{i}_{st}_crop.png")
-            rec["stages"][st] = {}
-            for name, p in presets.items():
-                cells = grid_for(crop, p["corridor"])
-                m, fg = metrics(P.load_mask(f"{a.out}/{i}_{st}_crop.png", cells))
-                m["grid"] = f"{fg.shape[1]}x{fg.shape[0]}"
-                rec["stages"][st][name] = m
-                Image.fromarray(np.where(fg, 0, 255).astype(np.uint8)).save(
-                    f"{a.out}/{i}_{st}_{name}.png")
-        return rec
+        stages["s2"] = mask_all(autocrop(im2), "s2", a.out, i, presets)
+        return i, stages
 
-    with ThreadPoolExecutor(8) as ex:
-        recs = list(ex.map(one, range(a.subjects)))
+    n = a.n if a.stage2 == "none" else 1
+    jobs = [(i, k) for i in range(a.subjects) for k in range(n)]
+    with ThreadPoolExecutor(min(a.workers, 3)) as ex:
+        res = list(ex.map(candidate, jobs))
+    recs = [{"subject": SUBJECTS[i], "stages": {}} for i in range(a.subjects)]
+    for i, stages in res:
+        recs[i]["stages"].update(stages)
+    for r in recs:
+        r["stages"] = dict(sorted(r["stages"].items()))
     json.dump(recs, open(f"{a.out}/metrics.json", "w"), indent=1)
+    json.dump({"model": a.model, "kind": "image", "calls": usage},
+              open(f"{a.out}/usage.json", "w"), indent=1)
     for r in recs:
         for st, d in r["stages"].items():
             print(f"{r['subject'][:22]:22} {st} " + " | ".join(
