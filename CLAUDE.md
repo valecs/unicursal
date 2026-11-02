@@ -7,10 +7,17 @@ background in `HANDOFF.md`; every product decision in `DECISIONS.md`.
 
 ## Setup and checks
 
+Python tooling is **uv**: `pyproject.toml` declares dependencies and `uv.lock`
+pins them. Don't use `pip install` or a `requirements.txt`; add dependencies
+with `uv add <pkg>` (test-only: `uv add --dev <pkg>`) and commit the updated
+`uv.lock`.
+
 ```
-pip install -r requirements.txt          # numpy, Pillow, scipy, pytest, hypothesis
-apt-get update && apt-get install -y librsvg2-bin   # rsvg-convert: PDFs + flow leak check
-python3 -m pytest -q tests               # must pass before every push
+uv sync --all-extras                     # .venv with deps, dev group (pytest, hypothesis), experiments extra
+apt-get update && apt-get install -y librsvg2-bin   # system dep: rsvg-convert (PDFs + flow leak check)
+uv run pytest -q                         # must pass before every push
+uv run picmaze.py shapes/ghost.png --preset medium --flow --out ghost
+uv run experiments/<script>.py ...
 ```
 
 ## Testing: test-driven, property-based
