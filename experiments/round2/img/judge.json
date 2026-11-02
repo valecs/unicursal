@@ -1,0 +1,866 @@
+[
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "stairs",
+  "pass": false
+ },
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "sitting dog",
+  "pass": false
+ },
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "a cat",
+  "pass": true
+ },
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "chair",
+  "pass": false
+ },
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "sitting cat",
+  "pass": true
+ },
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "a cat",
+  "pass": true
+ },
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "chair",
+  "pass": false
+ },
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "a cat",
+  "pass": true
+ },
+ {
+  "i": 0,
+  "subject": "a cat sitting, seen from the side",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "sitting cat",
+  "pass": true
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "puzzle piece",
+  "pass": false
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "jack-o'-lantern",
+  "pass": true
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "jack-o'-lantern",
+  "pass": true
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "space invader",
+  "pass": false
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "jack-o'-lantern",
+  "pass": true
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "jack-o'-lantern",
+  "pass": true
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "electrical outlet",
+  "pass": false
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "jack-o'-lantern",
+  "pass": true
+ },
+ {
+  "i": 1,
+  "subject": "a jack-o-lantern pumpkin",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "jack-o'-lantern",
+  "pass": true
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "t-shirt",
+  "pass": false
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "vase",
+  "pass": false
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "an owl",
+  "pass": true
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "coffee mug",
+  "pass": false
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "astronaut",
+  "pass": false
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "an owl",
+  "pass": true
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "usb drive",
+  "pass": false
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "ghost",
+  "pass": false
+ },
+ {
+  "i": 2,
+  "subject": "an owl",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "an owl",
+  "pass": true
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "bell",
+  "pass": false
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "rocket",
+  "pass": true
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "space rocket",
+  "pass": true
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "rocket",
+  "pass": true
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "space rocket",
+  "pass": true
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "space rocket",
+  "pass": true
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "battery",
+  "pass": false
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "space rocket",
+  "pass": true
+ },
+ {
+  "i": 3,
+  "subject": "a rocket ship",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "space rocket",
+  "pass": true
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "video camera",
+  "pass": false
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "a fish",
+  "pass": true
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "a fish",
+  "pass": true
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "chair",
+  "pass": false
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "a fish",
+  "pass": true
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "a fish",
+  "pass": true
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "airplane",
+  "pass": false
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "a fish",
+  "pass": true
+ },
+ {
+  "i": 4,
+  "subject": "a fish",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "a fish",
+  "pass": true
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "letter a",
+  "pass": false
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "a house",
+  "pass": true
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "a house",
+  "pass": true
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "tree",
+  "pass": false
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "a house",
+  "pass": true
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "a house",
+  "pass": true
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "house",
+  "pass": true
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "a house",
+  "pass": true
+ },
+ {
+  "i": 5,
+  "subject": "a house",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "birdhouse",
+  "pass": true
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "elephant",
+  "pass": true
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "elephant",
+  "pass": true
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "an elephant",
+  "pass": true
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "space invader",
+  "pass": false
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "elephant",
+  "pass": true
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "an elephant",
+  "pass": true
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "chair",
+  "pass": false
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "elephant",
+  "pass": true
+ },
+ {
+  "i": 6,
+  "subject": "an elephant",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "elephant",
+  "pass": true
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "shopping bag",
+  "pass": false
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "teddy bear",
+  "pass": false
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "butterfly",
+  "pass": true
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "castle wall",
+  "pass": false
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "crown",
+  "pass": false
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "butterfly",
+  "pass": true
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "t-shirt",
+  "pass": false
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "crab",
+  "pass": false
+ },
+ {
+  "i": 7,
+  "subject": "a butterfly",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "a butterfly",
+  "pass": true
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "crescent moon",
+  "pass": false
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "rabbit",
+  "pass": true
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "a rabbit",
+  "pass": true
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "rabbit",
+  "pass": true
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "rabbit",
+  "pass": true
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "a rabbit",
+  "pass": true
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "chair",
+  "pass": false
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "rabbit",
+  "pass": true
+ },
+ {
+  "i": 8,
+  "subject": "a rabbit",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "a rabbit",
+  "pass": true
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "chair",
+  "pass": false
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "sailboat",
+  "pass": true
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "sailboat",
+  "pass": true
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "anchor",
+  "pass": false
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "sailboat",
+  "pass": true
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "sailboat",
+  "pass": true
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "chair",
+  "pass": false
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "sailboat",
+  "pass": true
+ },
+ {
+  "i": 9,
+  "subject": "a sailboat",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "sailboat",
+  "pass": true
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "teapot",
+  "pass": true
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "teapot",
+  "pass": true
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "teapot",
+  "pass": true
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "camera",
+  "pass": false
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "teapot",
+  "pass": true
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "teapot",
+  "pass": true
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "chair",
+  "pass": false
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "teapot",
+  "pass": true
+ },
+ {
+  "i": 10,
+  "subject": "a teapot",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "teapot",
+  "pass": true
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c0",
+  "difficulty": "easy",
+  "answer": "grand piano",
+  "pass": false
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c0",
+  "difficulty": "medium",
+  "answer": "turtle",
+  "pass": true
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c0",
+  "difficulty": "hard",
+  "answer": "a turtle",
+  "pass": true
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c1",
+  "difficulty": "easy",
+  "answer": "t-shirt",
+  "pass": false
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c1",
+  "difficulty": "medium",
+  "answer": "sea turtle",
+  "pass": true
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c1",
+  "difficulty": "hard",
+  "answer": "sea turtle",
+  "pass": true
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c2",
+  "difficulty": "easy",
+  "answer": "truck",
+  "pass": false
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c2",
+  "difficulty": "medium",
+  "answer": "goldfish",
+  "pass": false
+ },
+ {
+  "i": 11,
+  "subject": "a turtle",
+  "stage": "c2",
+  "difficulty": "hard",
+  "answer": "turtle",
+  "pass": true
+ }
+]

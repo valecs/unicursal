@@ -1,0 +1,71 @@
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 6 foreground pieces with 5 thin bridges
+note: joined 5 foreground pieces with 4 thin bridges
+note: joined 8 foreground pieces with 7 thin bridges
+note: joined 5 foreground pieces with 4 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 4 foreground pieces with 3 thin bridges
+note: joined 4 foreground pieces with 3 thin bridges
+note: joined 3 foreground pieces with 2 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 3 foreground pieces with 2 thin bridges
+note: joined 4 foreground pieces with 3 thin bridges
+note: joined 3 foreground pieces with 2 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 3 foreground pieces with 2 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 2 foreground pieces with 1 thin bridges
+note: joined 3 foreground pieces with 2 thin bridges
+note: joined 3 foreground pieces with 2 thin bridges
+note: joined 5 foreground pieces with 4 thin bridges
+note: joined 4 foreground pieces with 3 thin bridges
+a cat sitting, seen fr c0 E 7x9 pc1 h1 t1 thin0.13 cov0.36 | M 12x15 pc2 h1 t1 thin0.08 cov0.40 | H 30x38 pc2 h3 t1 thin0.02 cov0.37
+a cat sitting, seen fr c1 E 7x9 pc1 h0 t0 thin0.04 cov0.40 | M 12x15 pc2 h2 t1 thin0.12 cov0.42 | H 30x38 pc1 h1 t0 thin0.00 cov0.41
+a cat sitting, seen fr c2 E 7x9 pc1 h0 t0 thin0.17 cov0.36 | M 12x15 pc2 h1 t0 thin0.08 cov0.43 | H 30x38 pc1 h4 t2 thin0.01 cov0.39
+a jack-o-lantern pumpk c0 E 7x7 pc1 h0 t0 thin0.17 cov0.49 | M 12x12 pc1 h3 t0 thin0.05 cov0.44 | H 30x31 pc1 h3 t0 thin0.00 cov0.44
+a jack-o-lantern pumpk c1 E 7x7 pc2 h2 t2 thin0.33 cov0.49 | M 12x12 pc1 h3 t0 thin0.12 cov0.41 | H 30x31 pc1 h3 t0 thin0.00 cov0.42
+a jack-o-lantern pumpk c2 E 7x7 pc2 h2 t0 thin0.42 cov0.49 | M 13x12 pc1 h3 t2 thin0.03 cov0.49 | H 32x30 pc1 h3 t0 thin0.00 cov0.43
+an owl                 c0 E 7x9 pc1 h0 t0 thin0.00 cov0.49 | M 12x16 pc1 h4 t2 thin0.08 cov0.50 | H 30x40 pc6 h3 t1 thin0.03 cov0.45
+an owl                 c1 E 7x10 pc1 h0 t0 thin0.18 cov0.39 | M 11x16 pc5 h2 t0 thin0.15 cov0.44 | H 27x40 pc8 h10 t2 thin0.07 cov0.39
+an owl                 c2 E 7x10 pc1 h2 t2 thin0.23 cov0.49 | M 11x16 pc1 h8 t6 thin0.17 cov0.47 | H 27x40 pc5 h3 t0 thin0.01 cov0.45
+a rocket ship          c0 E 7x10 pc2 h1 t0 thin0.52 cov0.30 | M 11x16 pc1 h2 t0 thin0.05 cov0.36 | H 26x40 pc4 h2 t0 thin0.01 cov0.35
+a rocket ship          c1 E 7x10 pc1 h2 t2 thin0.58 cov0.34 | M 12x16 pc1 h2 t0 thin0.08 cov0.39 | H 29x40 pc4 h2 t0 thin0.02 cov0.37
+a rocket ship          c2 E 7x10 pc1 h1 t0 thin0.42 cov0.34 | M 11x16 pc1 h2 t0 thin0.11 cov0.37 | H 29x40 pc1 h2 t0 thin0.00 cov0.38
+a fish                 c0 E 10x6 pc1 h0 t0 thin0.07 cov0.45 | M 16x10 pc1 h1 t1 thin0.03 cov0.46 | H 40x26 pc1 h7 t2 thin0.01 cov0.41
+a fish                 c1 E 9x7 pc1 h0 t0 thin0.04 cov0.40 | M 16x12 pc1 h3 t2 thin0.06 cov0.43 | H 40x30 pc1 h2 t0 thin0.00 cov0.41
+a fish                 c2 E 10x7 pc1 h0 t0 thin0.00 cov0.41 | M 16x11 pc1 h2 t1 thin0.07 cov0.40 | H 40x29 pc1 h2 t0 thin0.00 cov0.41
+a house                c0 E 7x9 pc1 h1 t1 thin0.24 cov0.40 | M 12x15 pc1 h2 t0 thin0.03 cov0.42 | H 30x38 pc1 h2 t0 thin0.00 cov0.39
+a house                c1 E 7x7 pc1 h0 t0 thin0.14 cov0.45 | M 12x12 pc1 h2 t0 thin0.10 cov0.43 | H 30x30 pc1 h2 t0 thin0.00 cov0.36
+a house                c2 E 7x9 pc1 h1 t1 thin0.08 cov0.41 | M 12x15 pc3 h5 t3 thin0.15 cov0.44 | H 30x38 pc2 h10 t7 thin0.00 cov0.40
+an elephant            c0 E 8x7 pc1 h0 t0 thin0.12 cov0.43 | M 14x12 pc1 h0 t0 thin0.11 cov0.43 | H 36x30 pc1 h5 t3 thin0.02 cov0.43
+an elephant            c1 E 9x7 pc1 h0 t0 thin0.19 cov0.41 | M 15x12 pc2 h1 t0 thin0.12 cov0.48 | H 37x30 pc1 h7 t4 thin0.04 cov0.45
+an elephant            c2 E 8x7 pc1 h0 t0 thin0.15 cov0.48 | M 14x12 pc1 h2 t1 thin0.09 cov0.51 | H 34x30 pc3 h7 t1 thin0.02 cov0.48
+a butterfly            c0 E 8x7 pc1 h0 t0 thin0.08 cov0.46 | M 14x12 pc1 h2 t0 thin0.05 cov0.50 | H 36x30 pc4 h4 t2 thin0.03 cov0.48
+a butterfly            c1 E 8x7 pc1 h0 t0 thin0.11 cov0.48 | M 14x12 pc1 h0 t0 thin0.00 cov0.49 | H 36x30 pc3 h2 t0 thin0.04 cov0.46
+a butterfly            c2 E 9x7 pc1 h0 t0 thin0.08 cov0.41 | M 15x12 pc1 h2 t0 thin0.07 cov0.43 | H 37x30 pc2 h2 t0 thin0.03 cov0.42
+a rabbit               c0 E 7x9 pc1 h0 t0 thin0.15 cov0.32 | M 12x15 pc2 h1 t1 thin0.18 cov0.36 | H 30x38 pc2 h5 t3 thin0.07 cov0.32
+a rabbit               c1 E 7x9 pc1 h0 t0 thin0.09 cov0.36 | M 12x15 pc1 h1 t1 thin0.06 cov0.40 | H 30x38 pc2 h7 t2 thin0.01 cov0.38
+a rabbit               c2 E 7x9 pc1 h0 t0 thin0.18 cov0.35 | M 12x15 pc1 h1 t1 thin0.11 cov0.37 | H 30x38 pc2 h8 t3 thin0.06 cov0.33
+a sailboat             c0 E 7x9 pc1 h0 t0 thin0.21 cov0.30 | M 12x15 pc1 h2 t0 thin0.06 cov0.37 | H 30x38 pc1 h4 t0 thin0.06 cov0.33
+a sailboat             c1 E 7x9 pc1 h0 t0 thin0.50 cov0.32 | M 12x15 pc1 h2 t0 thin0.11 cov0.36 | H 30x38 pc2 h2 t0 thin0.01 cov0.34
+a sailboat             c2 E 7x8 pc2 h0 t0 thin0.29 cov0.30 | M 12x13 pc3 h2 t1 thin0.36 cov0.30 | H 30x33 pc2 h4 t1 thin0.03 cov0.28
+a teapot               c0 E 9x7 pc2 h0 t0 thin0.17 cov0.38 | M 15x12 pc1 h2 t0 thin0.17 cov0.43 | H 38x30 pc2 h2 t0 thin0.01 cov0.40
+a teapot               c1 E 9x7 pc1 h1 t0 thin0.18 cov0.35 | M 16x12 pc2 h3 t1 thin0.12 cov0.39 | H 39x30 pc3 h2 t0 thin0.01 cov0.35
+a teapot               c2 E 9x7 pc1 h0 t0 thin0.04 cov0.41 | M 16x12 pc1 h2 t0 thin0.15 cov0.43 | H 40x30 pc1 h2 t0 thin0.00 cov0.41
+a turtle               c0 E 9x7 pc3 h1 t0 thin0.48 cov0.36 | M 16x12 pc1 h6 t3 thin0.29 cov0.36 | H 39x30 pc5 h8 t0 thin0.04 cov0.33
+a turtle               c1 E 7x8 pc1 h0 t0 thin0.05 cov0.36 | M 12x14 pc1 h0 t0 thin0.12 cov0.38 | H 30x34 pc1 h2 t0 thin0.01 cov0.37
+a turtle               c2 E 10x7 pc1 h0 t0 thin0.07 cov0.40 | M 16x11 pc1 h0 t0 thin0.06 cov0.40 | H 40x28 pc4 h9 t5 thin0.03 cov0.39
