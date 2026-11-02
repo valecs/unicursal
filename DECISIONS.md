@@ -1,11 +1,9 @@
 # UX decisions log
 
-Running record of app-design decisions. Nothing here is final yet.
-Open items are tracked as GitHub issues; see CLAUDE.md for how instances coordinate.
-"First pass" items are initial answers, open to revision; "Proposed" items are
-recommendations awaiting a response; "Open" items need research.
+Record of app-design decisions and the findings behind them. Decisions can
+be revisited; open questions live in GitHub issues (see CLAUDE.md).
 
-## First pass
+## Decisions
 
 | # | Topic | Decision |
 |---|---|---|
@@ -21,36 +19,18 @@ recommendations awaiting a response; "Open" items need research.
 | 9 | Advanced controls | Camera-style **Auto / Manual** split. Manual covers mm, seed, flow parameters, colours, turning off preflight fixes. |
 | 10 | Scope | On-screen solving is out. Sharing is maybe. |
 | 14 | Printed page | Minimal: the maze, start/finish marks (#2), and the existing one-line footer. No title, name/date lines or instructions (classroom extras are out of scope). A 5 cm check bar in the footer ("5 cm. If not, print at 100% / actual size") guards against fit-to-page printing. **Space goes to the maze**: the frame fills the printable area (the entrance stub sits in the paper margin), and the footer moves to the side away from the entrance. On Letter: Easy 7×9 → 8×11, Medium 12×16 → 13×17, Hard 30×40 → 31×41 (ghost). |
-| 15 | Layouts | 3 layouts generated up front + a "more layouts" action. Ranking is only an internal heuristic for which shows first; no "best match" label (#4). |
+| 15 | Layouts | Horizontal pager: swipe between layouts, press-and-hold to peek at the answer. 3 layouts generated up front + a "more layouts" action. Ranking is only an internal heuristic for which shows first; no "best match" label (#4). |
 | 16 | Start | One arrow pointing in at the entrance; no Start/End labels (start and end are adjacent) (#2). |
 | 17 | Puzzle links | A URL encodes generator version + settings + seed + picture mask (~150–250 chars) and regenerates the puzzle exactly (#5). Relies on WASM determinism (see 2); old versions stay loadable at versioned paths. History = a list of these codes. Sharing = link, plus PDF via the share sheet. |
 | 18 | Preflight | Auto-crop so the subject touches one edge (entrance there) with a small margin elsewhere; bridge separate pieces and highlight the bridges; details that won't survive are **highlighted in the preview** (never named) with "try a more detailed setting"; block only near-empty pictures; failed generations retry silently (#3). |
 | 13 | Voids | Solid black by default; puzzles must print well in black and white. Ink-saving is not a priority. (`--ink-saver`, light voids with outlined corridors, exists in the prototype but stays off and out of the UI.) |
 
-## Proposed (awaiting sign-off)
-
-- **Picture sources (v1):** AI "describe it", image file (1-bit, connected),
-  text, grid drawing → all feed preflight. No photo segmentation in v1.
-- **Shuffle = swipe:** the preview is a horizontal pager of seeds; swiping
-  generates the next layout. Press-and-hold to peek at the answer.
-
 Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture chooser).
 
-## Open
+## Open questions and to-dos
 
-- Picture sourcing: AI generation (image model vs. LLM-drawn shapes) needs a
-  bake-off; accepting 1-bit connected images as files is a given.
-- Calibrating difficulty presets against real test prints.
-
-## Todo
-
-- **Move Python tooling to `uv`** (`pyproject.toml` + `uv.lock`, `uv run pytest`,
-  `uv run experiments/...`) to make fresh-session setup faster. System
-  packages (`librsvg2-bin`, which needs `apt-get update` first) stay outside uv.
-- **Claude arms of bake-off round 2** (Haiku 5.5 best-of-3 Easy+Medium;
-  Sonnet 5.5 single shot at Medium) are blocked: no Anthropic key reached the
-  session (`ANTHROPIC_API_KEY` / `ANTHROPIC_API_TOKEN` absent; maybe
-  `ANTHROPIC_*` names are filtered). Scripts also read `UNICURSAL_ANTHROPIC_KEY`.
+Tracked as GitHub issues only (`decision`, `research`, `bug`, `prototype`,
+`core` labels), not here. This file records outcomes and findings.
 
 ## Findings
 
