@@ -667,8 +667,16 @@ def cells_to_fit(img_w, img_h, nmax, mmax):
     return 0
 
 
-def place_on_page(svg, paper_mm, footer=None, footer_top=False):
-    """Centre a renderer's SVG on a page of the given size (true scale)."""
+SCALE_BAR_MM = 50  # printed check line: if it doesn't measure this, the page was scaled
+
+
+def place_on_page(svg, paper_mm, footer=None, footer_top=False, margin_mm=12.7,
+                  scale_bar=True):
+    """Centre a renderer's SVG on a page of the given size (true scale).
+
+    The footer line (a 5 cm check bar at the left, the footer text at the right)
+    sits in the paper margin on the side away from the entrance, and is drawn
+    last: the maze drawing's background may extend into the margin."""
     import re
     PW, PH = paper_mm[0] * PT_PER_MM, paper_mm[1] * PT_PER_MM
     m = re.match(r'<svg xmlns="http://www.w3.org/2000/svg"\s+width="([\d.]+)pt"\s+'
@@ -677,14 +685,23 @@ def place_on_page(svg, paper_mm, footer=None, footer_top=False):
     x, y = (PW - w) / 2, (PH - h) / 2
     head = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{PW:.2f}pt" '
             f'height="{PH:.2f}pt" viewBox="0 0 {PW:.3f} {PH:.3f}">'
-            f'<rect width="100%" height="100%" fill="#fff"/>')
+            f'<rect width="100%" height="100%" fill="#fff"/>'
+            f'<svg x="{x:.3f}" y="{y:.3f}" width="{w:.3f}" height="{h:.3f}" '
+            f'viewBox="0 0 {m[3]} {m[4]}" overflow="visible">')
+    foot = ""
+    fy = 19 if footer_top else PH - 14          # text baseline, inside the margin
+    left, right = margin_mm * PT_PER_MM, PW - margin_mm * PT_PER_MM
+    font = 'font-family="sans-serif" font-size="7" fill="#888"'
+    if scale_bar:
+        L, by = SCALE_BAR_MM * PT_PER_MM, fy - 2.5
+        foot += (f'<path d="M{left:.2f} {by-3:.2f}V{by+3:.2f}M{left:.2f} {by:.2f}H{left+L:.2f}'
+                 f'M{left+L:.2f} {by-3:.2f}V{by+3:.2f}" fill="none" stroke="#888" '
+                 f'stroke-width="0.8" class="scale-bar"/>'
+                 f'<text x="{left+L+5:.2f}" y="{fy:.2f}" {font}>5 cm. If not, print at '
+                 f'100% / actual size</text>')
     if footer:
-        fy = 14 + 5 if footer_top else PH - 14   # keep clear of the entrance side
-        head += (f'<text x="{PW/2:.2f}" y="{fy:.2f}" text-anchor="middle" '
-                 f'font-family="sans-serif" font-size="7" fill="#999">{footer}</text>')
-    head += (f'<svg x="{x:.3f}" y="{y:.3f}" width="{w:.3f}" height="{h:.3f}" '
-             f'viewBox="0 0 {m[3]} {m[4]}" overflow="visible">')
-    return head + svg[m.end():] + "</svg>"
+        foot += f'<text x="{right:.2f}" y="{fy:.2f}" text-anchor="end" {font}>{footer}</text>'
+    return head + svg[m.end():] + foot + "</svg>"
 
 
 # --------------------------------------------------------------- main ------
@@ -839,7 +856,8 @@ def main():
 
     def emit(name, svg):
         with open(name + ".svg", "w") as f:
-            f.write(place_on_page(svg, paper, footer, footer_top=opening[2] == "S"))
+            f.write(place_on_page(svg, paper, footer, footer_top=opening[2] == "S",
+                                  margin_mm=args.paper_margin))
         ok = svg_to_pdf(name + ".svg", name + ".pdf")
         print(f"wrote {name}.svg" + (f" and {name}.pdf" if ok else ""))
     if args.flow:

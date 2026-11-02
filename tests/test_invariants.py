@@ -162,6 +162,11 @@ def test_page_is_true_scale():
            'height="50.00pt" viewBox="0 0 100.000 50.000"><rect/></svg>')
     out = P.place_on_page(svg, (215.9, 279.4))
     assert 'width="612.00pt" height="792.00pt"' in out
+    # the check bar is exactly 50 mm and drawn after (on top of) the maze
+    import re
+    bar = re.search(r'<path d="M([\d.]+) [\d.]+V[\d.]+M[\d.]+ [\d.]+H([\d.]+)', out)
+    assert abs(float(bar[2]) - float(bar[1]) - 50 * P.PT_PER_MM) < 0.01
+    assert out.index("scale-bar") > out.index("<rect/>")
 
 
 SHAPES = Path(__file__).resolve().parent.parent / "shapes"
