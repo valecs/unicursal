@@ -372,6 +372,47 @@ def _reduce_deadends(grid, protected, rng, fine_fg):
 
 # ------------------------------------------------------------ render -------
 
+ARROW_MAX_PT = 13.0      # arrow length cap (~4.6 mm)
+ARROW_GAP_MAX_PT = 9.0   # frame-to-tip gap cap (~3.2 mm): arrow + gap stay
+                         # well inside a 12.7 mm paper margin at any corridor size
+
+
+def entrance_arrow(a, b, side, H, W, cell, gap=0.25):
+    """Polygon (in fine-cell units, x/y) for the single arrow that marks the
+    entrance (#2). Start and finish are adjacent, so one arrow does for both.
+    With `side` set it sits outside the frame, tip first, pointing in at the
+    middle of the gap; otherwise it hangs above the entrance cells, pointing
+    down at them. Its length is capped at ARROW_MAX_PT so big corridors don't
+    push it off the page."""
+    mid = np.array([(a[1] + b[1]) / 2 + .5, (a[0] + b[0]) / 2 + .5])
+    out = np.array({"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}.get(side, (0, -1)),
+                   float)
+    L = min(1.0, ARROW_MAX_PT / cell)          # total length, cells
+    gap = min(gap, ARROW_GAP_MAX_PT / cell)
+    hw = 0.4 * L                               # head half-width
+    sw = 0.13 * L                              # shaft half-width
+    if side:
+        axis = 1 if side in "NS" else 0
+        edge = {"N": 0, "S": H, "W": 0, "E": W}[side]
+        tip = mid.copy()
+        tip[axis] = edge + out[axis] * gap
+    else:
+        tip = mid + out * 0.55                 # just above the entrance cell
+    n = np.array([-out[1], out[0]])            # across the arrow
+    head = tip + out * 0.5 * L
+    tail = tip + out * L
+    return np.array([tip, head + n * hw, head + n * sw, tail + n * sw,
+                     tail - n * sw, head - n * sw, head - n * hw])
+
+
+def arrow_path(P, to_pt):
+    """SVG path element for an entrance arrow polygon; `to_pt` maps cell
+    coordinates to the renderer's pt coordinates."""
+    Q = to_pt(P)
+    d = "M" + "L".join(f"{x:.2f} {y:.2f}" for x, y in Q) + "z"
+    return f'<path class="entrance" fill="#000" d="{d}"/>'
+
+
 def render_svg(grid, cell, fill_cells=None, opening=None, margin=2.0,
                stroke=0.18, color="#000", fill="#e0218a"):
     """Return SVG text. Units: `cell` per fine cell (in pt for PDF parity)."""
@@ -448,15 +489,8 @@ def render_svg(grid, cell, fill_cells=None, opening=None, margin=2.0,
     border("E", H, ox + W * cell, False)
     out.append(f'<path fill="none" stroke="{color}" stroke-width="{sw:.3f}" '
                f'stroke-linecap="square" d="{"".join(segs)}"/>')
-    # entrance / exit markers: arrows outside the border, or dots inside
-    for p in (a, b):
-        cx, cy = ox + (p[1] + .5) * cell, oy + (p[0] + .5) * cell
-        if side:
-            d = {"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}[side]
-            cx, cy = cx + d[0] * cell, cy + d[1] * cell
-        rr = .32 * cell
-        out.append(f'<path fill="#1a9e3a" d="M{cx:.3f} {cy-rr:.3f}L{cx+rr:.3f} {cy:.3f}'
-                   f'L{cx:.3f} {cy+rr:.3f}L{cx-rr:.3f} {cy:.3f}z"/>')
+    out.append(arrow_path(entrance_arrow(a, b, side, H, W, cell),
+                          lambda P: P * cell + [ox, oy]))
     out.append('</svg>')
     return "\n".join(out)
 
@@ -603,14 +637,8 @@ def render_curvy_svg(grid, cell, opening, warp, smooth=3, path=None,
     out.append(f'<path fill="none" stroke="{color}" stroke-width="{stroke*cell:.3f}" '
                f'stroke-linecap="round" stroke-linejoin="round" d="{"".join(parts)}"/>')
 
-    rr = .32
-    for p in (a, b):
-        cx, cy = p[1] + .5, p[0] + .5
-        if out_dir:
-            cx, cy = cx + 1.1 * out_dir[0], cy + 1.1 * out_dir[1]
-        C = warp(np.array([[cx, cy]]))[0]
-        D = np.array([[0, -rr], [rr, 0], [0, rr], [-rr, 0]]) + C
-        out.append(f'<path fill="#1a9e3a" d="{d_of(D, True)}"/>')
+    out.append(arrow_path(entrance_arrow(a, b, side, H, W, cell),
+                          lambda P: (warp(P) + [ox, oy]) * cell))
     out.append('</svg>')
     return "\n".join(out)
 
@@ -883,7 +911,7 @@ def main():
         for name, show in ((args.out, False), (args.out + "_solution", True)):
             svg = flow.render_flow_svg(strands, grid.H, grid.W, cell, void=args.void,
                                        fill=args.fill, show_solution=show,
-                                       entrance=ent, margin=MARGIN,
+                                       entrance=ent, margin=MARGIN, arrow=opening,
                                        outline=args.ink_saver)
             emit(name, svg)
             if not show:

@@ -214,3 +214,57 @@ def test_deadend_fix_is_on_by_default():
     assert a.deadend_fix is True
     a = P.parse_args_with_preset(P.build_parser(), ["x.png", "--no-deadend-fix"])
     assert a.deadend_fix is False
+
+
+# ---- #2: one arrow at the entrance ------------------------------------------
+
+def _poly(svg, cls):
+    import re
+    m = re.findall(rf'<path class="{cls}"[^>]* d="M([^"]*?)z"', svg)
+    return [np.array([[float(v) for v in pt.split()] for pt in d.split("L")]) for d in m]
+
+
+@pytest.mark.parametrize("side,a,b", [("S", (9, 3), (9, 4)), ("N", (0, 3), (0, 4)),
+                                      ("W", (3, 0), (4, 0)), ("E", (3, 7), (4, 7))])
+def test_entrance_arrow_points_in_from_outside_the_frame(side, a, b):
+    H, W = 10, 8
+    P_ = P.entrance_arrow(a, b, side, H, W, cell=20.0)
+    tip = P_[0]
+    mid = np.array([(a[1] + b[1]) / 2 + .5, (a[0] + b[0]) / 2 + .5])
+    out = np.array({"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}[side])
+    # every point is outside the frame, on the entrance side
+    edge = {"N": 0, "S": H, "W": 0, "E": W}[side]
+    axis = 1 if side in "NS" else 0
+    assert all((p[axis] - edge) * out[axis] > 0 for p in P_)
+    # the tip is the point closest to the frame, centred on the gap
+    assert abs(tip[1 - axis] - mid[1 - axis]) < 1e-9
+    assert np.argmin([(p[axis] - edge) * out[axis] for p in P_]) == 0
+    # it stays within the 1.5-corridor drawing margin
+    assert all(abs(p[axis] - edge) <= 1.5 for p in P_)
+
+
+def test_entrance_arrow_has_absolute_size_cap():
+    """At big corridors (Easy) the arrow must not run off into the paper edge."""
+    ext = lambda c, g: (P.entrance_arrow((9, 3), (9, 4), "S", 10, 8, c, g)[:, 1].max()
+                        - 10) * c                    # extent past the frame, pt
+    for c in (10.0, 31.2, 200.0):                    # 3.5 mm, 11 mm (Easy), huge
+        for g in (0.25, 0.45):                       # classic, flow gaps
+            assert ext(c, g) <= 22.0                 # <= 7.8 mm: inside a 12.7 mm margin
+
+
+@pytest.mark.parametrize("seed", range(3))
+def test_renderers_draw_one_entrance_arrow_and_no_diamonds(ring_png, seed):
+    fg = P.largest_component(P.load_mask(ring_png, 14))
+    grid, fine_fg, opening = P.build_labyrinth(fg, random.Random(seed))
+    svg = P.render_svg(grid, 10.0, opening=opening, margin=P.MARGIN)
+    assert len(_poly(svg, "entrance")) == 1 and "#1a9e3a" not in svg
+    warp = P.make_warp(grid.H, grid.W, random.Random(seed), 0.3, 14.0)
+    svg = P.render_curvy_svg(grid, 10.0, opening, warp, margin=P.MARGIN)
+    assert len(_poly(svg, "entrance")) == 1 and "#1a9e3a" not in svg
+    path = P.trace_path(grid, opening[0], fine_fg)
+    strands = F.relax(F.extract_strands(grid, path), fine_fg, grid.H, grid.W,
+                      iters=50, seed=seed)
+    d = {"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}.get(opening[2])
+    svg = F.render_flow_svg(strands, grid.H, grid.W, 10.0, margin=P.MARGIN,
+                            entrance=(d, d) if d else None, arrow=opening)
+    assert len(_poly(svg, "entrance")) == 1 and "#1a9e3a" not in svg

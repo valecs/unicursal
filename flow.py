@@ -216,9 +216,10 @@ def count_crossings(strands):
 
 def render_flow_svg(strands, H, W, cell, rmax=0.55, wall=0.14, margin=2.0,
                     void="#111", fill="#f07a14", show_solution=False,
-                    gap_arc=1.05, entrance=None, outline=False):
+                    gap_arc=1.05, entrance=None, outline=False, arrow=None):
     """outline: draw each corridor's edge where it meets a void, so voids can
-    be a light colour (ink saver) without corridors visually leaking into them."""
+    be a light colour (ink saver) without corridors visually leaking into them.
+    arrow: the (entrance, exit, side) opening; draws the single entrance arrow."""
     ox = oy = margin
     Wt, Ht = (W + 2 * margin) * cell, (H + 2 * margin) * cell
     T = lambda P: (np.asarray(P) + [ox, oy]) * cell
@@ -237,7 +238,7 @@ def render_flow_svg(strands, H, W, cell, rmax=0.55, wall=0.14, margin=2.0,
     ext = []
     if entrance is not None:
         for e, P0 in ((entrance[0], sol[0]), (entrance[1], sol[-1])):
-            ext.append(P0 + np.array(e) * 1.2)
+            ext.append(P0 + np.array(e) * 0.8)   # 0.3 past the frame
     solP = np.vstack([ext[0][None], sol, ext[1][None]]) if ext else sol
 
     # white tubes
@@ -263,11 +264,12 @@ def render_flow_svg(strands, H, W, cell, rmax=0.55, wall=0.14, margin=2.0,
     if ext:
         out.append(f'<path fill="none" stroke="#fff" stroke-width="{(2*rmax-wall)*cell:.3f}" '
                    f'd="{poly(np.vstack([sol[0], ext[0]]))}{poly(np.vstack([sol[-1], ext[1]]))}"/>')
-    if not ext:  # entrance/exit inside the picture: mark them
-        for q in (sol[0], sol[-1]):
-            c = T(q); r = 0.32 * cell
-            out.append(f'<path fill="#1a9e3a" d="M{c[0]:.2f} {c[1]-r:.2f}L{c[0]+r:.2f} '
-                       f'{c[1]:.2f}L{c[0]:.2f} {c[1]+r:.2f}L{c[0]-r:.2f} {c[1]:.2f}z"/>')
+    if arrow is not None:
+        from picmaze import entrance_arrow, arrow_path
+        a, b, side = arrow
+        # outside: clear of the corridor stub that pokes 0.3 through the frame
+        Pa = entrance_arrow(a, b, side, H, W, cell, gap=0.45 if side else 0.25)
+        out.append(arrow_path(Pa, lambda P: (P + [ox, oy]) * cell))
     out.append("</svg>")
     return "\n".join(out)
 
