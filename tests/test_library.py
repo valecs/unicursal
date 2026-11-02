@@ -228,3 +228,42 @@ def test_thanksgiving_subjects_are_in_shapes(sid):
     extra = {p.name for p in (ROOT / "shapes").glob(f"{sid}.*.png")} - {
         f"{sid}.{k}.png" for k in L.load_overrides(sid)}
     assert not extra, f"stale override exports in shapes/: {sorted(extra)}"
+
+
+def _review_for(sid, preset, verdict, hashes=None):
+    ms = L.masks(sid)
+    hs = hashes if hashes is not None else sorted(
+        {L.mask_hash(fg) for (p, _), fg in ms.items() if p == preset})
+    return {f"{sid}--{preset}": {"verdict": verdict, "hashes": hs}}
+
+
+@pytest.mark.parametrize("sid", SUBJECTS)
+@pytest.mark.parametrize("preset", list(L.PRESETS))
+def test_owner_verdict_decides_for_the_masks_reviewed(sid, preset):
+    """The owner's review overrides the judge, for exactly the masks they
+    looked at; a verdict on masks since changed falls back to the judge."""
+    cache = L.load_judge_cache()
+    judge_only = preset in L.offered(sid, cache, review={})
+    assert preset in L.offered(sid, cache, review=_review_for(sid, preset, "yes"))
+    assert preset not in L.offered(sid, cache, review=_review_for(sid, preset, "no"))
+    stale = _review_for(sid, preset, "no" if judge_only else "yes", hashes=["0" * 20])
+    assert (preset in L.offered(sid, cache, review=stale)) == judge_only
+
+
+def test_review_page_carries_every_subject_and_mask(tmp_path):
+    """The review page embeds each subject's masks and the hashes a verdict
+    is tied to, and nothing in the data can close the script tag."""
+    out = tmp_path / "review.html"
+    L.write_review(SUBJECTS, L.load_judge_cache(), "test batch", out)
+    page = out.read_text()
+    assert "/*DATA*/" not in page
+    start = page.index("const DATA = ") + len("const DATA = ")
+    data = __import__("json").JSONDecoder().raw_decode(page[start:])[0]
+    assert [s["id"] for s in data["subjects"]] == SUBJECTS
+    for s in data["subjects"]:
+        ms = L.masks(s["id"])
+        for preset, d in s["presets"].items():
+            want = sorted({L.mask_hash(fg) for (p, _), fg in ms.items() if p == preset})
+            assert d["hashes"] == want
+    script = page[page.index("<script>"):]
+    assert script.count("</script>") == 1

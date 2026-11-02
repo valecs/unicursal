@@ -2,7 +2,7 @@ name = "Pilgrim hat"
 keywords = ["pilgrim hat", "pilgrim", "hat"]
 tags = ["thanksgiving", "clothing"]
 edge = "S"
-notes = "Tall buckled hat (capotain). Hat only, no figure."
+notes = "Tall pilgrim hat (capotain), no buckle. Hat only, no figure."
 # Spike: 3 master drafts. A buckle (as a hole) read as a face or a door
 # ("castle", "tombstone"), so the master has none. Wide shape: Letter and A4
 # give different grids (Medium 18x12 vs 19x13), hence paper-specific

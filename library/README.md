@@ -123,10 +123,17 @@ bump; tags are from the vocabulary.
 
 ## Review
 
-An artifact page with one card per subject: master, the three masks, the
-judge's answer, and ✓ / ✗ / comment buttons stored on the page. Claude reads
-the verdicts back. The judge was lenient on blocky pixel art in the bake-off,
-so owner review carries most weight at Easy.
+`build.py --review "<batch name>"` writes `library/out/review.html`
+(template: `library/review.html`), published as a private artifact with a
+small database. One card per subject: the master, the masks at each
+difficulty as they print (Letter and A4 where they differ), the judge's
+answer, and a **Reads / Doesn't read** call plus a note per difficulty.
+
+Claude reads the calls back and commits them to `library/review.json`. A call
+is tied to the hashes of the masks reviewed: it overrides the judge for those
+masks only, and a redrawn mask comes back for review. The judge was lenient
+on blocky pixel art in the bake-off and strict on birds in the spike, so
+owner review carries most weight at Easy and Medium.
 
 ## Package
 

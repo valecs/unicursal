@@ -311,13 +311,29 @@ def passes(sid, answer):
     return any(k in answer for k in load_subject(sid)["keywords"])
 
 
-def offered(sid, cache=None):
-    """Presets at which the subject reads on every paper (judge pass)."""
+def load_review():
+    """Owner verdicts copied from the review page: {"<id>--<preset>":
+    {"verdict": "yes"|"no", "hashes": [mask hashes reviewed], "note": ...}}."""
+    p = LIB / "review.json"
+    return json.loads(p.read_text()) if p.exists() else {}
+
+
+def offered(sid, cache=None, review=None):
+    """Presets at which the subject is offered. The owner's verdict decides
+    when it covers exactly the current masks at that preset; otherwise the
+    judge must pass on every paper."""
     cache = load_judge_cache() if cache is None else cache
-    ok = {}
+    review = load_review() if review is None else review
+    ok, hashes = {}, {}
     for (preset, _paper), fg in masks(sid).items():
-        v = cache.get(mask_hash(fg))
+        h = mask_hash(fg)
+        hashes.setdefault(preset, set()).add(h)
+        v = cache.get(h)
         ok[preset] = ok.get(preset, True) and bool(v) and passes(sid, v["answer"])
+    for preset in ok:
+        r = review.get(f"{sid}--{preset}")
+        if r and set(r.get("hashes", [])) == hashes[preset]:
+            ok[preset] = r["verdict"] == "yes"
     return {p for p, good in ok.items() if good}
 
 
@@ -378,6 +394,53 @@ def package(ids):
     return {"version": 0, "pictures": entries}
 
 
+def data_uri(mask):
+    return "data:image/png;base64," + base64.b64encode(mask_png(mask)).decode()
+
+
+def review_data(ids, cache, batch):
+    """What the review page shows: per subject the master and, per preset,
+    each distinct mask (with the papers that use it) and the judge's answer."""
+    subjects = []
+    for sid in ids:
+        s = load_subject(sid)
+        master = load_master(sid)
+        ms = masks(sid)
+        presets = {}
+        for preset in PRESETS:
+            by_hash = {}
+            for paper in PAPERS:
+                fg = ms[(preset, paper)]
+                h = mask_hash(fg)
+                if h not in by_hash:
+                    v = cache.get(h)
+                    raw_shape = target_shape(sid, preset, paper)
+                    by_hash[h] = {"hash": h, "papers": [], "img": data_uri(fg),
+                                  "grid": f"{fg.shape[1]}×{fg.shape[0]}",
+                                  "override": override_for(load_overrides(sid), preset,
+                                                           paper, raw_shape) is not None,
+                                  "judge": v["answer"] if v else None,
+                                  "pass": bool(v) and passes(sid, v["answer"])}
+                by_hash[h]["papers"].append(paper)
+            ml = list(by_hash.values())
+            presets[preset] = {"masks": ml, "hashes": sorted(by_hash),
+                               "judge_pass": all(m["pass"] for m in ml)}
+        subjects.append({"id": sid, "name": s["name"], "tags": s["tags"],
+                         "notes": s.get("notes", ""),
+                         "master": {"img": data_uri(master),
+                                    "grid": f"{master.shape[1]}×{master.shape[0]}"},
+                         "presets": presets})
+    return {"subjects": subjects, "batch": batch, "judge": JUDGE_MODEL,
+            "built": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())}
+
+
+def write_review(ids, cache, batch, path):
+    page = (LIB / "review.html").read_text()
+    data = json.dumps(review_data(ids, cache, batch), ensure_ascii=False)
+    page = page.replace("/*DATA*/null/*END*/", data.replace("</", "<\\/"))
+    path.write_text(page)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -385,6 +448,9 @@ def main(argv=None):
     ap.add_argument("--remaster", action="store_true",
                     help="rebuild the master PNG from the SVG even if it exists")
     ap.add_argument("--no-judge", action="store_true", help="don't call the judge")
+    ap.add_argument("--review", metavar="BATCH",
+                    help="also write library/out/review.html for these subjects; "
+                         "BATCH names them on the page (e.g. 'Thanksgiving spike')")
     args = ap.parse_args(argv)
     ids = args.ids or subject_ids()
     OUT.mkdir(exist_ok=True)
@@ -436,6 +502,9 @@ def main(argv=None):
     raw = json.dumps(lib, separators=(",", ":")).encode()
     (OUT / "library.json").write_bytes(raw)
     (OUT / "report.json").write_text(json.dumps(report, indent=1) + "\n")
+    if args.review:
+        write_review(ids, cache, args.review, OUT / "review.html")
+        print(f"review page: {OUT / 'review.html'}")
     print(f"package: {len(raw)} B for {len(ids)} pictures "
           f"({len(zlib.compress(raw, 9))} B gzipped); sheet: {OUT / 'sheet.png'}")
 
