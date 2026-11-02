@@ -42,6 +42,16 @@ Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture
 - Carousel vs. other ways of comparing candidates; needs a prototype test.
 - Calibrating difficulty presets against real test prints.
 
+## Todo
+
+- **Move Python tooling to `uv`** (`pyproject.toml` + `uv.lock`, `uv run pytest`,
+  `uv run experiments/...`) to make fresh-session setup faster. System
+  packages (`librsvg2-bin`, which needs `apt-get update` first) stay outside uv.
+- **Claude arms of bake-off round 2** (Haiku 5.5 best-of-3 Easy+Medium;
+  Sonnet 5.5 single shot at Medium) are blocked: no Anthropic key reached the
+  session (`ANTHROPIC_API_KEY` / `ANTHROPIC_API_TOKEN` absent; maybe
+  `ANTHROPIC_*` names are filtered). Scripts also read `UNICURSAL_ANTHROPIC_KEY`.
+
 ## Findings
 
 - **Feature survival by difficulty** (letter paper; holes kept / holes in source):
@@ -79,3 +89,25 @@ Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture
   target grid size stated) and auto-crop. Run-to-run variance exceeds the
   stage-2 effect, which argues for **best-of-N + judge** selection. Easy
   (~7x9 cells) fails for almost every subject with every method.
+- **AI silhouettes, bake-off round 2** (12 subjects: round 1's 8 + rabbit,
+  sailboat, teapot, turtle; `experiments/round2/`, contact sheets in
+  `round2/sheets/`). Image model at 512 px, stage 1 only, best of 3 candidates;
+  judge as round 1, and among passing candidates the one with the cleanest
+  preflight metrics is picked. Budget cap $5 for the round, so pixel arms are
+  trimmed (see Todo for the Claude arms).
+
+  | Method | Cands | Easy | Medium | Hard | Cost |
+  |---|---|---|---|---|---|
+  | Image model (3.1 Flash Image), best of 3 | 3 | 5/12 | 10/12 | 12/12 | $1.65 (36 images) |
+  | same, single candidate (c0 / c1 / c2) | 1 | 2 / 2 / 1 | 9 / 10 / 9 | 12 each | $0.55 per set |
+  | Gemini 3.5 Flash pixel art, single shot | 1 | 6/12 | 10/12 | n/a | $1.50 (24 drawings, ≈$0.063 each) |
+
+  Visual check (mine, "would a child name it"): agrees with the judge for the
+  image model (Medium fails: owl, butterfly). The judge is **lenient on pixel
+  art**: at Medium I pass ~8/12 Gemini drawings (elephant has no trunk,
+  butterfly reads as a bug; fish, sailboat, turtle borderline), vs the judge's
+  10/12. At Easy both methods are ~5–6/12. Takeaways: best-of-3 lifts the
+  image model by about 1 at Medium and about 3 at Easy, for 3× the cost; Hard is solved;
+  butterfly and owl are the hard subjects at Medium for every method. Text-model drawing is
+  not cheaper than images (≈$0.06 vs $0.045 per candidate) and is blockier.
+  Round-2 spend so far ≈ $3.3 (Gemini credit used in total ≈ $6.8 of $20).
