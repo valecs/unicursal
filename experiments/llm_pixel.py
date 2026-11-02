@@ -4,7 +4,8 @@ No resampling happens: the model's grid *is* the picture-cell mask, so what it
 draws is what the maze gets. One repair round if the output is malformed
 (wrong size or disconnected). Output feeds judge.py (same file layout and
 metrics.json as silhouette_bakeoff.py; stage name "s1" = first valid drawing).
-Auth: proxy-injected x-goog-api-key header.
+Auth: Gemini via a proxy-injected x-goog-api-key header; Claude via
+ANTHROPIC_API_KEY (anthropic SDK).
 
 Usage: python3 llm_pixel.py OUTDIR [--model M] [--difficulties easy,medium]
 """
@@ -50,7 +51,26 @@ REPAIR = ("Your grid has a problem: {err} Fix it and reply with the corrected "
           "{w}x{h} grid only, inside a ``` block.")
 
 
-def call(model, contents, cfg):
+def call_claude(model, turns, effort):
+    """turns: [(role, text)], role in {"user", "assistant"}. Returns (text, usage)."""
+    import anthropic
+    # This environment sets ANTHROPIC_BASE_URL for its own use; talk to the
+    # public API explicitly.
+    client = anthropic.Anthropic(base_url="https://api.anthropic.com", max_retries=4)
+    with client.messages.stream(
+            model=model, max_tokens=32000, output_config={"effort": effort},
+            messages=[{"role": r, "content": t} for r, t in turns]) as stream:
+        msg = stream.get_final_message()
+    text = "".join(b.text for b in msg.content if b.type == "text")
+    return text, {"promptTokenCount": msg.usage.input_tokens,
+                  "candidatesTokenCount": msg.usage.output_tokens}
+
+
+def call(model, turns, cfg):
+    if model.startswith("claude-"):
+        return call_claude(model, turns, cfg["effort"])
+    contents = [{"role": "model" if r == "assistant" else "user", "parts": [{"text": t}]}
+                for r, t in turns]
     body = {"contents": contents, "generationConfig": cfg}
     req = urllib.request.Request(API.format(m=model), data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json"})
@@ -93,14 +113,17 @@ def parse(text, w, h):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("out")
-    ap.add_argument("--model", default="gemini-3.5-flash")
+    ap.add_argument("--model", default="gemini-3.5-flash",
+                    help="a Gemini model, or a Claude model id (claude-...)")
     ap.add_argument("--difficulties", default="easy,medium")
-    ap.add_argument("--thinking", default="medium")
+    ap.add_argument("--thinking", default="medium",
+                    help="Gemini thinkingLevel / Claude effort")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     diffs = a.difficulties.split(",")
-    cfg = {"temperature": 1.0, "thinkingConfig": {"thinkingLevel": a.thinking,
-                                                   "includeThoughts": True}}
+    cfg = ({"effort": a.thinking} if a.model.startswith("claude-") else
+           {"temperature": 1.0, "thinkingConfig": {"thinkingLevel": a.thinking,
+                                                   "includeThoughts": True}})
 
     def one(job):
         i, diff = job
@@ -108,16 +131,15 @@ def main():
         w, h = GRIDS[diff]
         if any(k in s for k in WIDE):
             w, h = h, w
-        contents = [{"role": "user", "parts": [{"text": PROMPT.format(s=s, w=w, h=h)}]}]
+        turns = [("user", PROMPT.format(s=s, w=w, h=h))]
         usage, err, grid = [], None, None
         for _ in range(2):
-            text, u = call(a.model, contents, cfg)
+            text, u = call(a.model, turns, cfg)
             usage.append(u)
             grid, err = parse(text, w, h)
             if err is None:
                 break
-            contents += [{"role": "model", "parts": [{"text": text}]},
-                         {"role": "user", "parts": [{"text": REPAIR.format(err=err, w=w, h=h)}]}]
+            turns += [("assistant", text), ("user", REPAIR.format(err=err, w=w, h=h))]
         if grid is None:
             grid = np.zeros((h, w), bool)
         img = Image.fromarray(np.where(grid, 0, 255).astype(np.uint8))
