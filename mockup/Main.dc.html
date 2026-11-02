@@ -20,28 +20,37 @@ button{font-family:inherit}
 
   <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px 0 20px;">
     <h1 style="margin: 0; font-size: 20px; font-weight: 600; flex-grow: 1;">New puzzle</h1>
-    <button type="button" aria-label="Surprise me" style="width: 48px; height: 48px; border: 0; background: transparent; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #15171C; cursor: pointer;">
+    <a href="Surprise.dc.html" aria-label="Surprise me" style="width: 48px; height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #15171C;">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"></rect><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"></circle><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"></circle><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"></circle><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"></circle></svg>
-    </button>
-    <button type="button" aria-label="Saved puzzles" style="width: 48px; height: 48px; border: 0; background: transparent; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #15171C; cursor: pointer;">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12v17l-6-4-6 4z"></path></svg>
+    </a>
+    <button type="button" aria-label="History" style="width: 48px; height: 48px; border: 0; background: transparent; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #15171C; cursor: pointer;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"></path><path d="M3.5 4v4h4"></path><path d="M12 7.5V12l3 2"></path></svg>
     </button>
   </header>
 
-  <section aria-label="Preview" style="flex-shrink: 0; height: 402px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+  <section aria-label="Layouts" style="flex-shrink: 0; height: 402px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
     <div style="position: relative; height: 352px; width: 100%; display: flex; align-items: center; justify-content: center;">
       <button type="button" aria-label="Previous layout" onClick="{{prev}}" style="position: absolute; left: 8px; width: 44px; height: 44px; border-radius: 22px; border: 0; background: #FFFFFF; color: #15171C; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: {{prevOpacity}};">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
       </button>
-      <button type="button" onClick="{{toggleZoom}}" aria-label="Zoom in on the page" style="padding: 0; border: 0; background: transparent; cursor: zoom-in;">
-        <img src="{{imgSrc}}" alt="{{imgAlt}}" style="display: block; height: 340px; width: 263px; background: #FFFFFF; border-radius: 4px; box-shadow: 0 1px 2px rgba(20,24,40,0.12), 0 6px 18px rgba(20,24,40,0.10); object-fit: contain; user-select: none; -webkit-user-drag: none;">
-      </button>
-      <button type="button" aria-label="Next layout" onClick="{{next}}" style="position: absolute; right: 8px; width: 44px; height: 44px; border-radius: 22px; border: 0; background: #FFFFFF; color: #15171C; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+      <sc-if value="{{onMore}}" hint-placeholder-val="{{false}}">
+        <div style="height: 340px; width: 263px; box-sizing: border-box; border-radius: 4px; border: 2px dashed #C5CAD6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center;">
+          <span style="font-size: 15px; font-weight: 600;">Want another look?</span>
+          <span style="font-size: 13px; color: #4D5262; line-height: 1.4;">Same picture, new paths.</span>
+          <button type="button" onClick="{{more}}" style="height: 44px; padding: 0 20px; border-radius: 22px; border: 0; background: #DCE4FF; color: #1A3696; font-size: 14px; font-weight: 600; cursor: pointer;">More layouts</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{onLayout}}" hint-placeholder-val="{{true}}">
+        <button type="button" onClick="{{toggleZoom}}" aria-label="Zoom in on the page" style="padding: 0; border: 0; background: transparent; cursor: zoom-in;">
+          <img src="{{imgSrc}}" alt="{{imgAlt}}" style="display: block; height: 340px; width: 263px; background: #FFFFFF; border-radius: 4px; box-shadow: 0 1px 2px rgba(20,24,40,0.12), 0 6px 18px rgba(20,24,40,0.10); object-fit: contain; user-select: none; -webkit-user-drag: none;">
+        </button>
+      </sc-if>
+      <button type="button" aria-label="Next layout" onClick="{{next}}" style="position: absolute; right: 8px; width: 44px; height: 44px; border-radius: 22px; border: 0; background: #FFFFFF; color: #15171C; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: {{nextOpacity}};">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
       </button>
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
-      <span style="font-size: 13px; color: #4D5262;">{{layoutLabel}}</span>
+      <span style="font-size: 13px; color: #4D5262; min-width: 88px;">{{layoutLabel}}</span>
       <button type="button" onPointerDown="{{peekOn}}" onPointerUp="{{peekOff}}" onPointerLeave="{{peekOff}}" style="height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid #C5CAD6; background: {{peekBg}}; color: {{peekFg}}; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; touch-action: none;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
         Hold to see answer
@@ -58,13 +67,13 @@ button{font-family:inherit}
           <span style="font-size: 16px; font-weight: 600;">{{picName}}</span>
           <span style="font-size: 13px; color: #4D5262;">{{picSource}}</span>
         </div>
-        <button type="button" onClick="{{swapPic}}" style="height: 40px; padding: 0 12px; border: 0; background: transparent; color: #2F55D4; font-size: 14px; font-weight: 600; border-radius: 20px; cursor: pointer;">Swap (demo)</button>
+        <button type="button" onClick="{{swapPic}}" style="height: 40px; padding: 0 10px; border: 0; background: transparent; color: #2F55D4; font-size: 14px; font-weight: 600; border-radius: 20px; cursor: pointer;">Swap (demo)</button>
         <a href="Picture.dc.html" style="height: 40px; padding: 0 16px; border-radius: 20px; background: #DCE4FF; color: #1A3696; font-size: 14px; font-weight: 600; display: flex; align-items: center; text-decoration: none;">Change</a>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <span style="font-size: 13px; font-weight: 600; color: #4D5262;">Difficulty</span>
-        <div role="group" aria-label="Difficulty" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+        <div role="group" aria-label="Difficulty" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
           <sc-for list="{{diffs}}" as="d" hint-placeholder-count="3">
             <button type="button" onClick="{{d.pick}}" aria-pressed="{{d.pressed}}" style="height: 40px; border: 0; border-left: {{d.divider}}; background: {{d.bg}}; color: {{d.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{d.label}}</button>
           </sc-for>
@@ -78,7 +87,7 @@ button{font-family:inherit}
 
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <span style="font-size: 13px; font-weight: 600; color: #4D5262;">Style</span>
-        <div role="group" aria-label="Style" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+        <div role="group" aria-label="Style" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
           <sc-for list="{{styles}}" as="s" hint-placeholder-count="2">
             <button type="button" onClick="{{s.pick}}" aria-pressed="{{s.pressed}}" style="height: 40px; border: 0; border-left: {{s.divider}}; background: {{s.bg}}; color: {{s.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{s.label}}</button>
           </sc-for>
@@ -87,10 +96,10 @@ button{font-family:inherit}
 
       <div style="display: flex; align-items: center; gap: 12px; padding-top: 4px; border-top: 1px solid #E6E8EE;">
         <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px; padding-top: 10px;">
-          <span style="font-size: 15px; font-weight: 600;">Manual controls</span>
-          <span style="font-size: 13px; color: #4D5262;">Exact sizes, branching, paper, seed</span>
+          <span style="font-size: 15px; font-weight: 600;">Manual</span>
+          <span style="font-size: 13px; color: #4D5262;">Exact size, paper, branching, fixes, seed</span>
         </div>
-        <button type="button" role="switch" aria-checked="{{manual}}" aria-label="Manual controls" onClick="{{toggleManual}}" style="margin-top: 10px; width: 52px; height: 32px; border-radius: 16px; border: 2px solid {{swBorder}}; background: {{swBg}}; position: relative; cursor: pointer; padding: 0;">
+        <button type="button" role="switch" aria-checked="{{manual}}" aria-label="Manual" onClick="{{toggleManual}}" style="margin-top: 10px; width: 52px; height: 32px; border-radius: 16px; border: 2px solid {{swBorder}}; background: {{swBg}}; position: relative; cursor: pointer; padding: 0;">
           <span style="position: absolute; top: 4px; left: {{knobLeft}}; width: 20px; height: 20px; border-radius: 10px; background: {{knobBg}};"></span>
         </button>
       </div>
@@ -103,23 +112,41 @@ button{font-family:inherit}
             <span style="min-width: 64px; text-align: center; font-size: 14px; font-weight: 600;">{{mmText}}</span>
             <button type="button" aria-label="Wider" style="width: 40px; height: 40px; border-radius: 20px; border: 1px solid #C5CAD6; background: #FFFFFF; font-size: 18px; color: #15171C; cursor: pointer;">+</button>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <span style="font-size: 14px;">Paths</span>
-            <div role="group" aria-label="Paths" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
-              <sc-for list="{{pathsOpts}}" as="p" hint-placeholder-count="2">
-                <button type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="height: 40px; border: 0; border-left: {{p.divider}}; background: {{p.bg}}; color: {{p.fg}}; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{p.opacity}};">{{p.label}}</button>
-              </sc-for>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+            <button type="button" style="height: 52px; border-radius: 12px; border: 1px solid #C5CAD6; background: #FFFFFF; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 0 12px; cursor: pointer; color: #15171C;"><span style="font-size: 12px; color: #4D5262;">Paper</span><span style="font-size: 14px; font-weight: 600;">Letter (region)</span></button>
+            <button type="button" style="height: 52px; border-radius: 12px; border: 1px solid #C5CAD6; background: #FFFFFF; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 0 12px; cursor: pointer; color: #15171C;"><span style="font-size: 12px; color: #4D5262;">Orientation</span><span style="font-size: 14px; font-weight: 600;">Auto (portrait)</span></button>
+          </div>
+          <sc-if value="{{isClassic}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 14px;">Paths</span>
+              <div role="group" aria-label="Paths" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+                <sc-for list="{{pathsOpts}}" as="p" hint-placeholder-count="2">
+                  <button type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="height: 40px; border: 0; border-left: {{p.divider}}; background: {{p.bg}}; color: {{p.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{p.label}}</button>
+                </sc-for>
+              </div>
+              <span style="font-size: 12px; color: #4D5262;">{{pathsNote}}</span>
             </div>
-            <span style="font-size: 12px; color: #4D5262;">{{pathsNote}}</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="flex-grow: 1; font-size: 14px;">Paper</span>
-            <span style="font-size: 14px; font-weight: 600;">Letter</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D5262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="flex-grow: 1; font-size: 14px;">Auto-fix picture problems</span>
-            <span style="font-size: 14px; font-weight: 600; color: #1E5631;">On</span>
+          </sc-if>
+          <sc-if value="{{isFlow}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 14px;">Wiggliness</span>
+              <div role="group" aria-label="Wiggliness" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+                <sc-for list="{{wiggleOpts}}" as="w" hint-placeholder-count="3">
+                  <button type="button" onClick="{{w.pick}}" aria-pressed="{{w.pressed}}" style="height: 40px; border: 0; border-left: {{w.divider}}; background: {{w.bg}}; color: {{w.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{w.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 14px;">Automatic fixes</span>
+            <sc-for list="{{fixes}}" as="f" hint-placeholder-count="2">
+              <div style="display: flex; align-items: center; gap: 8px; min-height: 36px;">
+                <span style="flex-grow: 1; font-size: 13px; color: #4D5262;">{{f.label}}</span>
+                <button type="button" role="switch" aria-checked="{{f.on}}" aria-label="{{f.label}}" onClick="{{f.toggle}}" style="width: 44px; height: 26px; border-radius: 13px; border: 2px solid {{f.border}}; background: {{f.bg}}; position: relative; cursor: pointer; padding: 0;">
+                  <span style="position: absolute; top: 3px; left: {{f.knob}}; width: 16px; height: 16px; border-radius: 8px; background: {{f.knobBg}};"></span>
+                </button>
+              </div>
+            </sc-for>
           </div>
           <div style="display: flex; align-items: center; gap: 8px;">
             <span style="flex-grow: 1; font-size: 14px;">Layout seed</span>
@@ -132,7 +159,7 @@ button{font-family:inherit}
     <div style="flex-shrink: 0; display: flex; gap: 12px; padding: 12px 20px 20px; border-top: 1px solid #E6E8EE; background: #FFFFFF;">
       <button type="button" style="flex-grow: 1; height: 52px; border-radius: 26px; border: 1px solid #C5CAD6; background: #FFFFFF; color: #15171C; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"></path></svg>
-        Share
+        Share link
       </button>
       <button type="button" style="flex-grow: 2; height: 52px; border-radius: 26px; border: 0; background: #2F55D4; color: #FFFFFF; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3.5h12V9"></path><rect x="3.5" y="9" width="17" height="8" rx="2"></rect><path d="M6 14h12v6.5H6z"></path></svg>
@@ -160,78 +187,100 @@ button{font-family:inherit}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { pic: 'ghost', diff: 'medium', style: 'flow', paths: 'one', manual: false, seed: 1, peek: false };
+    this.state = { pic: 'ghost', diff: 'medium', style: 'flow', paths: 'one', wiggle: 'medium', manual: false, page: 1, extra: 0, peek: false, zoom: false, crop: true, join: true };
   }
   renderVals() {
     var s = this.state;
     var self = this;
+    var BLOB = {"cat_easy_classic_1":"a0b3c13bf5c997f9dcc74fa7e6c94f05","cat_easy_classic_1_solution":"6cf5286448efd2f3ed225ad21055b1fe","cat_easy_classic_2":"bd4ff5cb854095a0b3efd59e7bf90b7e","cat_easy_classic_2_solution":"306fd3b43d51b49106d603651a8ae510","cat_easy_classic_3":"3a7de3ee24cc0ed637e2c9f3a9c344b6","cat_easy_classic_3_solution":"e57d050fde63e707df0660abcf22176d","cat_easy_flow_1":"3f47f009e7a6452780425c1d82f7c792","cat_easy_flow_1_solution":"6dcc514690f47c523e674d682d685e49","cat_easy_flow_2":"aae8aa4ae188deebe3dd9f367c01b625","cat_easy_flow_2_solution":"5dd29f8b2a72887ff374618e929d1bd6","cat_easy_flow_3":"e6e81f04f182aced7e14eadcadae6910","cat_easy_flow_3_solution":"3dc6c052b4226b8fb031c22f4db29199","cat_easy_maze_1":"8b24133f58530c5b7c90c84a1e06ec4a","cat_easy_maze_1_solution":"bb26518ddc11c4469787695431538706","cat_easy_maze_2":"47a5ae151879c2b6875a02a920960e9d","cat_easy_maze_2_solution":"1e51cb9056578ecb4cb2bc0b33fcc1b1","cat_easy_maze_3":"026e71f0e002f9582a5c88330a197a77","cat_easy_maze_3_solution":"512aff2b5f26208e16ad7f5853b191d6","cat_hard_classic_1":"68e4d67627638e2ca11559d98ecff13b","cat_hard_classic_1_solution":"32a0f3fe537624118bb9a2017f9512a9","cat_hard_classic_2":"a133527057262f773eb7a60bed711e37","cat_hard_classic_2_solution":"1d1de40690c3876a2ace7abf8f55b801","cat_hard_classic_3":"c4ad53605e85a0bca77ec627dcaf5f1d","cat_hard_classic_3_solution":"7e8ae8a9da200817a762bd406b01f331","cat_hard_flow_1":"4cebb475df69e0c86db7cbc6e3c89d75","cat_hard_flow_1_solution":"388bb82acf02f30b7e707ff142d62df8","cat_hard_flow_2":"75fd75c51736bf1f3d969a08cdc71204","cat_hard_flow_2_solution":"5e2e3209258562494e88fd8c78a12a1e","cat_hard_flow_3":"35a1645d68289d6cb1c362281e982418","cat_hard_flow_3_solution":"31bc6bbcda17dff8534e9a1dd9a656d4","cat_hard_maze_1":"06671708096d6ca14b4f4a18a9aac628","cat_hard_maze_1_solution":"6b361a575b2ef948717e89633f6ea755","cat_hard_maze_2":"4191613487e8fada869ac5fd0742f2d8","cat_hard_maze_2_solution":"c0487bf8fc4397b90146af1050936f79","cat_hard_maze_3":"d3774f8e7e45c9e80b3572ffd3a2b878","cat_hard_maze_3_solution":"53f2a505f5e5c7b2fa023e5d6124fd7e","cat_medium_classic_1":"98633179f394d36f6bf04595556c0c09","cat_medium_classic_1_solution":"ed847dcfcede95048b556e122f300bfb","cat_medium_classic_2":"e5db377e89ea80a9aba9753f18e2c7ff","cat_medium_classic_2_solution":"ec01f5a4ea9e55bd629b4944631d254a","cat_medium_classic_3":"1afbd57c13c74f91160cc9085089b505","cat_medium_classic_3_solution":"0103637f935c55a8ee8acc4550c064c1","cat_medium_flow_1":"dec1533a293f2d23a6431e139857d94b","cat_medium_flow_1_solution":"ee47d0e8b3e8a29773643fb54e17e26f","cat_medium_flow_2":"fe0730cfc3d6f4dfc4b16d41b31a2edb","cat_medium_flow_2_solution":"fa78f776f7c126afa72c97c36259b198","cat_medium_flow_3":"2a6f51912d83b044fd4378089374dd25","cat_medium_flow_3_solution":"a92b7908dfb58988de037f73d942d976","cat_medium_maze_1":"21802fc0a2b80d913697828b5b5caa39","cat_medium_maze_1_solution":"99f570b71e1bf85afa7c845c0d9897cd","cat_medium_maze_2":"5698f1d35de78f77b959d279c22c00d8","cat_medium_maze_2_solution":"969b2c11297bbd54c7db0dfbf4348e3b","cat_medium_maze_3":"0ff7782980e0c32777b72cf2ca87261d","cat_medium_maze_3_solution":"69676c0813a510aecca771e4e8514817","ghost_easy_classic_1":"9bc3b7931719b0ec03352cadf6bb5020","ghost_easy_classic_1_solution":"235a16a74558b0dea399305628af7bf0","ghost_easy_classic_2":"e317089ff748046bff659d9f7bbb738e","ghost_easy_classic_2_solution":"8d4846f646d45e63e3659ebf081d714e","ghost_easy_classic_3":"37bdb74a8bb10af53701adafa8261f39","ghost_easy_classic_3_solution":"8a4ed5b233bec834fb0cb32397c5227f","ghost_easy_flow_1":"a12df3e91e0109289d4c3cd1c66b7151","ghost_easy_flow_1_solution":"d8e1027bd337bfc2626840f5bed1ad9f","ghost_easy_flow_2":"0bb6cbf7852b7f30141a1cbfeb1bd371","ghost_easy_flow_2_solution":"133f36807fac65e9c6ed32fa062f9be1","ghost_easy_flow_3":"74c9868656130c1524b441c4f5c4cba6","ghost_easy_flow_3_solution":"05ae77302451e75f203bc3936aae1f44","ghost_easy_maze_1":"09ac0340d65264f1f98a432d7674dc39","ghost_easy_maze_1_solution":"ba367495daa19d9147160d6e4241181a","ghost_easy_maze_2":"0f6f18075061ca193d813c28bc747dff","ghost_easy_maze_2_solution":"fce133b4481618ae8636ec9651ac67ea","ghost_easy_maze_3":"3cbd9689165f54c3da35b73a38b7caaa","ghost_easy_maze_3_solution":"74b15ecd92853cca533a5855181097ca","ghost_hard_classic_1":"7d8b2a7c194351389495080b36ac8fd3","ghost_hard_classic_1_solution":"3406cfd5590262b2574953da8e5f8019","ghost_hard_classic_2":"fbcad20403f1c26c9f0922b01ba15659","ghost_hard_classic_2_solution":"0b0e80dc1a7159bfc4bf8518942eb141","ghost_hard_classic_3":"d9ee9b0a2e9e630705305fffb9c4af29","ghost_hard_classic_3_solution":"36cc00e25a6cd021e1d8fe689e627bdf","ghost_hard_flow_1":"9e2ed8333b768df6284116f53179f031","ghost_hard_flow_1_solution":"3365449d90d807ec3b25e333e26c3699","ghost_hard_flow_2":"37ec7859e51a968e8c6fcb667044a019","ghost_hard_flow_2_solution":"57c04b0d346f6ff2722338d1bfbedab5","ghost_hard_flow_3":"ebb72e656bbbe4e6d43ba7756e124f9a","ghost_hard_flow_3_solution":"622668b108fa56ae23512563f5bb7239","ghost_hard_maze_1":"e55276716c80bf221970e127c8a90ed9","ghost_hard_maze_1_solution":"92613f18cd28221a1abd29c7f047e652","ghost_hard_maze_2":"a4c7c675f40e863dac8f42bfc935ffe3","ghost_hard_maze_2_solution":"31497f613d55729cf6a5dbfb898b1ee8","ghost_hard_maze_3":"1434cc60ba8eb56eb71248e4547695c7","ghost_hard_maze_3_solution":"57d2e1de9e669c8145a9a30654815a32","ghost_medium_classic_1":"e6d9097c3ca8f5b45aa5513cf2dd0d96","ghost_medium_classic_1_solution":"b0bf316bdb72ee5a68a0c8c5a9af6503","ghost_medium_classic_2":"aa4dca5c4fa453d600a6e0da7f7daff7","ghost_medium_classic_2_solution":"768b8148325fc19374ea3cc372478402","ghost_medium_classic_3":"d7b583ab576894d6327444cff68cb7ae","ghost_medium_classic_3_solution":"11dd1c33c740e76e7fb15d96d45180ed","ghost_medium_flow_1":"bd3a626fa1c74a0a1c2891fd879c2442","ghost_medium_flow_1_solution":"575e17f00f65b64c8a9ca1eb82c4204f","ghost_medium_flow_2":"7b92561beb917c579ad701c4a6e5a538","ghost_medium_flow_2_solution":"ec10eb17edb2ea4abc6a48add2498976","ghost_medium_flow_3":"9b515940083f7259ec70a40a07e7b75d","ghost_medium_flow_3_solution":"d1196b46022f25344b13ef5da411a879","ghost_medium_maze_1":"a981225ca1e38b56b3c92f226fbdf77d","ghost_medium_maze_1_solution":"82579e63b78e4641b6d02d8ab954f0b3","ghost_medium_maze_2":"4de7caa5d84e1ca37c9eef03454f3fb8","ghost_medium_maze_2_solution":"3cc37ef939b875d06e5ade22c1493e78","ghost_medium_maze_3":"9516a927cb4e043beda2ba63da67d4f4","ghost_medium_maze_3_solution":"b9aa7b61b2128f626b34ad6aa223816c","mask_cat_easy":"2d7777010111136ce7f33d85bf7b2cc8","mask_cat_hard":"8ab23561e8fb08e3cd64b8e94fb39b3a","mask_cat_medium":"74a65bb0aafa53d4f728e37747bb90c8","mask_ghost_easy":"a82436cab363d9323f58e2939b16aef8","mask_ghost_hard":"b1915d644ac29267ded2a4ebccecb63e","mask_ghost_medium":"079bc360d088f64a8f0bb68c18a82966"};
     var info = {
       ghost: {
-        name: 'Ghost', source: 'Pixel art · 12 × 16',
-        easy:   { grid: '6 × 8', mm: 11, tool: 'crayons', tone: 'warn', text: 'At Easy the eyes and mouth disappear. Only the outline is left.' },
-        medium: { grid: '11 × 15', mm: 7, tool: 'markers', tone: 'warn', text: 'The mouth is one cell wide and may close up in Flow.' },
-        hard:   { grid: '30 × 40', mm: 3, tool: 'fine pen or sharp pencil', tone: 'ok', text: 'All features survive at this size.' }
+        name: 'Ghost', source: 'Library · Halloween',
+        easy:   { grid: '8 × 11', mm: 11, tool: 'crayons, chunky markers', lost: 0 },
+        medium: { grid: '13 × 17', mm: 7, tool: 'markers', lost: 0 },
+        hard:   { grid: '31 × 41', mm: 3, tool: 'fine pen, sharp pencil', lost: 0 }
       },
       cat: {
-        name: 'Cat', source: 'Drawing · 600 × 680 px',
-        easy:   { grid: '6 × 7', mm: 11, tool: 'crayons', tone: 'warn', text: 'At Easy the eyes, nose and tail loop disappear. Only the outline is left.' },
-        medium: { grid: '11 × 13', mm: 7, tool: 'markers', tone: 'warn', text: 'The nose and tail loop disappear. The eyes are one cell each.' },
-        hard:   { grid: '30 × 34', mm: 3, tool: 'fine pen or sharp pencil', tone: 'ok', text: 'All features survive at this size.' }
+        name: 'Cat', source: 'Image file · cat.png',
+        easy:   { grid: '8 × 9', mm: 11, tool: 'crayons, chunky markers', lost: 3 },
+        medium: { grid: '13 × 15', mm: 7, tool: 'markers', lost: 2 },
+        hard:   { grid: '31 × 35', mm: 3, tool: 'fine pen, sharp pencil', lost: 0 }
       }
     };
     var p = info[s.pic];
     var d = p[s.diff];
     var useMaze = s.style === 'classic' && s.paths === 'branch';
     var st = s.style === 'flow' ? 'flow' : (useMaze ? 'maze' : 'classic');
-    var BLOB = {"cat_easy_classic_1":"5f1d295b88e5697920278e47870150b8","cat_easy_classic_1_solution":"d6b4bf7c63347e2cc7749907dc982644","cat_easy_classic_2":"d8fa4a9098217d600edd37e756bae733","cat_easy_classic_2_solution":"46ebb14e2820743e61ef281f374ab4aa","cat_easy_flow_1":"6b6326f8e654eb8558f1fc1188e3e9cf","cat_easy_flow_1_solution":"30b836b15b44840a7969ab2cc16c2543","cat_easy_flow_2":"99cbd79a489a8d143384c43399d3e802","cat_easy_flow_2_solution":"9a5416acdfe58fcdd4a01fd49965378a","cat_easy_maze_1":"780c7bd0ac433ecd34e5544a43369b55","cat_easy_maze_1_solution":"fbfcfabfd4de5562166d66e020193c6b","cat_easy_maze_2":"cb9fe34e959d9ecc923a529a75f1be8d","cat_easy_maze_2_solution":"9ce6d6740d8356f224773a24fb6a4850","cat_hard_classic_1":"524ee27cecdd62d7724c4b22a63229c2","cat_hard_classic_1_solution":"82c0dfb1d53849569223953da2d205ad","cat_hard_classic_2":"d912d5bc5e4426af6fb65e5e765de45d","cat_hard_classic_2_solution":"f06ea872659e8f53e177a5c544f0d47f","cat_hard_flow_1":"4204d5e6543554a3e65c6b653f578193","cat_hard_flow_1_solution":"83f65c59d7bd361a525032e564b06e89","cat_hard_flow_2":"cc864397ad78495b301c149f38b9af19","cat_hard_flow_2_solution":"b708e0941b5b588d7aa8af9f751cde61","cat_hard_maze_1":"14d80c869c3f7fa6170d0ba05099ba58","cat_hard_maze_1_solution":"33dd04f4be93d962ca3af5f5a37b20f8","cat_hard_maze_2":"1bae25033da9def5e53fddc3f1b830ef","cat_hard_maze_2_solution":"e168cde249ce4cd0a2c1af530ec55939","cat_medium_classic_1":"2055b482e32acd5f2c9ab76b56bd9ecf","cat_medium_classic_1_solution":"64c2152555b112ee225ce0d1c5154fec","cat_medium_classic_2":"eeb5cd142bb45f780b9a750067d3d50a","cat_medium_classic_2_solution":"c568464c470945b478e50da309c02d83","cat_medium_flow_1":"45fe87b106e9e65d2ccc1ea02004c2f3","cat_medium_flow_1_solution":"030d67734c61a379c91118419314609c","cat_medium_flow_2":"b7303b2fac57a8e7d923958dd9c0484b","cat_medium_flow_2_solution":"47d3abb069e101ba947e3b1953c58fb0","cat_medium_maze_1":"8f898840ace45e4548ac6e4246333fb8","cat_medium_maze_1_solution":"3ffdd47efab2261ce38162940a2cd7b1","cat_medium_maze_2":"325ee657d087c0a18e9e815508134d0b","cat_medium_maze_2_solution":"6537ebf0f8dd7765c06819d670e822fb","ghost_easy_classic_1":"42d2795f707020470e11758ea48942eb","ghost_easy_classic_1_solution":"d5c56487e214026ed85c9b1711b6dfdc","ghost_easy_classic_2":"222feda069cb64fb724df8bc00aa34b1","ghost_easy_classic_2_solution":"432943adca9f56882ba527767435fae4","ghost_easy_flow_1":"af5a0bcf4ec5a681469004f7214ec211","ghost_easy_flow_1_solution":"2787935ce4b9395575ac0a03fb8d8296","ghost_easy_flow_2":"06fa52aa55e56afff7bf941b638b16aa","ghost_easy_flow_2_solution":"deb40c3b51bcc61cf418a6d72f46d13d","ghost_easy_maze_1":"08b40e3a1ae1a6952dbf3c8b0a23b0ca","ghost_easy_maze_1_solution":"b6dde19271f6265645df7f43c8c512e0","ghost_easy_maze_2":"30c4844f8c31197445eb2b95f353b596","ghost_easy_maze_2_solution":"41bb1b55cba0c3c06f2ead22d096710b","ghost_hard_classic_1":"b2a5ee5bfc93f3baa2a149bcf467f5b9","ghost_hard_classic_1_solution":"2df5924b4daefbc8100bfa243a4a6ef9","ghost_hard_classic_2":"0c190484e4ec0c48d714ec1787fc168d","ghost_hard_classic_2_solution":"8fc372223a53629cc5e3aea382309c13","ghost_hard_flow_1":"118241e19508bad51c0acbbfb3612407","ghost_hard_flow_1_solution":"d489be1936303e9587d98f74ed7c3b4c","ghost_hard_flow_2":"6ba179c4d1098ecd1d18b6187778f6b9","ghost_hard_flow_2_solution":"f6cfefe1e79af1a33291487f85e8db74","ghost_hard_maze_1":"5c99d4f8e384596e56be72879f02df1b","ghost_hard_maze_1_solution":"2ae34201ccb0082e0e0472a85dfc95c8","ghost_hard_maze_2":"fa6af801aa9fb52c363e21d684a8d7d0","ghost_hard_maze_2_solution":"715ee49cb4ae6b8b45f05b1c6f4c2161","ghost_medium_classic_1":"6ecb2e52f8a371f5370b02112ede458b","ghost_medium_classic_1_solution":"ee6d469cc1ab6dbcb1693c44cf63fc66","ghost_medium_classic_2":"a97b20e39e82ee11efd6ffc27971c469","ghost_medium_classic_2_solution":"241550d330966aaa910f704d9c21313e","ghost_medium_flow_1":"f4a201d8e2542557ace5115b4108ce31","ghost_medium_flow_1_solution":"9b11459f2fe3bf5fc463a77e6f1fff4c","ghost_medium_flow_2":"0ffab77bd723ab96de92fa4e958fc42e","ghost_medium_flow_2_solution":"d0249cdbd42010b67ea670985578de79","ghost_medium_maze_1":"5b8bf7dabc5d3bdcbbfe93b02c089704","ghost_medium_maze_1_solution":"5e8a8fe19940f3507c6ffcfd5d7019b8","ghost_medium_maze_2":"364a95230a410b741c427a7196560353","ghost_medium_maze_2_solution":"b7437f7f2771012600205e4df8808c5c","mask_cat_easy":"6fa753428c29a187d4e9cb164e6069f9","mask_cat_hard":"9b893be637df985db8e9ccd63bf7cb62","mask_cat_medium":"e3f2180530a6ada632d9bf340a83ac11","mask_ghost_easy":"88f8f20ac55d9025b54b453e2b94a41e","mask_ghost_hard":"f201f90702fea5baba8e191577b021de","mask_ghost_medium":"b1b2f95c71a9306703832a4164dc8bdf"};
-    var file = '/_blob/' + BLOB[s.pic + '_' + s.diff + '_' + st + '_' + s.seed + (s.peek ? '_solution' : '')];
-    function seg(opts, current, key, disabled) {
+    var layoutIdx = s.page;   // 1..3 real layouts; 4 = the "more layouts" card
+    var onMore = layoutIdx === 4;
+    var file = onMore ? '' : '/_blob/' + BLOB[s.pic + '_' + s.diff + '_' + st + '_' + layoutIdx + (s.peek ? '_solution' : '')];
+    function seg(opts, current, key) {
       return opts.map(function (o, i) {
         var on = o.id === current;
         return {
           label: o.label, pressed: on ? 'true' : 'false',
           bg: on ? '#DCE4FF' : '#FFFFFF', fg: on ? '#1A3696' : '#15171C',
           divider: i === 0 ? '0' : '1px solid #C5CAD6',
-          opacity: disabled ? '0.4' : '1',
-          pick: function () { if (!disabled) { var u = {}; u[key] = o.id; u.seed = 1; self.setState(u); } }
+          pick: function () { var u = {}; u[key] = o.id; u.page = 1; u.extra = 0; self.setState(u); }
         };
       });
     }
+    function sw(on) {
+      return { border: on ? '#2F55D4' : '#7A8090', bg: on ? '#2F55D4' : '#E6E8EE', knob: on ? '22px' : '3px', knobBg: on ? '#FFFFFF' : '#7A8090' };
+    }
+    var fixes = [
+      { key: 'crop', label: 'Crop to the picture (entrance edge)' },
+      { key: 'join', label: 'Join separate pieces' }
+    ].map(function (f) {
+      var on = !!s[f.key]; var c = sw(on);
+      return { label: f.label, on: on ? 'true' : 'false', border: c.border, bg: c.bg, knob: c.knob, knobBg: c.knobBg,
+               toggle: function () { var u = {}; u[f.key] = !self.state[f.key]; self.setState(u); } };
+    });
+    var harder = s.diff === 'easy' ? 'Medium or Hard' : 'Hard';
+    var pfText = d.lost === 0
+      ? 'All details survive at this difficulty.'
+      : (d.lost === 1 ? '1 detail is' : d.lost + ' details are') + ' too small at ' + s.diff.charAt(0).toUpperCase() + s.diff.slice(1) + ' (highlighted when you change the picture). Try a more detailed setting: ' + harder + '.';
     var on = s.manual;
+    var m = sw(on);
+    var layoutNo = layoutIdx + s.extra;
     return {
+      onMore: onMore, onLayout: !onMore,
       imgSrc: file,
-      imgAlt: (s.peek ? 'Answer key' : 'Puzzle') + ' preview, layout ' + s.seed,
-      layoutLabel: 'Layout ' + s.seed + (s.seed === 1 ? ' · best match' : ''),
-      prevOpacity: s.seed === 1 ? '0.4' : '1',
-      prev: function () { if (s.seed > 1) self.setState({ seed: s.seed - 1 }); },
-      next: function () { self.setState({ seed: s.seed === 2 ? 1 : 2 }); },
-      peekOn: function () { self.setState({ peek: true }); },
+      imgAlt: (s.peek ? 'Answer' : 'Puzzle') + ', layout ' + layoutNo,
+      layoutLabel: onMore ? 'More layouts' : 'Layout ' + layoutNo + ' of ' + (3 + s.extra),
+      prevOpacity: s.page === 1 ? '0.4' : '1',
+      nextOpacity: s.page === 4 ? '0.4' : '1',
+      prev: function () { if (self.state.page > 1) self.setState({ page: self.state.page - 1 }); },
+      next: function () { if (self.state.page < 4) self.setState({ page: self.state.page + 1 }); },
+      more: function () { self.setState({ page: 1, extra: self.state.extra + 3 }); },
+      peekOn: function () { if (!onMore) self.setState({ peek: true }); },
       peekOff: function () { if (self.state.peek) self.setState({ peek: false }); },
       peekBg: s.peek ? '#15171C' : '#FFFFFF',
       peekFg: s.peek ? '#FFFFFF' : '#15171C',
-      maskSrc: '/_blob/' + BLOB['mask_' + s.pic + '_' + s.diff],
-      zoom: !!s.zoom,
+      zoom: !!s.zoom && !onMore,
       toggleZoom: function () { self.setState({ zoom: !self.state.zoom }); },
-      maskAlt: p.name + ' silhouette at ' + d.grid + ' cells',
+      maskSrc: '/_blob/' + BLOB['mask_' + s.pic + '_' + s.diff],
+      maskAlt: p.name + ' at ' + d.grid + ' cells',
       picName: p.name,
       picSource: p.source,
-      swapPic: function () { self.setState({ pic: s.pic === 'ghost' ? 'cat' : 'ghost', seed: 1 }); },
-      diffs: seg([{ id: 'easy', label: 'Easy' }, { id: 'medium', label: 'Medium' }, { id: 'hard', label: 'Hard' }], s.diff, 'diff', false),
-      sizeLine: on ? (d.grid + ' cells · ' + d.mm + ' mm corridors') : (d.grid + ' cells · for ' + d.tool),
-      pfBg: d.tone === 'ok' ? '#E1F3E6' : '#FFF1D6',
-      pfFg: d.tone === 'ok' ? '#1E5631' : '#5C3B00',
-      pfText: d.text,
-      styles: seg([{ id: 'flow', label: 'Flow' }, { id: 'classic', label: 'Classic' }], s.style, 'style', false),
+      swapPic: function () { self.setState({ pic: s.pic === 'ghost' ? 'cat' : 'ghost', page: 1, extra: 0 }); },
+      diffs: seg([{ id: 'easy', label: 'Easy' }, { id: 'medium', label: 'Medium' }, { id: 'hard', label: 'Hard' }], s.diff, 'diff'),
+      sizeLine: on ? (d.grid + ' cells · ' + d.mm + ' mm corridors · Letter') : (d.grid + ' cells · for ' + d.tool),
+      pfBg: d.lost === 0 ? '#E1F3E6' : '#FFF1D6',
+      pfFg: d.lost === 0 ? '#1E5631' : '#5C3B00',
+      pfText: pfText,
+      styles: seg([{ id: 'flow', label: 'Flow' }, { id: 'classic', label: 'Classic' }], s.style, 'style'),
       manual: on,
       toggleManual: function () { self.setState({ manual: !s.manual }); },
-      swBorder: on ? '#2F55D4' : '#7A8090',
-      swBg: on ? '#2F55D4' : '#E6E8EE',
-      knobLeft: on ? '26px' : '4px',
-      knobBg: on ? '#FFFFFF' : '#7A8090',
+      swBorder: m.border, swBg: m.bg, knobLeft: on ? '26px' : '4px', knobBg: m.knobBg,
       mmText: d.mm.toFixed(1) + ' mm',
-      pathsOpts: seg([{ id: 'one', label: 'One path' }, { id: 'branch', label: 'Branching' }], s.style === 'flow' ? 'one' : s.paths, 'paths', s.style === 'flow'),
-      pathsNote: s.style === 'flow' ? 'Branching needs Classic style for now.' : (useMaze ? 'A real maze with dead ends. Consider printing the answer key.' : 'One winding path, no dead ends.'),
-      seedText: '#' + (s.seed === 1 ? '40217' : '88153')
+      isClassic: s.style === 'classic',
+      isFlow: s.style === 'flow',
+      pathsOpts: seg([{ id: 'one', label: 'One path' }, { id: 'branch', label: 'Branching' }], s.paths, 'paths'),
+      pathsNote: useMaze ? 'A real maze with dead ends.' : 'One winding path, no dead ends.',
+      wiggleOpts: seg([{ id: 'calm', label: 'Calm' }, { id: 'medium', label: 'Medium' }, { id: 'loopy', label: 'Loopy' }], s.wiggle, 'wiggle'),
+      fixes: fixes,
+      seedText: '#' + (40217 + 3911 * layoutNo)
     };
   }
 }

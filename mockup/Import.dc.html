@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Image file import</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2F55D4}a:hover{color:#1E3FA8}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #15171C; font-family: 'Figtree', system-ui, sans-serif; overflow: hidden;">
+
+  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 20px 0 4px;">
+    <a href="Picture.dc.html" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #15171C;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M11 5l-7 7 7 7"></path></svg>
+    </a>
+    <h1 style="margin: 0; font-size: 20px; font-weight: 600; flex-grow: 1;">cat.png</h1>
+  </header>
+
+  <div style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 16px; display: flex; flex-direction: column; gap: 16px;">
+    <div role="group" aria-label="Preview" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+      <sc-for list="{{views}}" as="v" hint-placeholder-count="2">
+        <button type="button" onClick="{{v.pick}}" aria-pressed="{{v.pressed}}" style="height: 40px; border: 0; border-left: {{v.divider}}; background: {{v.bg}}; color: {{v.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{v.label}}</button>
+      </sc-for>
+    </div>
+
+    <div style="height: 300px; border-radius: 16px; background: #F3F4F7; display: flex; align-items: center; justify-content: center;">
+      <img src="{{previewSrc}}" alt="{{previewAlt}}" style="max-width: 82%; max-height: 270px; object-fit: contain; image-rendering: {{rendering}};">
+    </div>
+
+    <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 12px; background: {{pfBg}}; color: {{pfFg}};">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16.5v.01"></path></svg>
+      <span style="font-size: 13px; line-height: 1.4;">{{pfText}}</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <span style="font-size: 13px; font-weight: 600; color: #4D5262;">Difficulty</span>
+      <div role="group" aria-label="Difficulty" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+        <sc-for list="{{diffs}}" as="d" hint-placeholder-count="3">
+          <button type="button" onClick="{{d.pick}}" aria-pressed="{{d.pressed}}" style="height: 40px; border: 0; border-left: {{d.divider}}; background: {{d.bg}}; color: {{d.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{d.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <label for="thr" style="font-size: 14px; flex-shrink: 0;">Threshold</label>
+      <input id="thr" type="range" min="0" max="255" value="128" style="flex-grow: 1; accent-color: #2F55D4;">
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="flex-grow: 1; font-size: 14px;">Invert (light shape on dark)</span>
+      <button type="button" role="switch" aria-checked="false" aria-label="Invert" style="width: 44px; height: 26px; border-radius: 13px; border: 2px solid #7A8090; background: #E6E8EE; position: relative; cursor: pointer; padding: 0;">
+        <span style="position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 8px; background: #7A8090;"></span>
+      </button>
+    </div>
+  </div>
+
+  <div style="flex-shrink: 0; padding: 12px 20px 20px; border-top: 1px solid #E6E8EE;">
+    <a href="Main.dc.html" style="height: 52px; border-radius: 26px; background: #2F55D4; color: #FFFFFF; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; text-decoration: none;">Use this picture</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { diff: 'easy', view: 'source' }; }
+  renderVals() {
+    var s = this.state, self = this;
+    var LOST = { easy: '70740dcf4ed95eaa8e136d6c487731c5', medium: 'd9e438dc086821ca98a5844a10c19d12', hard: '6a01b21c56ca80c323a5400cf36e827b' };
+    var MASK = { easy: '2d7777010111136ce7f33d85bf7b2cc8', medium: '74a65bb0aafa53d4f728e37747bb90c8', hard: '8ab23561e8fb08e3cd64b8e94fb39b3a' };
+    var info = { easy: { grid: '8 × 9', lost: 3 }, medium: { grid: '13 × 15', lost: 2 }, hard: { grid: '31 × 35', lost: 0 } };
+    var d = info[s.diff];
+    function seg(opts, current, key) {
+      return opts.map(function (o, i) {
+        var on = o.id === current;
+        return { label: o.label, pressed: on ? 'true' : 'false', bg: on ? '#DCE4FF' : '#FFFFFF', fg: on ? '#1A3696' : '#15171C',
+                 divider: i === 0 ? '0' : '1px solid #C5CAD6', pick: function () { var u = {}; u[key] = o.id; self.setState(u); } };
+      });
+    }
+    var name = s.diff.charAt(0).toUpperCase() + s.diff.slice(1);
+    var harder = s.diff === 'easy' ? 'Medium or Hard' : 'Hard';
+    return {
+      views: seg([{ id: 'source', label: 'Your image' }, { id: 'grid', label: 'As printed' }], s.view, 'view'),
+      diffs: seg([{ id: 'easy', label: 'Easy' }, { id: 'medium', label: 'Medium' }, { id: 'hard', label: 'Hard' }], s.diff, 'diff'),
+      previewSrc: '/_blob/' + (s.view === 'source' ? LOST[s.diff] : MASK[s.diff]),
+      previewAlt: s.view === 'source' ? 'Your image, details lost at ' + name + ' in orange' : 'The picture at ' + d.grid + ' cells',
+      rendering: s.view === 'source' ? 'auto' : 'pixelated',
+      pfBg: d.lost === 0 ? '#E1F3E6' : '#FFF1D6',
+      pfFg: d.lost === 0 ? '#1E5631' : '#5C3B00',
+      pfText: d.lost === 0
+        ? 'Every detail survives at ' + name + ' (' + d.grid + ' cells).'
+        : 'The ' + d.lost + ' details in orange are too small at ' + name + ' (' + d.grid + ' cells). Try a more detailed setting: ' + harder + '.'
+    };
+  }
+}
+</script>
+</body>
+</html>
