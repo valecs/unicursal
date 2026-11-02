@@ -1,0 +1,8 @@
+# Pinned so the core's floating-point codegen only changes deliberately
+# (puzzle links regenerate from a seed, #5). Bump in its own commit and let
+# the golden tests say whether outputs moved.
+[toolchain]
+channel = "1.99.1"
+components = ["rustfmt", "clippy"]
+targets = ["wasm32-wasip1", "wasm32-unknown-unknown"]
+profile = "minimal"

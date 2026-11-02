@@ -1,0 +1,24 @@
+[workspace]
+resolver = "3"
+members = ["crates/unicursal-core", "crates/unicursal-cli"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+license = "AGPL-3.0-or-later"
+repository = "https://github.com/valecs/unicursal"
+publish = false
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+# Determinism (#10): platform float math is banned in clippy.toml; use libm.
+disallowed_methods = "deny"
+
+[profile.release]
+debug = 1
+
+[profile.test]
+opt-level = 2
