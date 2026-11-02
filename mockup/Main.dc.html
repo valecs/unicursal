@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Unicursal main screen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2F55D4}a:hover{color:#1E3FA8}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #EEF0F4; color: #15171C; font-family: 'Figtree', system-ui, sans-serif; overflow: hidden; position: relative;">
+
+  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px 0 20px;">
+    <h1 style="margin: 0; font-size: 20px; font-weight: 600; flex-grow: 1;">New puzzle</h1>
+    <button type="button" aria-label="Surprise me" style="width: 48px; height: 48px; border: 0; background: transparent; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #15171C; cursor: pointer;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"></rect><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"></circle><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"></circle><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"></circle><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"></circle></svg>
+    </button>
+    <button type="button" aria-label="Saved puzzles" style="width: 48px; height: 48px; border: 0; background: transparent; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #15171C; cursor: pointer;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12v17l-6-4-6 4z"></path></svg>
+    </button>
+  </header>
+
+  <section aria-label="Preview" style="flex-shrink: 0; height: 402px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+    <div style="position: relative; height: 352px; width: 100%; display: flex; align-items: center; justify-content: center;">
+      <button type="button" aria-label="Previous layout" onClick="{{prev}}" style="position: absolute; left: 8px; width: 44px; height: 44px; border-radius: 22px; border: 0; background: #FFFFFF; color: #15171C; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: {{prevOpacity}};">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+      </button>
+      <button type="button" onClick="{{toggleZoom}}" aria-label="Zoom in on the page" style="padding: 0; border: 0; background: transparent; cursor: zoom-in;">
+        <img src="{{imgSrc}}" alt="{{imgAlt}}" style="display: block; height: 340px; width: 263px; background: #FFFFFF; border-radius: 4px; box-shadow: 0 1px 2px rgba(20,24,40,0.12), 0 6px 18px rgba(20,24,40,0.10); object-fit: contain; user-select: none; -webkit-user-drag: none;">
+      </button>
+      <button type="button" aria-label="Next layout" onClick="{{next}}" style="position: absolute; right: 8px; width: 44px; height: 44px; border-radius: 22px; border: 0; background: #FFFFFF; color: #15171C; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+      </button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 13px; color: #4D5262;">{{layoutLabel}}</span>
+      <button type="button" onPointerDown="{{peekOn}}" onPointerUp="{{peekOff}}" onPointerLeave="{{peekOff}}" style="height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid #C5CAD6; background: {{peekBg}}; color: {{peekFg}}; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; touch-action: none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        Hold to see answer
+      </button>
+    </div>
+  </section>
+
+  <section aria-label="Settings" style="flex-grow: 1; min-height: 0; background: #FFFFFF; border-radius: 24px 24px 0 0; display: flex; flex-direction: column;">
+    <div style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 16px 20px 8px; display: flex; flex-direction: column; gap: 16px;">
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <img src="{{maskSrc}}" alt="{{maskAlt}}" style="width: 48px; height: 48px; object-fit: contain; border-radius: 8px; background: #F3F4F7; image-rendering: pixelated;">
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 16px; font-weight: 600;">{{picName}}</span>
+          <span style="font-size: 13px; color: #4D5262;">{{picSource}}</span>
+        </div>
+        <button type="button" onClick="{{swapPic}}" style="height: 40px; padding: 0 12px; border: 0; background: transparent; color: #2F55D4; font-size: 14px; font-weight: 600; border-radius: 20px; cursor: pointer;">Swap (demo)</button>
+        <a href="Picture.dc.html" style="height: 40px; padding: 0 16px; border-radius: 20px; background: #DCE4FF; color: #1A3696; font-size: 14px; font-weight: 600; display: flex; align-items: center; text-decoration: none;">Change</a>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 13px; font-weight: 600; color: #4D5262;">Difficulty</span>
+        <div role="group" aria-label="Difficulty" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+          <sc-for list="{{diffs}}" as="d" hint-placeholder-count="3">
+            <button type="button" onClick="{{d.pick}}" aria-pressed="{{d.pressed}}" style="height: 40px; border: 0; border-left: {{d.divider}}; background: {{d.bg}}; color: {{d.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{d.label}}</button>
+          </sc-for>
+        </div>
+        <span style="font-size: 13px; color: #4D5262;">{{sizeLine}}</span>
+        <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 12px; background: {{pfBg}}; color: {{pfFg}};">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16.5v.01"></path></svg>
+          <span style="font-size: 13px; line-height: 1.4;">{{pfText}}</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 13px; font-weight: 600; color: #4D5262;">Style</span>
+        <div role="group" aria-label="Style" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+          <sc-for list="{{styles}}" as="s" hint-placeholder-count="2">
+            <button type="button" onClick="{{s.pick}}" aria-pressed="{{s.pressed}}" style="height: 40px; border: 0; border-left: {{s.divider}}; background: {{s.bg}}; color: {{s.fg}}; font-size: 14px; font-weight: 600; cursor: pointer;">{{s.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; padding-top: 4px; border-top: 1px solid #E6E8EE;">
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px; padding-top: 10px;">
+          <span style="font-size: 15px; font-weight: 600;">Manual controls</span>
+          <span style="font-size: 13px; color: #4D5262;">Exact sizes, branching, paper, seed</span>
+        </div>
+        <button type="button" role="switch" aria-checked="{{manual}}" aria-label="Manual controls" onClick="{{toggleManual}}" style="margin-top: 10px; width: 52px; height: 32px; border-radius: 16px; border: 2px solid {{swBorder}}; background: {{swBg}}; position: relative; cursor: pointer; padding: 0;">
+          <span style="position: absolute; top: 4px; left: {{knobLeft}}; width: 20px; height: 20px; border-radius: 10px; background: {{knobBg}};"></span>
+        </button>
+      </div>
+
+      <sc-if value="{{manual}}" hint-placeholder-val="{{false}}">
+        <div style="display: flex; flex-direction: column; gap: 14px; padding-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="flex-grow: 1; font-size: 14px;">Corridor width</span>
+            <button type="button" aria-label="Narrower" style="width: 40px; height: 40px; border-radius: 20px; border: 1px solid #C5CAD6; background: #FFFFFF; font-size: 18px; color: #15171C; cursor: pointer;">−</button>
+            <span style="min-width: 64px; text-align: center; font-size: 14px; font-weight: 600;">{{mmText}}</span>
+            <button type="button" aria-label="Wider" style="width: 40px; height: 40px; border-radius: 20px; border: 1px solid #C5CAD6; background: #FFFFFF; font-size: 18px; color: #15171C; cursor: pointer;">+</button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 14px;">Paths</span>
+            <div role="group" aria-label="Paths" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #C5CAD6; border-radius: 20px; overflow: hidden;">
+              <sc-for list="{{pathsOpts}}" as="p" hint-placeholder-count="2">
+                <button type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="height: 40px; border: 0; border-left: {{p.divider}}; background: {{p.bg}}; color: {{p.fg}}; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{p.opacity}};">{{p.label}}</button>
+              </sc-for>
+            </div>
+            <span style="font-size: 12px; color: #4D5262;">{{pathsNote}}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="flex-grow: 1; font-size: 14px;">Paper</span>
+            <span style="font-size: 14px; font-weight: 600;">Letter</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D5262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="flex-grow: 1; font-size: 14px;">Auto-fix picture problems</span>
+            <span style="font-size: 14px; font-weight: 600; color: #1E5631;">On</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="flex-grow: 1; font-size: 14px;">Layout seed</span>
+            <span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">{{seedText}}</span>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="flex-shrink: 0; display: flex; gap: 12px; padding: 12px 20px 20px; border-top: 1px solid #E6E8EE; background: #FFFFFF;">
+      <button type="button" style="flex-grow: 1; height: 52px; border-radius: 26px; border: 1px solid #C5CAD6; background: #FFFFFF; color: #15171C; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"></path></svg>
+        Share
+      </button>
+      <button type="button" style="flex-grow: 2; height: 52px; border-radius: 26px; border: 0; background: #2F55D4; color: #FFFFFF; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3.5h12V9"></path><rect x="3.5" y="9" width="17" height="8" rx="2"></rect><path d="M6 14h12v6.5H6z"></path></svg>
+        Print
+      </button>
+    </div>
+  </section>
+
+  <sc-if value="{{zoom}}" hint-placeholder-val="{{false}}">
+    <div style="position: absolute; top: 0; left: 0; width: 390px; height: 844px; background: #15171C; display: flex; flex-direction: column;">
+      <div style="height: 56px; flex-shrink: 0; display: flex; align-items: center; padding: 0 8px 0 20px; color: #FFFFFF;">
+        <span style="flex-grow: 1; font-size: 15px; font-weight: 600;">{{imgAlt}} · scroll to pan</span>
+        <button type="button" onClick="{{toggleZoom}}" aria-label="Close zoom" style="width: 48px; height: 48px; border: 0; border-radius: 24px; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+      </div>
+      <div style="flex-grow: 1; min-height: 0; overflow: auto;">
+        <img src="{{imgSrc}}" alt="{{imgAlt}}" style="display: block; width: 774px; height: 1000px; background: #FFFFFF;">
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { pic: 'ghost', diff: 'medium', style: 'flow', paths: 'one', manual: false, seed: 1, peek: false };
+  }
+  renderVals() {
+    var s = this.state;
+    var self = this;
+    var info = {
+      ghost: {
+        name: 'Ghost', source: 'Pixel art · 12 × 16',
+        easy:   { grid: '6 × 8', mm: 11, tool: 'crayons', tone: 'warn', text: 'At Easy the eyes and mouth disappear. Only the outline is left.' },
+        medium: { grid: '11 × 15', mm: 7, tool: 'markers', tone: 'warn', text: 'The mouth is one cell wide and may close up in Flow.' },
+        hard:   { grid: '30 × 40', mm: 3, tool: 'fine pen or sharp pencil', tone: 'ok', text: 'All features survive at this size.' }
+      },
+      cat: {
+        name: 'Cat', source: 'Drawing · 600 × 680 px',
+        easy:   { grid: '6 × 7', mm: 11, tool: 'crayons', tone: 'warn', text: 'At Easy the eyes, nose and tail loop disappear. Only the outline is left.' },
+        medium: { grid: '11 × 13', mm: 7, tool: 'markers', tone: 'warn', text: 'The nose and tail loop disappear. The eyes are one cell each.' },
+        hard:   { grid: '30 × 34', mm: 3, tool: 'fine pen or sharp pencil', tone: 'ok', text: 'All features survive at this size.' }
+      }
+    };
+    var p = info[s.pic];
+    var d = p[s.diff];
+    var useMaze = s.style === 'classic' && s.paths === 'branch';
+    var st = s.style === 'flow' ? 'flow' : (useMaze ? 'maze' : 'classic');
+    var BLOB = {"cat_easy_classic_1":"5f1d295b88e5697920278e47870150b8","cat_easy_classic_1_solution":"d6b4bf7c63347e2cc7749907dc982644","cat_easy_classic_2":"d8fa4a9098217d600edd37e756bae733","cat_easy_classic_2_solution":"46ebb14e2820743e61ef281f374ab4aa","cat_easy_flow_1":"6b6326f8e654eb8558f1fc1188e3e9cf","cat_easy_flow_1_solution":"30b836b15b44840a7969ab2cc16c2543","cat_easy_flow_2":"99cbd79a489a8d143384c43399d3e802","cat_easy_flow_2_solution":"9a5416acdfe58fcdd4a01fd49965378a","cat_easy_maze_1":"780c7bd0ac433ecd34e5544a43369b55","cat_easy_maze_1_solution":"fbfcfabfd4de5562166d66e020193c6b","cat_easy_maze_2":"cb9fe34e959d9ecc923a529a75f1be8d","cat_easy_maze_2_solution":"9ce6d6740d8356f224773a24fb6a4850","cat_hard_classic_1":"524ee27cecdd62d7724c4b22a63229c2","cat_hard_classic_1_solution":"82c0dfb1d53849569223953da2d205ad","cat_hard_classic_2":"d912d5bc5e4426af6fb65e5e765de45d","cat_hard_classic_2_solution":"f06ea872659e8f53e177a5c544f0d47f","cat_hard_flow_1":"4204d5e6543554a3e65c6b653f578193","cat_hard_flow_1_solution":"83f65c59d7bd361a525032e564b06e89","cat_hard_flow_2":"cc864397ad78495b301c149f38b9af19","cat_hard_flow_2_solution":"b708e0941b5b588d7aa8af9f751cde61","cat_hard_maze_1":"14d80c869c3f7fa6170d0ba05099ba58","cat_hard_maze_1_solution":"33dd04f4be93d962ca3af5f5a37b20f8","cat_hard_maze_2":"1bae25033da9def5e53fddc3f1b830ef","cat_hard_maze_2_solution":"e168cde249ce4cd0a2c1af530ec55939","cat_medium_classic_1":"2055b482e32acd5f2c9ab76b56bd9ecf","cat_medium_classic_1_solution":"64c2152555b112ee225ce0d1c5154fec","cat_medium_classic_2":"eeb5cd142bb45f780b9a750067d3d50a","cat_medium_classic_2_solution":"c568464c470945b478e50da309c02d83","cat_medium_flow_1":"45fe87b106e9e65d2ccc1ea02004c2f3","cat_medium_flow_1_solution":"030d67734c61a379c91118419314609c","cat_medium_flow_2":"b7303b2fac57a8e7d923958dd9c0484b","cat_medium_flow_2_solution":"47d3abb069e101ba947e3b1953c58fb0","cat_medium_maze_1":"8f898840ace45e4548ac6e4246333fb8","cat_medium_maze_1_solution":"3ffdd47efab2261ce38162940a2cd7b1","cat_medium_maze_2":"325ee657d087c0a18e9e815508134d0b","cat_medium_maze_2_solution":"6537ebf0f8dd7765c06819d670e822fb","ghost_easy_classic_1":"42d2795f707020470e11758ea48942eb","ghost_easy_classic_1_solution":"d5c56487e214026ed85c9b1711b6dfdc","ghost_easy_classic_2":"222feda069cb64fb724df8bc00aa34b1","ghost_easy_classic_2_solution":"432943adca9f56882ba527767435fae4","ghost_easy_flow_1":"af5a0bcf4ec5a681469004f7214ec211","ghost_easy_flow_1_solution":"2787935ce4b9395575ac0a03fb8d8296","ghost_easy_flow_2":"06fa52aa55e56afff7bf941b638b16aa","ghost_easy_flow_2_solution":"deb40c3b51bcc61cf418a6d72f46d13d","ghost_easy_maze_1":"08b40e3a1ae1a6952dbf3c8b0a23b0ca","ghost_easy_maze_1_solution":"b6dde19271f6265645df7f43c8c512e0","ghost_easy_maze_2":"30c4844f8c31197445eb2b95f353b596","ghost_easy_maze_2_solution":"41bb1b55cba0c3c06f2ead22d096710b","ghost_hard_classic_1":"b2a5ee5bfc93f3baa2a149bcf467f5b9","ghost_hard_classic_1_solution":"2df5924b4daefbc8100bfa243a4a6ef9","ghost_hard_classic_2":"0c190484e4ec0c48d714ec1787fc168d","ghost_hard_classic_2_solution":"8fc372223a53629cc5e3aea382309c13","ghost_hard_flow_1":"118241e19508bad51c0acbbfb3612407","ghost_hard_flow_1_solution":"d489be1936303e9587d98f74ed7c3b4c","ghost_hard_flow_2":"6ba179c4d1098ecd1d18b6187778f6b9","ghost_hard_flow_2_solution":"f6cfefe1e79af1a33291487f85e8db74","ghost_hard_maze_1":"5c99d4f8e384596e56be72879f02df1b","ghost_hard_maze_1_solution":"2ae34201ccb0082e0e0472a85dfc95c8","ghost_hard_maze_2":"fa6af801aa9fb52c363e21d684a8d7d0","ghost_hard_maze_2_solution":"715ee49cb4ae6b8b45f05b1c6f4c2161","ghost_medium_classic_1":"6ecb2e52f8a371f5370b02112ede458b","ghost_medium_classic_1_solution":"ee6d469cc1ab6dbcb1693c44cf63fc66","ghost_medium_classic_2":"a97b20e39e82ee11efd6ffc27971c469","ghost_medium_classic_2_solution":"241550d330966aaa910f704d9c21313e","ghost_medium_flow_1":"f4a201d8e2542557ace5115b4108ce31","ghost_medium_flow_1_solution":"9b11459f2fe3bf5fc463a77e6f1fff4c","ghost_medium_flow_2":"0ffab77bd723ab96de92fa4e958fc42e","ghost_medium_flow_2_solution":"d0249cdbd42010b67ea670985578de79","ghost_medium_maze_1":"5b8bf7dabc5d3bdcbbfe93b02c089704","ghost_medium_maze_1_solution":"5e8a8fe19940f3507c6ffcfd5d7019b8","ghost_medium_maze_2":"364a95230a410b741c427a7196560353","ghost_medium_maze_2_solution":"b7437f7f2771012600205e4df8808c5c","mask_cat_easy":"6fa753428c29a187d4e9cb164e6069f9","mask_cat_hard":"9b893be637df985db8e9ccd63bf7cb62","mask_cat_medium":"e3f2180530a6ada632d9bf340a83ac11","mask_ghost_easy":"88f8f20ac55d9025b54b453e2b94a41e","mask_ghost_hard":"f201f90702fea5baba8e191577b021de","mask_ghost_medium":"b1b2f95c71a9306703832a4164dc8bdf"};
+    var file = '/_blob/' + BLOB[s.pic + '_' + s.diff + '_' + st + '_' + s.seed + (s.peek ? '_solution' : '')];
+    function seg(opts, current, key, disabled) {
+      return opts.map(function (o, i) {
+        var on = o.id === current;
+        return {
+          label: o.label, pressed: on ? 'true' : 'false',
+          bg: on ? '#DCE4FF' : '#FFFFFF', fg: on ? '#1A3696' : '#15171C',
+          divider: i === 0 ? '0' : '1px solid #C5CAD6',
+          opacity: disabled ? '0.4' : '1',
+          pick: function () { if (!disabled) { var u = {}; u[key] = o.id; u.seed = 1; self.setState(u); } }
+        };
+      });
+    }
+    var on = s.manual;
+    return {
+      imgSrc: file,
+      imgAlt: (s.peek ? 'Answer key' : 'Puzzle') + ' preview, layout ' + s.seed,
+      layoutLabel: 'Layout ' + s.seed + (s.seed === 1 ? ' · best match' : ''),
+      prevOpacity: s.seed === 1 ? '0.4' : '1',
+      prev: function () { if (s.seed > 1) self.setState({ seed: s.seed - 1 }); },
+      next: function () { self.setState({ seed: s.seed === 2 ? 1 : 2 }); },
+      peekOn: function () { self.setState({ peek: true }); },
+      peekOff: function () { if (self.state.peek) self.setState({ peek: false }); },
+      peekBg: s.peek ? '#15171C' : '#FFFFFF',
+      peekFg: s.peek ? '#FFFFFF' : '#15171C',
+      maskSrc: '/_blob/' + BLOB['mask_' + s.pic + '_' + s.diff],
+      zoom: !!s.zoom,
+      toggleZoom: function () { self.setState({ zoom: !self.state.zoom }); },
+      maskAlt: p.name + ' silhouette at ' + d.grid + ' cells',
+      picName: p.name,
+      picSource: p.source,
+      swapPic: function () { self.setState({ pic: s.pic === 'ghost' ? 'cat' : 'ghost', seed: 1 }); },
+      diffs: seg([{ id: 'easy', label: 'Easy' }, { id: 'medium', label: 'Medium' }, { id: 'hard', label: 'Hard' }], s.diff, 'diff', false),
+      sizeLine: on ? (d.grid + ' cells · ' + d.mm + ' mm corridors') : (d.grid + ' cells · for ' + d.tool),
+      pfBg: d.tone === 'ok' ? '#E1F3E6' : '#FFF1D6',
+      pfFg: d.tone === 'ok' ? '#1E5631' : '#5C3B00',
+      pfText: d.text,
+      styles: seg([{ id: 'flow', label: 'Flow' }, { id: 'classic', label: 'Classic' }], s.style, 'style', false),
+      manual: on,
+      toggleManual: function () { self.setState({ manual: !s.manual }); },
+      swBorder: on ? '#2F55D4' : '#7A8090',
+      swBg: on ? '#2F55D4' : '#E6E8EE',
+      knobLeft: on ? '26px' : '4px',
+      knobBg: on ? '#FFFFFF' : '#7A8090',
+      mmText: d.mm.toFixed(1) + ' mm',
+      pathsOpts: seg([{ id: 'one', label: 'One path' }, { id: 'branch', label: 'Branching' }], s.style === 'flow' ? 'one' : s.paths, 'paths', s.style === 'flow'),
+      pathsNote: s.style === 'flow' ? 'Branching needs Classic style for now.' : (useMaze ? 'A real maze with dead ends. Consider printing the answer key.' : 'One winding path, no dead ends.'),
+      seedText: '#' + (s.seed === 1 ? '40217' : '88153')
+    };
+  }
+}
+</script>
+</body>
+</html>
