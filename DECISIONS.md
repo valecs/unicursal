@@ -62,3 +62,20 @@ Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture
   covers the picture" for ~1 in 3 seeds (e.g. `ghost --mode maze --corridor 7
   --seed 1 --deadend-fix`); the heuristic opens walls into the solution path.
   Now off by default; tracked by a strict-xfail test.
+- **AI silhouettes, bake-off round 1** (8 subjects; `experiments/`; scored by
+  a blind judge, `judge.py`: Gemini 3.1 Flash-Lite sees only the coarse mask and
+  names it; pass = right subject):
+
+  | Method | Easy | Medium | Hard |
+  |---|---|---|---|
+  | Image model (3.1 Flash Image), grid-aware prompt + auto-crop, run 1 | 1/8 | 7/8 | 8/8 |
+  | same, run 2 | 2/8 | 6/8 | 8/8 |
+  | + stage 2: redraw after seeing its masked grid | 1/8 | 7/8 | 8/8 |
+  | + stage 2: redraw from a written critique | 1/8 | 4/8 | 8/8 |
+  | Text model (3.5 Flash) drawing pixel art on the exact grid | 2/8 | 6/8 | n/a |
+
+  Two-stage redraw does not help (the model copies the grid preview, or drops
+  features). The biggest wins were the stage-1 prompt (icon/stencil style,
+  target grid size stated) and auto-crop. Run-to-run variance exceeds the
+  stage-2 effect, which argues for **best-of-N + judge** selection. Easy
+  (~7x9 cells) fails for almost every subject with every method.
