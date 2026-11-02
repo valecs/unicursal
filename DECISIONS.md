@@ -1,56 +1,36 @@
 # UX decisions log
 
-Running record of app-design decisions. Nothing here is final yet.
-"First pass" items are initial answers, open to revision; "Proposed" items are
-recommendations awaiting a response; "Open" items need research.
+Record of app-design decisions and the findings behind them. Decisions can
+be revisited; open questions live in GitHub issues (see CLAUDE.md).
 
-## First pass
+## Decisions
 
 | # | Topic | Decision |
 |---|---|---|
 | 1 | Audience | Primary: a parent/teacher making an activity sheet for someone else. Secondary: adult puzzlers / colouring-book fans → a **"Surprise me"** mode that never shows the picture until asked. |
 | 1b | Medium | Solved on paper with pencil / marker / pen. On-screen answer view exists only so the maker can check the result. |
-| 2 | Platform | Portable Rust core. Front end under reconsideration: see PWA-first proposal. |
+| 2 | Platform | **PWA first** (confirmed, #6) on a portable Rust core compiled to WASM. Play Store later via a Trusted Web Activity if wanted. No puzzle backend: static hosting of versioned builds; the only server piece is a thin, stateless proxy for AI "describe it". Core: no filesystem, no required threads, steppable/cancellable flow with progress, SVG + PDF from the core, **deterministic** (no fast-math, no thread-order-dependent sums, pure-Rust libm). |
 | 2b | Core port | "Surface-level" conversion: same behaviour and CLI surface as the Python prototype, idiomatic Rust inside (no need to mirror Python's module shape). Cargo workspace: `unicursal-core` (lib: pure, no I/O; grey buffer + params → geometry, SVG, PDF bytes; all tests), `unicursal-cli` (bin: image decoding, files, flags like the prototype's), `unicursal-wasm` (wasm-bindgen API for the PWA). Port the invariant tests first. |
 | 5 | Preflight | Auto-fix wherever a reasonable fix exists; block when none does. A manual mode turns auto-fixes off. |
 | 7 | Size control | Detail *is* difficulty. Presets are **data** (`presets.toml`, `--preset`, explicit flags override); exact values deferred until test prints. Cells by default, mm in manual mode. Preflight says which features vanish at the chosen difficulty. |
-| 11 | Styles | Both Classic (rectilinear grid) and Flow. Branching mazes exist in the prototype for Classic only; the dead-end heuristic is **off by default** (opt-in `--deadend-fix`) until its bug is fixed. |
+| 11 | Styles | Both Classic (rectilinear grid) and Flow. Branching mazes exist in the prototype for Classic only; the dead-end heuristic is **on by default** (`--no-deadend-fix` turns it off) now that its bug (#7) is fixed. |
 | 12 | Output | Configurable paper size; PDF output at true scale; portrait/landscape auto (follows picture) or forced. Prototype: `--paper`, `--orientation auto\|portrait\|landscape`. |
 | 8 | Answer key | Not printed. Saved with the puzzle (viewable in the app); printing it is at most an overflow action. |
 | 9 | Advanced controls | Camera-style **Auto / Manual** split. Manual covers mm, seed, flow parameters, colours, turning off preflight fixes. |
 | 10 | Scope | On-screen solving is out. Sharing is maybe. |
-
-## Proposed (awaiting sign-off)
-
-- **Picture sources (v1):** AI "describe it", image file (1-bit, connected),
-  text, grid drawing → all feed preflight. No photo segmentation in v1.
-- **PWA first** on the Rust core (WASM). Serves Android, iOS, desktop
-  printing and shared-puzzle links from one build; ship to Play later as a
-  Trusted Web Activity if wanted. Native Android becomes a later option, not
-  the plan. Photo segmentation dropped from v1. Core requirements: no
-  filesystem or required threads, a stepwise/cancellable flow API with
-  progress, SVG + PDF output produced by the core itself.
-- **Shuffle = swipe:** the preview is a horizontal pager of seeds; swiping
-  generates the next layout. Press-and-hold to peek at the answer.
+| 14 | Printed page | Minimal: the maze, start/finish marks (#2), and the existing one-line footer. No title, name/date lines or instructions (classroom extras are out of scope). A 5 cm check bar in the footer ("5 cm. If not, print at 100% / actual size") guards against fit-to-page printing. **Space goes to the maze**: the frame fills the printable area (the entrance stub sits in the paper margin), and the footer moves to the side away from the entrance. On Letter: Easy 7×9 → 8×11, Medium 12×16 → 13×17, Hard 30×40 → 31×41 (ghost). |
+| 15 | Layouts | Horizontal pager: swipe between layouts, press-and-hold to peek at the answer. 3 layouts generated up front + a "more layouts" action. Ranking is only an internal heuristic for which shows first; no "best match" label (#4). |
+| 16 | Start | One arrow pointing in at the entrance; no Start/End labels (start and end are adjacent) (#2). |
+| 17 | Puzzle links | A URL encodes generator version + settings + seed + picture mask (~150–250 chars) and regenerates the puzzle exactly (#5). Relies on WASM determinism (see 2); old versions stay loadable at versioned paths. History = a list of these codes. Sharing = link, plus PDF via the share sheet. |
+| 18 | Preflight | Auto-crop so the subject touches one edge (entrance there) with a small margin elsewhere; bridge separate pieces and highlight the bridges; details that won't survive are **highlighted in the preview** (never named) with "try a more detailed setting"; block only near-empty pictures; failed generations retry silently (#3). |
+| 13 | Voids | Solid black by default; puzzles must print well in black and white. Ink-saving is not a priority. (`--ink-saver`, light voids with outlined corridors, exists in the prototype but stays off and out of the UI.) |
 
 Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture chooser).
 
-## Open
+## Open questions and to-dos
 
-- Picture sourcing: AI generation (image model vs. LLM-drawn shapes) needs a
-  bake-off; accepting 1-bit connected images as files is a given.
-- Carousel vs. other ways of comparing candidates; needs a prototype test.
-- Calibrating difficulty presets against real test prints.
-
-## Todo
-
-- **Move Python tooling to `uv`** (`pyproject.toml` + `uv.lock`, `uv run pytest`,
-  `uv run experiments/...`) to make fresh-session setup faster. System
-  packages (`librsvg2-bin`, which needs `apt-get update` first) stay outside uv.
-- **Claude arms of bake-off round 2** (Haiku 5.5 best-of-3 Easy+Medium;
-  Sonnet 5.5 single shot at Medium) are blocked: no Anthropic key reached the
-  session (`ANTHROPIC_API_KEY` / `ANTHROPIC_API_TOKEN` absent; maybe
-  `ANTHROPIC_*` names are filtered). Scripts also read `UNICURSAL_ANTHROPIC_KEY`.
+Tracked as GitHub issues only (`decision`, `research`, `bug`, `prototype`,
+`core` labels), not here. This file records outcomes and findings.
 
 ## Findings
 
@@ -68,10 +48,11 @@ Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture
   readable for simple subjects (pumpkin, rocket). Hard reads well for most;
   Easy reads for none (outline only). Detailed subjects (owl) break into many
   pieces/holes and need simplification or rejection by preflight.
-- **Bug:** with the dead-end heuristic on, branching-maze mode fails "solution
-  covers the picture" for ~1 in 3 seeds (e.g. `ghost --mode maze --corridor 7
-  --seed 1 --deadend-fix`); the heuristic opens walls into the solution path.
-  Now off by default; tracked by a strict-xfail test.
+- **Bug (fixed, #7):** with the dead-end heuristic on, branching mazes lost
+  the solution for ~1 in 3 seeds: the walk from a dead end to its junction ran
+  onto the solution path (path cells look like plain corridor) and cut it
+  there. Branches now stop at the path. 0 failures over 240 mazes; the
+  heuristic halves the number of dead ends.
 - **AI silhouettes, bake-off round 1** (8 subjects; `experiments/`; scored by
   a blind judge, `judge.py`: Gemini 3.1 Flash-Lite sees only the coarse mask and
   names it; pass = right subject):
@@ -94,7 +75,7 @@ Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture
   `round2/sheets/`). Image model at 512 px, stage 1 only, best of 3 candidates;
   judge as round 1, and among passing candidates the one with the cleanest
   preflight metrics is picked. Budget cap $5 for the round, so pixel arms are
-  trimmed (see Todo for the Claude arms).
+  trimmed (Claude arms: see #9).
 
   | Method | Cands | Easy | Medium | Hard | Cost |
   |---|---|---|---|---|---|

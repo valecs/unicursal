@@ -287,7 +287,7 @@ def build_labyrinth(fg, rng):
     return grid, fine_fg, (a, b, side)
 
 
-def build_maze(fg, rng, reduce_deadends=False):
+def build_maze(fg, rng, reduce_deadends=True):
     """Okamoto-Uehara: Hamiltonian path in the foreground, then a random
     spanning tree of everything else that keeps that path as the solution."""
     m, n = fg.shape
@@ -324,14 +324,18 @@ def build_maze(fg, rng, reduce_deadends=False):
             parent[rp] = rq
             grid.set(p, q)
     if reduce_deadends:
-        _reduce_deadends(grid, {a, b}, rng)
+        _reduce_deadends(grid, {a, b}, rng, fine_fg)
     return grid, fine_fg, (a, b, side)
 
 
-def _reduce_deadends(grid, protected, rng):
+def _reduce_deadends(grid, protected, rng, fine_fg):
     """Paper section 3.3: while two dead ends u,v are adjacent, cut u's
     branch off at its junction and join it to v instead. Keeps a tree, so
-    the solution is unchanged, and the count of dead ends drops by one."""
+    the solution is unchanged, and the count of dead ends drops by one.
+
+    A branch ends where it meets a junction *or the solution path*: path
+    cells look like ordinary corridor (degree 2), so without that stop the
+    walk would run onto the path and cut it."""
     H, W = grid.H, grid.W
     deg = lambda p: len(grid.open_nbrs(p))
     changed = True
@@ -340,22 +344,23 @@ def _reduce_deadends(grid, protected, rng):
         cells = [(r, c) for r in range(H) for c in range(W)]
         rng.shuffle(cells)
         for u in cells:
-            if u in protected or deg(u) != 1:
+            if u in protected or deg(u) != 1 or fine_fg[u]:
                 continue
             for dr, dc in NBRS:
                 v = (u[0] + dr, u[1] + dc)
                 if not (0 <= v[0] < H and 0 <= v[1] < W):
                     continue
-                if v in protected or deg(v) != 1 or grid.get(u, v):
+                if v in protected or deg(v) != 1 or fine_fg[v] or grid.get(u, v):
                     continue
                 # walk from u to its first junction b_u
                 prev, cur = None, u
                 while True:
                     nx = [q for q in grid.open_nbrs(cur) if q != prev]
-                    if len(grid.open_nbrs(cur)) >= 3 or not nx:
+                    if len(grid.open_nbrs(cur)) >= 3 or fine_fg[cur] or not nx:
                         break
                     prev, cur = cur, nx[0]
-                if len(grid.open_nbrs(cur)) < 3 or prev is None:
+                attach = len(grid.open_nbrs(cur)) >= 3 or fine_fg[cur]
+                if not attach or prev is None:
                     continue  # whole thing is one corridor; leave it
                 if v == cur:
                     continue
@@ -366,6 +371,47 @@ def _reduce_deadends(grid, protected, rng):
 
 
 # ------------------------------------------------------------ render -------
+
+ARROW_MAX_PT = 13.0      # arrow length cap (~4.6 mm)
+ARROW_GAP_MAX_PT = 9.0   # frame-to-tip gap cap (~3.2 mm): arrow + gap stay
+                         # well inside a 12.7 mm paper margin at any corridor size
+
+
+def entrance_arrow(a, b, side, H, W, cell, gap=0.25):
+    """Polygon (in fine-cell units, x/y) for the single arrow that marks the
+    entrance (#2). Start and finish are adjacent, so one arrow does for both.
+    With `side` set it sits outside the frame, tip first, pointing in at the
+    middle of the gap; otherwise it hangs above the entrance cells, pointing
+    down at them. Its length is capped at ARROW_MAX_PT so big corridors don't
+    push it off the page."""
+    mid = np.array([(a[1] + b[1]) / 2 + .5, (a[0] + b[0]) / 2 + .5])
+    out = np.array({"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}.get(side, (0, -1)),
+                   float)
+    L = min(1.0, ARROW_MAX_PT / cell)          # total length, cells
+    gap = min(gap, ARROW_GAP_MAX_PT / cell)
+    hw = 0.4 * L                               # head half-width
+    sw = 0.13 * L                              # shaft half-width
+    if side:
+        axis = 1 if side in "NS" else 0
+        edge = {"N": 0, "S": H, "W": 0, "E": W}[side]
+        tip = mid.copy()
+        tip[axis] = edge + out[axis] * gap
+    else:
+        tip = mid + out * 0.55                 # just above the entrance cell
+    n = np.array([-out[1], out[0]])            # across the arrow
+    head = tip + out * 0.5 * L
+    tail = tip + out * L
+    return np.array([tip, head + n * hw, head + n * sw, tail + n * sw,
+                     tail - n * sw, head - n * sw, head - n * hw])
+
+
+def arrow_path(P, to_pt):
+    """SVG path element for an entrance arrow polygon; `to_pt` maps cell
+    coordinates to the renderer's pt coordinates."""
+    Q = to_pt(P)
+    d = "M" + "L".join(f"{x:.2f} {y:.2f}" for x, y in Q) + "z"
+    return f'<path class="entrance" fill="#000" d="{d}"/>'
+
 
 def render_svg(grid, cell, fill_cells=None, opening=None, margin=2.0,
                stroke=0.18, color="#000", fill="#e0218a"):
@@ -443,15 +489,8 @@ def render_svg(grid, cell, fill_cells=None, opening=None, margin=2.0,
     border("E", H, ox + W * cell, False)
     out.append(f'<path fill="none" stroke="{color}" stroke-width="{sw:.3f}" '
                f'stroke-linecap="square" d="{"".join(segs)}"/>')
-    # entrance / exit markers: arrows outside the border, or dots inside
-    for p in (a, b):
-        cx, cy = ox + (p[1] + .5) * cell, oy + (p[0] + .5) * cell
-        if side:
-            d = {"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}[side]
-            cx, cy = cx + d[0] * cell, cy + d[1] * cell
-        rr = .32 * cell
-        out.append(f'<path fill="#1a9e3a" d="M{cx:.3f} {cy-rr:.3f}L{cx+rr:.3f} {cy:.3f}'
-                   f'L{cx:.3f} {cy+rr:.3f}L{cx-rr:.3f} {cy:.3f}z"/>')
+    out.append(arrow_path(entrance_arrow(a, b, side, H, W, cell),
+                          lambda P: P * cell + [ox, oy]))
     out.append('</svg>')
     return "\n".join(out)
 
@@ -598,14 +637,8 @@ def render_curvy_svg(grid, cell, opening, warp, smooth=3, path=None,
     out.append(f'<path fill="none" stroke="{color}" stroke-width="{stroke*cell:.3f}" '
                f'stroke-linecap="round" stroke-linejoin="round" d="{"".join(parts)}"/>')
 
-    rr = .32
-    for p in (a, b):
-        cx, cy = p[1] + .5, p[0] + .5
-        if out_dir:
-            cx, cy = cx + 1.1 * out_dir[0], cy + 1.1 * out_dir[1]
-        C = warp(np.array([[cx, cy]]))[0]
-        D = np.array([[0, -rr], [rr, 0], [0, rr], [-rr, 0]]) + C
-        out.append(f'<path fill="#1a9e3a" d="{d_of(D, True)}"/>')
+    out.append(arrow_path(entrance_arrow(a, b, side, H, W, cell),
+                          lambda P: (warp(P) + [ox, oy]) * cell))
     out.append('</svg>')
     return "\n".join(out)
 
@@ -630,7 +663,9 @@ def svg_to_pdf(svg_path, pdf_path):
 
 PAPERS = {"letter": (215.9, 279.4), "legal": (215.9, 355.6),
           "tabloid": (279.4, 431.8), "a4": (210.0, 297.0), "a3": (297.0, 420.0)}
-MARGIN = 1.5      # frame-to-edge-of-drawing margin, in corridors
+MARGIN = 1.5      # frame-to-edge-of-drawing margin, in corridors. Holds only the
+                  # entrance stub, so it may overlap the paper margin: sizing
+                  # fits the *frame* to the printable area (see fit_grid).
 PT_PER_MM = 72 / 25.4
 
 
@@ -647,6 +682,12 @@ def parse_paper(spec):
     return float(m[1]) * k, float(m[2]) * k
 
 
+def fit_grid(avail, pitch):
+    """Largest picture-cell grid (nmax, mmax) whose frame fits in `avail` mm at
+    corridor spacing `pitch` mm (each picture cell is 2 corridors)."""
+    return int(avail[0] / pitch) // 2, int(avail[1] / pitch) // 2
+
+
 def cells_to_fit(img_w, img_h, nmax, mmax):
     """Largest --cells value whose coarse grid fits in nmax x mmax."""
     for c in range(max(nmax, mmax), 0, -1):
@@ -659,8 +700,16 @@ def cells_to_fit(img_w, img_h, nmax, mmax):
     return 0
 
 
-def place_on_page(svg, paper_mm, footer=None):
-    """Centre a renderer's SVG on a page of the given size (true scale)."""
+SCALE_BAR_MM = 50  # printed check line: if it doesn't measure this, the page was scaled
+
+
+def place_on_page(svg, paper_mm, footer=None, footer_top=False, margin_mm=12.7,
+                  scale_bar=True):
+    """Centre a renderer's SVG on a page of the given size (true scale).
+
+    The footer line (a 5 cm check bar at the left, the footer text at the right)
+    sits in the paper margin on the side away from the entrance, and is drawn
+    last: the maze drawing's background may extend into the margin."""
     import re
     PW, PH = paper_mm[0] * PT_PER_MM, paper_mm[1] * PT_PER_MM
     m = re.match(r'<svg xmlns="http://www.w3.org/2000/svg"\s+width="([\d.]+)pt"\s+'
@@ -669,13 +718,23 @@ def place_on_page(svg, paper_mm, footer=None):
     x, y = (PW - w) / 2, (PH - h) / 2
     head = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{PW:.2f}pt" '
             f'height="{PH:.2f}pt" viewBox="0 0 {PW:.3f} {PH:.3f}">'
-            f'<rect width="100%" height="100%" fill="#fff"/>')
+            f'<rect width="100%" height="100%" fill="#fff"/>'
+            f'<svg x="{x:.3f}" y="{y:.3f}" width="{w:.3f}" height="{h:.3f}" '
+            f'viewBox="0 0 {m[3]} {m[4]}" overflow="visible">')
+    foot = ""
+    fy = 19 if footer_top else PH - 14          # text baseline, inside the margin
+    left, right = margin_mm * PT_PER_MM, PW - margin_mm * PT_PER_MM
+    font = 'font-family="sans-serif" font-size="7" fill="#888"'
+    if scale_bar:
+        L, by = SCALE_BAR_MM * PT_PER_MM, fy - 2.5
+        foot += (f'<path d="M{left:.2f} {by-3:.2f}V{by+3:.2f}M{left:.2f} {by:.2f}H{left+L:.2f}'
+                 f'M{left+L:.2f} {by-3:.2f}V{by+3:.2f}" fill="none" stroke="#888" '
+                 f'stroke-width="0.8" class="scale-bar"/>'
+                 f'<text x="{left+L+5:.2f}" y="{fy:.2f}" {font}>5 cm. If not, print at '
+                 f'100% / actual size</text>')
     if footer:
-        head += (f'<text x="{PW/2:.2f}" y="{PH - 14:.2f}" text-anchor="middle" '
-                 f'font-family="sans-serif" font-size="7" fill="#999">{footer}</text>')
-    head += (f'<svg x="{x:.3f}" y="{y:.3f}" width="{w:.3f}" height="{h:.3f}" '
-             f'viewBox="0 0 {m[3]} {m[4]}" overflow="visible">')
-    return head + svg[m.end():] + "</svg>"
+        foot += f'<text x="{right:.2f}" y="{fy:.2f}" text-anchor="end" {font}>{footer}</text>'
+    return head + svg[m.end():] + foot + "</svg>"
 
 
 # --------------------------------------------------------------- main ------
@@ -745,9 +804,9 @@ def build_parser():
                     help="treat light pixels as the picture")
     ap.add_argument("--no-bridges", action="store_true",
                     help="keep only the largest piece instead of joining pieces")
-    ap.add_argument("--deadend-fix", action="store_true",
-                    help="maze mode: apply the dead-end pairing heuristic. Off by "
-                         "default: it can open walls into the solution path")
+    ap.add_argument("--no-deadend-fix", dest="deadend_fix", action="store_false",
+                    help="maze mode: skip the dead-end pairing heuristic (on by "
+                         "default: fewer, paired dead ends)")
     ap.add_argument("--fill", default="#e0218a", help="solution fill colour")
     ap.add_argument("--curvy", action="store_true",
                     help="round the corners and bend the sheet so paths curve")
@@ -797,8 +856,7 @@ def main():
     avail = (paper[0] - 2 * args.paper_margin, paper[1] - 2 * args.paper_margin)
     if args.cells is None:
         pitch = args.corridor
-        nmax = int(avail[0] / pitch - 2 * MARGIN) // 2
-        mmax = int(avail[1] / pitch - 2 * MARGIN) // 2
+        nmax, mmax = fit_grid(avail, pitch)
         cells = cells_to_fit(img_w, img_h, nmax, mmax)
         if cells < 4:
             sys.exit(f"error: {pitch} mm corridors leave only {nmax}x{mmax} picture "
@@ -822,7 +880,7 @@ def main():
     assert sol.sum() == fine_fg.sum(), "solution does not cover the picture"
 
     if pitch is None:
-        pitch = min(avail[0] / (grid.W + 2 * MARGIN), avail[1] / (grid.H + 2 * MARGIN))
+        pitch = min(avail[0] / grid.W, avail[1] / grid.H)
     cell = pitch * PT_PER_MM
     footer = (f"{grid.W // 2}x{grid.H // 2} cells · {pitch:.1f} mm corridors · "
               f"seed {seed}")
@@ -831,7 +889,8 @@ def main():
 
     def emit(name, svg):
         with open(name + ".svg", "w") as f:
-            f.write(place_on_page(svg, paper, footer))
+            f.write(place_on_page(svg, paper, footer, footer_top=opening[2] == "S",
+                                  margin_mm=args.paper_margin))
         ok = svg_to_pdf(name + ".svg", name + ".pdf")
         print(f"wrote {name}.svg" + (f" and {name}.pdf" if ok else ""))
     if args.flow:
@@ -852,7 +911,7 @@ def main():
         for name, show in ((args.out, False), (args.out + "_solution", True)):
             svg = flow.render_flow_svg(strands, grid.H, grid.W, cell, void=args.void,
                                        fill=args.fill, show_solution=show,
-                                       entrance=ent, margin=MARGIN,
+                                       entrance=ent, margin=MARGIN, arrow=opening,
                                        outline=args.ink_saver)
             emit(name, svg)
             if not show:

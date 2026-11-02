@@ -149,12 +149,12 @@ def test_paper_sizing():
     assert P.parse_paper("letter") == (215.9, 279.4)
     w, h = P.parse_paper("8.5x11in")
     assert abs(w - 215.9) < 1e-6 and abs(h - 279.4) < 1e-6
-    # ghost case: 12x16 picture cells on letter at 7 mm
+    # ghost case: the frame fills the printable area of letter at 7 mm
     avail = (215.9 - 2 * 12.7, 279.4 - 2 * 12.7)
-    nmax = int(avail[0] / 7 - 2 * P.MARGIN) // 2
-    mmax = int(avail[1] / 7 - 2 * P.MARGIN) // 2
-    assert (nmax, mmax) == (12, 16)
-    assert P.cells_to_fit(240, 320, nmax, mmax) == 16
+    nmax, mmax = P.fit_grid(avail, 7)
+    assert (nmax, mmax) == (13, 18)
+    assert 2 * nmax * 7 <= avail[0] and 2 * mmax * 7 <= avail[1]
+    assert P.cells_to_fit(240, 320, nmax, mmax) == 17
 
 
 def test_page_is_true_scale():
@@ -162,6 +162,11 @@ def test_page_is_true_scale():
            'height="50.00pt" viewBox="0 0 100.000 50.000"><rect/></svg>')
     out = P.place_on_page(svg, (215.9, 279.4))
     assert 'width="612.00pt" height="792.00pt"' in out
+    # the check bar is exactly 50 mm and drawn after (on top of) the maze
+    import re
+    bar = re.search(r'<path d="M([\d.]+) [\d.]+V[\d.]+M[\d.]+ [\d.]+H([\d.]+)', out)
+    assert abs(float(bar[2]) - float(bar[1]) - 50 * P.PT_PER_MM) < 0.01
+    assert out.index("scale-bar") > out.index("<rect/>")
 
 
 SHAPES = Path(__file__).resolve().parent.parent / "shapes"
@@ -174,13 +179,14 @@ def test_maze_default_solution_covers_picture(seed):
     assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
 
 
-@pytest.mark.xfail(strict=True, reason="dead-end heuristic opens walls into the "
-                   "solution path; off by default until fixed")
-def test_maze_deadend_fix_known_bug():
+@pytest.mark.parametrize("seed", range(10))
+def test_maze_deadend_fix_keeps_solution_and_tree(seed):
+    """Regression for #7: the dead-end walk used to run onto the solution path
+    and cut it."""
     fg = P.largest_component(P.load_mask(str(SHAPES / "ghost.png"), 15))
-    for seed in range(10):
-        grid, fine_fg, opening = P.build_maze(fg, random.Random(seed), True)
-        assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
+    grid, fine_fg, opening = P.build_maze(fg, random.Random(seed), True)
+    assert (solution_mask(grid, opening, fine_fg) == fine_fg).all()
+    assert n_edges(grid) == grid.H * grid.W - 1
 
 
 PRESETS = Path(__file__).resolve().parent.parent / "presets.toml"
@@ -198,3 +204,67 @@ def test_preset_supplies_defaults_and_flags_override():
     a = P.parse_args_with_preset(P.build_parser(),
                                  ["x.png", "--preset", "easy", "--corridor", "5"])
     assert a.corridor == 5
+
+
+def test_deadend_fix_is_on_by_default():
+    """#7: the owner chose the dead-end heuristic as the default for mazes."""
+    import inspect
+    assert inspect.signature(P.build_maze).parameters["reduce_deadends"].default is True
+    a = P.parse_args_with_preset(P.build_parser(), ["x.png", "--mode", "maze"])
+    assert a.deadend_fix is True
+    a = P.parse_args_with_preset(P.build_parser(), ["x.png", "--no-deadend-fix"])
+    assert a.deadend_fix is False
+
+
+# ---- #2: one arrow at the entrance ------------------------------------------
+
+def _poly(svg, cls):
+    import re
+    m = re.findall(rf'<path class="{cls}"[^>]* d="M([^"]*?)z"', svg)
+    return [np.array([[float(v) for v in pt.split()] for pt in d.split("L")]) for d in m]
+
+
+@pytest.mark.parametrize("side,a,b", [("S", (9, 3), (9, 4)), ("N", (0, 3), (0, 4)),
+                                      ("W", (3, 0), (4, 0)), ("E", (3, 7), (4, 7))])
+def test_entrance_arrow_points_in_from_outside_the_frame(side, a, b):
+    H, W = 10, 8
+    P_ = P.entrance_arrow(a, b, side, H, W, cell=20.0)
+    tip = P_[0]
+    mid = np.array([(a[1] + b[1]) / 2 + .5, (a[0] + b[0]) / 2 + .5])
+    out = np.array({"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}[side])
+    # every point is outside the frame, on the entrance side
+    edge = {"N": 0, "S": H, "W": 0, "E": W}[side]
+    axis = 1 if side in "NS" else 0
+    assert all((p[axis] - edge) * out[axis] > 0 for p in P_)
+    # the tip is the point closest to the frame, centred on the gap
+    assert abs(tip[1 - axis] - mid[1 - axis]) < 1e-9
+    assert np.argmin([(p[axis] - edge) * out[axis] for p in P_]) == 0
+    # it stays within the 1.5-corridor drawing margin
+    assert all(abs(p[axis] - edge) <= 1.5 for p in P_)
+
+
+def test_entrance_arrow_has_absolute_size_cap():
+    """At big corridors (Easy) the arrow must not run off into the paper edge."""
+    ext = lambda c, g: (P.entrance_arrow((9, 3), (9, 4), "S", 10, 8, c, g)[:, 1].max()
+                        - 10) * c                    # extent past the frame, pt
+    for c in (10.0, 31.2, 200.0):                    # 3.5 mm, 11 mm (Easy), huge
+        for g in (0.25, 0.45):                       # classic, flow gaps
+            assert ext(c, g) <= 22.0                 # <= 7.8 mm: inside a 12.7 mm margin
+
+
+@pytest.mark.parametrize("seed", range(3))
+def test_renderers_draw_one_entrance_arrow_and_no_diamonds(ring_png, seed):
+    fg = P.largest_component(P.load_mask(ring_png, 14))
+    grid, fine_fg, opening = P.build_labyrinth(fg, random.Random(seed))
+    svg = P.render_svg(grid, 10.0, opening=opening, margin=P.MARGIN)
+    assert len(_poly(svg, "entrance")) == 1 and "#1a9e3a" not in svg
+    warp = P.make_warp(grid.H, grid.W, random.Random(seed), 0.3, 14.0)
+    svg = P.render_curvy_svg(grid, 10.0, opening, warp, margin=P.MARGIN)
+    assert len(_poly(svg, "entrance")) == 1 and "#1a9e3a" not in svg
+    path = P.trace_path(grid, opening[0], fine_fg)
+    strands = F.relax(F.extract_strands(grid, path), fine_fg, grid.H, grid.W,
+                      iters=50, seed=seed)
+    d = {"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}.get(opening[2])
+    svg = F.render_flow_svg(strands, grid.H, grid.W, 10.0, margin=P.MARGIN,
+                            entrance=(d, d) if d else None, arrow=opening)
+    assert len(_poly(svg, "entrance")) == 1 and "#1a9e3a" not in svg
