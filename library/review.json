@@ -1,8 +1,94 @@
 {
- "pilgrim-hat--master": {"master": "d7dc4ee8050839f586c7", "note": "this is lacking the classic \"buckle\"", "at": "2026-11-02T23:47:19.543Z"},
- "pumpkin--hard": {"verdict": null, "hashes": ["736b4391dcdd6bb2fc47", "9c5fd991ac431da1e2b8"], "note": "best one, but the slashes are still a little rough", "at": "2026-11-02T23:48:24.361Z"},
- "pumpkin--master": {"master": "0ef0a7bd4e6a97574c35", "note": "slashes look like bread; perhaps accentuate the ridges?", "at": "2026-11-02T23:47:51.748Z"},
- "turkey--easy": {"verdict": "no", "hashes": ["ec848b40a7a51e7ff33f"], "note": "", "at": "2026-11-02T23:48:45.102Z"},
- "turkey--master": {"master": "df13d93393017a22e9d6", "note": "Consider the turkey examples in the /shapes directory", "at": "2026-11-02T23:49:04.414Z"},
- "turkey--medium": {"verdict": "no", "hashes": ["06c020197f87a2ed3c3b"], "note": "", "at": "2026-11-02T23:48:47.317Z"}
+ "pilgrim-hat--easy": {
+  "verdict": null,
+  "hashes": [
+   "196a48ea14e0c3ab7afd",
+   "5b72ce71142c5aceaedb"
+  ],
+  "note": "A4 \"top hat\" is actually fine; could we get that for letter?",
+  "at": "2026-11-03T01:36:35.425Z"
+ },
+ "pilgrim-hat--hard": {
+  "verdict": "yes",
+  "hashes": [
+   "86535441996f53005bdc",
+   "9373ec8dc93a63874f45"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:34:07.810Z"
+ },
+ "pilgrim-hat--master": {
+  "master": "d7dc4ee8050839f586c7",
+  "note": "this is lacking the classic \"buckle\"",
+  "at": "2026-11-02T23:47:19.543Z"
+ },
+ "pilgrim-hat--medium": {
+  "verdict": "yes",
+  "hashes": [
+   "41b347b016841c2281d4",
+   "f1f96f3ffe703e30f857"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:34:04.809Z"
+ },
+ "pumpkin--easy": {
+  "verdict": "yes",
+  "hashes": [
+   "93c7f19c774d5eec50e2"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:34:16.273Z"
+ },
+ "pumpkin--hard": {
+  "verdict": "yes",
+  "hashes": [
+   "3fa85b6789f65bb2a0ac",
+   "a04653fc830c86403d67"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:34:20.754Z"
+ },
+ "pumpkin--master": {
+  "master": "0ef0a7bd4e6a97574c35",
+  "note": "slashes look like bread; perhaps accentuate the ridges?",
+  "at": "2026-11-02T23:47:51.748Z"
+ },
+ "pumpkin--medium": {
+  "verdict": "no",
+  "hashes": [
+   "7abad69a4df0bc16f58a"
+  ],
+  "note": "Same problem with the vents/bulges",
+  "at": "2026-11-03T01:34:59.499Z"
+ },
+ "turkey--easy": {
+  "verdict": "no",
+  "hashes": [
+   "c4e9497f3c408494301e"
+  ],
+  "note": "Side view better?",
+  "at": "2026-11-03T01:35:20.115Z"
+ },
+ "turkey--hard": {
+  "verdict": "yes",
+  "hashes": [
+   "46881a12c175123fc914",
+   "fd67c4353efccf36ffbc"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:34:59.510Z"
+ },
+ "turkey--master": {
+  "master": "df13d93393017a22e9d6",
+  "note": "Consider the turkey examples in the /shapes directory",
+  "at": "2026-11-02T23:49:04.414Z"
+ },
+ "turkey--medium": {
+  "verdict": "no",
+  "hashes": [
+   "ab0716d354fcb841ab6f"
+  ],
+  "note": "Side view better?",
+  "at": "2026-11-03T01:35:53.389Z"
+ }
 }

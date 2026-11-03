@@ -12,3 +12,5 @@ notes = "Tall pilgrim hat (capotain) with the classic buckle on a band. Hat only
 # read as a door or face; a full-width band split the hat ("office chair").
 # An inset white band with a black buckle frame reads as "pilgrim hat" at
 # Hard on Letter. Medium overrides carry a 1-cell band and buckle.
+# Review 2 (owner): Medium and Hard read. Easy: the A4 mask (tall narrow
+# crown, thin brim) is fine; the Letter override now matches it.
