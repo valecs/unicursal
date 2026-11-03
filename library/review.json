@@ -1,12 +1,12 @@
 {
  "pilgrim-hat--easy": {
-  "verdict": null,
+  "verdict": "yes",
   "hashes": [
-   "196a48ea14e0c3ab7afd",
-   "5b72ce71142c5aceaedb"
+   "08e84acd46935bec63e6",
+   "196a48ea14e0c3ab7afd"
   ],
-  "note": "A4 \"top hat\" is actually fine; could we get that for letter?",
-  "at": "2026-11-03T01:36:35.425Z"
+  "note": "",
+  "at": "2026-11-03T01:49:15.084Z"
  },
  "pilgrim-hat--hard": {
   "verdict": "yes",
@@ -28,8 +28,8 @@
    "41b347b016841c2281d4",
    "f1f96f3ffe703e30f857"
   ],
-  "note": "",
-  "at": "2026-11-03T01:34:04.809Z"
+  "note": "Why did these need to be hand-drawn?",
+  "at": "2026-11-03T01:49:45.840Z"
  },
  "pumpkin--easy": {
   "verdict": "yes",
@@ -54,12 +54,12 @@
   "at": "2026-11-02T23:47:51.748Z"
  },
  "pumpkin--medium": {
-  "verdict": "no",
+  "verdict": "yes",
   "hashes": [
-   "7abad69a4df0bc16f58a"
+   "35bbd501b2c40bc569e5"
   ],
-  "note": "Same problem with the vents/bulges",
-  "at": "2026-11-03T01:34:59.499Z"
+  "note": "",
+  "at": "2026-11-03T01:49:45.849Z"
  },
  "turkey--easy": {
   "verdict": "no",
