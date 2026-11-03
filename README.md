@@ -20,8 +20,8 @@ Puzzle + answer-key examples are in [`examples/`](examples/).
 
 A Cargo workspace in [`crates/`](crates/): `unicursal-core` (pure library:
 greyscale pixels + settings → geometry, SVG, PDF; deterministic on every
-target) and `unicursal-cli` (the prototype's flags). Grid style, labyrinths
-and mazes so far; curvy and flow are still Python-only.
+target) and `unicursal-cli` (the prototype's flags). Grid and flow styles,
+labyrinths and mazes; curvy is still Python-only.
 
 ```
 cargo run -p unicursal-cli -- shapes/ghost.png --preset medium --seed 3 --out ghost

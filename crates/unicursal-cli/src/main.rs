@@ -92,7 +92,7 @@ struct Cli {
     /// Curvy: corner-rounding passes (0 = sharp) [default: 3]
     #[arg(long)]
     smooth: Option<u32>,
-    /// Labyrinth only: relax the corridors into flowing curves (not ported yet)
+    /// Labyrinth only: relax the corridors into flowing curves
     #[arg(long)]
     flow: bool,
     /// [default: 1500]
@@ -257,10 +257,29 @@ fn run(cli: Cli) -> Result<()> {
             .with_context(|| format!("writing {name}.pdf"))?;
         println!("wrote {name}.svg and {name}.pdf");
     }
-    eprintln!(
-        "clear corridor width: {:.1} mm typical",
-        pz.pitch_mm * (1.0 - 0.18)
-    );
+    if let Some(fr) = &pz.flow {
+        let (narrowest, p1, median) = fr.width_mm;
+        eprintln!(
+            "clear corridor width: narrowest {narrowest:.1} mm, 1% narrower than {p1:.1} mm, \
+             typical {median:.1} mm"
+        );
+        eprintln!(
+            "{}{} open regions for {} strands, {} crossings",
+            if fr.verified() {
+                "verified: "
+            } else {
+                "WARNING: "
+            },
+            fr.open_regions,
+            fr.strands.len(),
+            fr.crossings
+        );
+    } else {
+        eprintln!(
+            "clear corridor width: {:.1} mm typical",
+            pz.pitch_mm * (1.0 - 0.18)
+        );
+    }
     println!(
         "grid {}x{}, path length {}",
         pz.built.grid.rows,

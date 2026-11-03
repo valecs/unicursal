@@ -138,7 +138,7 @@ fn unknown_preset_and_unported_styles_fail_cleanly() {
     let img = img.to_str().unwrap();
     for (args, msg) in [
         (vec![img, "--preset", "extreme"], "unknown preset 'extreme'"),
-        (vec![img, "--flow"], "not in the Rust core yet"),
+        (vec![img, "--curvy"], "not in the Rust core yet"),
         (
             vec![img, "--flow", "--mode", "maze"],
             "flow needs mode labyrinth",
@@ -152,5 +152,34 @@ fn unknown_preset_and_unported_styles_fail_cleanly() {
         std::fs::read_dir(d.path()).unwrap().count(),
         0,
         "no files on failure"
+    );
+}
+
+#[test]
+fn flow_puzzles_are_written_and_verified() {
+    let d = TempDir::new().unwrap();
+    let img = shape("ghost");
+    let o = run_in(
+        &d,
+        &[
+            img.to_str().unwrap(),
+            "--preset",
+            "medium",
+            "--flow",
+            "--seed",
+            "3",
+            "--out",
+            "g",
+        ],
+    );
+    assert!(o.status.success(), "{}", text(&o));
+    let t = text(&o);
+    assert!(t.contains("verified: "), "{t}");
+    assert!(t.contains("0 crossings"), "{t}");
+    assert!(t.contains("clear corridor width: narrowest"), "{t}");
+    assert!(
+        std::fs::read(d.path().join("g_solution.pdf"))
+            .unwrap()
+            .starts_with(b"%PDF-")
     );
 }
