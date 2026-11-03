@@ -31,7 +31,7 @@ be revisited; open questions live in GitHub issues (see CLAUDE.md).
 | 22 | Printing | Print hands over a true-scale PDF: the print dialog on desktop, the system share sheet on mobile (where browsers can't print a PDF reliably). Every print is saved to history as a puzzle link. |
 | 13 | Voids | Solid black by default; puzzles must print well in black and white. Ink-saving is not a priority. (`--ink-saver`, light voids with outlined corridors, exists in the prototype but stays off and out of the UI.) |
 
-Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (main screen + picture chooser).
+Mockup: https://claude.ai/artifact/4MF23wdHWZykkbZL7aivSY (4 screens: main, picture chooser, image-file import, Surprise me; source in `mockup/`).
 
 ## Open questions and to-dos
 
