@@ -7,3 +7,5 @@ __pycache__/
 .venv/
 # library build output (contact sheets, package, report)
 /library/out/
+# Rust build output
+/target/

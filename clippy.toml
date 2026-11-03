@@ -1,0 +1,32 @@
+# Determinism (#10, #5): puzzle links regenerate a puzzle from its seed on any
+# device, so the core must compute bit-identical floats on x86-64, aarch64 and
+# wasm32. std's transcendental functions call the platform libm, which differs
+# between targets; use the pure-Rust `libm` crate instead. `sqrt` is exact
+# (IEEE 754) and stays allowed. `mul_add` rounds once instead of twice.
+disallowed-methods = [
+    { path = "f64::sin", reason = "platform libm; use libm::sin" },
+    { path = "f64::cos", reason = "platform libm; use libm::cos" },
+    { path = "f64::tan", reason = "platform libm; use libm::tan" },
+    { path = "f64::sin_cos", reason = "platform libm; use libm::sin/cos" },
+    { path = "f64::asin", reason = "platform libm; use libm::asin" },
+    { path = "f64::acos", reason = "platform libm; use libm::acos" },
+    { path = "f64::atan", reason = "platform libm; use libm::atan" },
+    { path = "f64::atan2", reason = "platform libm; use libm::atan2" },
+    { path = "f64::exp", reason = "platform libm; use libm::exp" },
+    { path = "f64::exp2", reason = "platform libm; use libm::exp2" },
+    { path = "f64::exp_m1", reason = "platform libm; use libm::expm1" },
+    { path = "f64::ln", reason = "platform libm; use libm::log" },
+    { path = "f64::log", reason = "platform libm; use libm::log" },
+    { path = "f64::log2", reason = "platform libm; use libm::log2" },
+    { path = "f64::log10", reason = "platform libm; use libm::log10" },
+    { path = "f64::ln_1p", reason = "platform libm; use libm::log1p" },
+    { path = "f64::powf", reason = "platform libm; use libm::pow" },
+    { path = "f64::powi", reason = "unspecified precision; multiply explicitly" },
+    { path = "f64::cbrt", reason = "platform libm; use libm::cbrt" },
+    { path = "f64::hypot", reason = "platform libm; use libm::hypot" },
+    { path = "f64::sinh", reason = "platform libm; use libm::sinh" },
+    { path = "f64::cosh", reason = "platform libm; use libm::cosh" },
+    { path = "f64::tanh", reason = "platform libm; use libm::tanh" },
+    { path = "f64::mul_add", reason = "fused rounding; write a * b + c" },
+    { path = "f32::mul_add", reason = "fused rounding; write a * b + c" },
+]
