@@ -1,5 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340">
-  <!-- Pumpkin: five lobes with notches between them, a thick stem, one leaf. -->
+  <!-- Pumpkin: five lobes with notches between them, a thick stem, one
+       leaf. Ribs are curved grooves that bow outward with the lobes (straight
+       slashes read as a loaf of bread, owner review). -->
   <g fill="#000">
     <ellipse cx="88"  cy="222" rx="70" ry="92"/>
     <ellipse cx="312" cy="222" rx="70" ry="92"/>
@@ -9,9 +11,7 @@
     <path d="M178 104 L184 50 Q188 30 212 26 L230 36 Q212 46 212 62 L220 104 Z"/>
     <path d="M214 70 Q250 30 300 52 Q270 98 214 84 Z"/>
   </g>
-  <!-- grooves: wedges down from the notches between lobes -->
   <g fill="#fff">
-    <path d="M128 118 Q148 120 150 140 Q146 210 146 250 Q138 200 128 118 Z"/>
-    <path d="M272 118 Q252 120 250 140 Q254 210 254 250 Q262 200 272 118 Z"/>
+    <path d="M124 128 Q69.0 212.0 110 296 Q97.0 212.0 124 128 Z"/><path d="M174 112 Q145.0 211.0 168 310 Q173.0 211.0 174 112 Z"/><path d="M226 112 Q227.0 211.0 232 310 Q255.0 211.0 226 112 Z"/><path d="M276 128 Q303.0 212.0 290 296 Q331.0 212.0 276 128 Z"/>
   </g>
 </svg>

@@ -2,9 +2,13 @@ name = "Pilgrim hat"
 keywords = ["pilgrim hat", "pilgrim", "hat"]
 tags = ["thanksgiving", "clothing"]
 edge = "S"
-notes = "Tall pilgrim hat (capotain), no buckle. Hat only, no figure."
+notes = "Tall pilgrim hat (capotain) with the classic buckle on a band. Hat only, no figure."
 # Spike: 3 master drafts. A buckle (as a hole) read as a face or a door
 # ("castle", "tombstone"), so the master has none. Wide shape: Letter and A4
 # give different grids (Medium 18x12 vs 19x13), hence paper-specific
 # overrides. The judge accepts "top hat" (keyword "hat"); owner to decide
 # whether that is enough for a pilgrim hat.
+# Review 1 (owner): the master lacked the buckle. A buckle as a plain hole
+# read as a door or face; a full-width band split the hat ("office chair").
+# An inset white band with a black buckle frame reads as "pilgrim hat" at
+# Hard on Letter. Medium overrides carry a 1-cell band and buckle.

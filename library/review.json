@@ -1,0 +1,8 @@
+{
+ "pilgrim-hat--master": {"master": "d7dc4ee8050839f586c7", "note": "this is lacking the classic \"buckle\"", "at": "2026-11-02T23:47:19.543Z"},
+ "pumpkin--hard": {"verdict": null, "hashes": ["736b4391dcdd6bb2fc47", "9c5fd991ac431da1e2b8"], "note": "best one, but the slashes are still a little rough", "at": "2026-11-02T23:48:24.361Z"},
+ "pumpkin--master": {"master": "0ef0a7bd4e6a97574c35", "note": "slashes look like bread; perhaps accentuate the ridges?", "at": "2026-11-02T23:47:51.748Z"},
+ "turkey--easy": {"verdict": "no", "hashes": ["ec848b40a7a51e7ff33f"], "note": "", "at": "2026-11-02T23:48:45.102Z"},
+ "turkey--master": {"master": "df13d93393017a22e9d6", "note": "Consider the turkey examples in the /shapes directory", "at": "2026-11-02T23:49:04.414Z"},
+ "turkey--medium": {"verdict": "no", "hashes": ["06c020197f87a2ed3c3b"], "note": "", "at": "2026-11-02T23:48:47.317Z"}
+}

@@ -2,9 +2,13 @@ name = "Turkey"
 keywords = ["turkey"]
 tags = ["thanksgiving", "birds", "farm", "animals", "autumn"]
 edge = "S"
-notes = "Side view, tail fanned, standing."
-# Spike: the master took 6 drafts (thin neck -> "peacock", separate spiky
-# feathers -> "rooster", head touching the fan -> lost). Medium and Easy:
-# 11 pixel-art tries, best judge answers "chicken", "baby chick", "hedgehog".
-# turkey.medium.txt is the best candidate by eye (judge: hedgehog), kept for
-# owner review.
+notes = "Front view, fan spread behind, head outlined against the fan (after shapes/turkey.py on the add-turkey-shape branch)."
+# Spike: a side view took 6 drafts and never read below Hard. Review 1
+# (owner): redrawn as the front view from shapes/turkey.py on the
+# add-turkey-shape branch, simplified for a 2x-Hard master (6 feathers, no
+# spots, a wider gap around the head). Hard reads; Medium tries read as
+# "bird", "bat", "baseball glove"; owner marked the old Easy and Medium
+# "doesn't read". No overrides.
+# turkey.easy.txt is the downsampled Easy mask with the legs kept to the
+# bottom edge (they vanish at 9x8), so the entrance stays on the frame. It
+# is not offered at Easy.
