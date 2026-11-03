@@ -1,0 +1,13 @@
+name = "Pumpkin"
+keywords = ["pumpkin", "squash", "gourd"]
+tags = ["thanksgiving", "halloween", "autumn", "food", "farm", "plants"]
+edge = "S"
+notes = "Plain pumpkin, no face (the jack-o'-lantern is its own subject)."
+# Spike: Easy (11x8) fails in 6 hand-drawn tries (crown, submarine, mailbox,
+# cherries, apple); a leaf at Medium reads as "apple", so the override has none.
+# Review 1 (owner): straight slashes looked like bread. Ribs are now curved
+# grooves bowing out with the lobes.
+# Review 2 (owner): Easy (downsampled master) and Hard read, overriding the
+# judge's "teapot" at Easy. Medium's straight grooves read as vents; the
+# override now has curved ribs inside the outline (short ones read as a
+# jack-o'-lantern face).

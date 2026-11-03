@@ -1,0 +1,94 @@
+{
+ "pilgrim-hat--easy": {
+  "verdict": "yes",
+  "hashes": [
+   "08e84acd46935bec63e6",
+   "196a48ea14e0c3ab7afd"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:49:15.084Z"
+ },
+ "pilgrim-hat--hard": {
+  "verdict": "yes",
+  "hashes": [
+   "86535441996f53005bdc",
+   "9373ec8dc93a63874f45"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:34:07.810Z"
+ },
+ "pilgrim-hat--master": {
+  "master": "d7dc4ee8050839f586c7",
+  "note": "this is lacking the classic \"buckle\"",
+  "at": "2026-11-02T23:47:19.543Z"
+ },
+ "pilgrim-hat--medium": {
+  "verdict": "yes",
+  "hashes": [
+   "41b347b016841c2281d4",
+   "f1f96f3ffe703e30f857"
+  ],
+  "note": "Why did these need to be hand-drawn?",
+  "at": "2026-11-03T01:49:45.840Z"
+ },
+ "pumpkin--easy": {
+  "verdict": "yes",
+  "hashes": [
+   "93c7f19c774d5eec50e2"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:34:16.273Z"
+ },
+ "pumpkin--hard": {
+  "verdict": "yes",
+  "hashes": [
+   "3fa85b6789f65bb2a0ac",
+   "a04653fc830c86403d67"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:34:20.754Z"
+ },
+ "pumpkin--master": {
+  "master": "0ef0a7bd4e6a97574c35",
+  "note": "slashes look like bread; perhaps accentuate the ridges?",
+  "at": "2026-11-02T23:47:51.748Z"
+ },
+ "pumpkin--medium": {
+  "verdict": "yes",
+  "hashes": [
+   "35bbd501b2c40bc569e5"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:49:45.849Z"
+ },
+ "turkey--easy": {
+  "verdict": "no",
+  "hashes": [
+   "c4e9497f3c408494301e"
+  ],
+  "note": "Side view better?",
+  "at": "2026-11-03T01:35:20.115Z"
+ },
+ "turkey--hard": {
+  "verdict": "yes",
+  "hashes": [
+   "46881a12c175123fc914",
+   "fd67c4353efccf36ffbc"
+  ],
+  "note": "",
+  "at": "2026-11-03T01:34:59.510Z"
+ },
+ "turkey--master": {
+  "master": "df13d93393017a22e9d6",
+  "note": "Consider the turkey examples in the /shapes directory",
+  "at": "2026-11-02T23:49:04.414Z"
+ },
+ "turkey--medium": {
+  "verdict": "no",
+  "hashes": [
+   "ab0716d354fcb841ab6f"
+  ],
+  "note": "Side view better?",
+  "at": "2026-11-03T01:35:53.389Z"
+ }
+}

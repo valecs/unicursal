@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320">
+  <!-- Pilgrim (capotain) hat: tall crown tapering to a flat top, a wide thin
+       brim on the bottom edge, and the classic buckle (owner review): a white
+       band across the crown with a black square buckle frame over it. (A
+       buckle drawn as a plain hole read as a door or a face.) -->
+  <g fill="#000">
+    <path d="M112 262 L140 46 Q142 30 164 30 L236 30 Q258 30 260 46 L288 262 Z"/>
+    <path d="M14 272 Q14 254 54 254 L346 254 Q386 254 386 272 Q386 290 346 290 L54 290 Q14 290 14 272 Z"/>
+  </g>
+  <path d="M136.4 192.0 L263.6 192.0 L267.4 224.0 L132.6 224.0 Z" fill="#fff"/>
+  <rect x="160.0" y="168.0" width="80.0" height="80.0" fill="#000"/>
+  <rect x="183.0" y="191.0" width="34.0" height="34.0" fill="#fff"/>
+</svg>

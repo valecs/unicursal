@@ -1,0 +1,309 @@
+<title>Picture Library Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a review sheet. One band per subject; inside it the master, then
+   one column per difficulty with the masks as they print, the judge's
+   answer and the owner's call. Masks are always black on white: they are
+   printed things, so they stay paper-coloured in both themes. */
+:root {
+  --bg: #f3f4f7;
+  --surface: #ffffff;
+  --ink: #16181d;
+  --muted: #5d6270;
+  --line: #d9dce3;
+  --accent: #c8177a;          /* the prototype's solution fill, deepened for text */
+  --accent-soft: #fbe3f0;
+  --ok: #1d7347;
+  --ok-soft: #dcf2e5;
+  --bad: #a8261e;
+  --bad-soft: #f9e0dd;
+  --warn: #8a5a00;
+  --paper: #ffffff;
+  --font-display: "Bricolage Grotesque", "Work Sans", system-ui, sans-serif;
+  --font-body: "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121419; --surface: #1b1e25; --ink: #e9ebf0; --muted: #a2a8b6;
+    --line: #2f343e; --accent: #ff63b0; --accent-soft: #3a1a2c;
+    --ok: #6fd6a0; --ok-soft: #173326; --bad: #ff8f85; --bad-soft: #3a1c1a;
+    --warn: #f0c05a; --paper: #ffffff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121419; --surface: #1b1e25; --ink: #e9ebf0; --muted: #a2a8b6;
+  --line: #2f343e; --accent: #ff63b0; --accent-soft: #3a1a2c;
+  --ok: #6fd6a0; --ok-soft: #173326; --bad: #ff8f85; --bad-soft: #3a1c1a;
+  --warn: #f0c05a; --paper: #ffffff; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body);
+  font-size: 15px; line-height: 1.5;
+}
+.wrap {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+  display: grid; gap: 28px;
+}
+header { display: grid; gap: 10px; }
+h1 {
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -0.01em;
+}
+.lede { margin: 0; color: var(--muted); max-width: 68ch; }
+.status { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px; }
+.progress { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.save-note { color: var(--muted); }
+.save-note.off { color: var(--warn); }
+
+.subject {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 20px; display: grid; gap: 16px;
+}
+.subject-head { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+.subject-head h2 { font-family: var(--font-display); font-weight: 600; font-size: 24px; margin: 0; }
+.slug { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.notes { margin: 0; color: var(--muted); font-size: 14px; max-width: 80ch; }
+
+.cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 860px) { .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 440px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+.col { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.col h3 {
+  margin: 0; font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted); display: flex; gap: 8px; align-items: center;
+}
+.offered { font-size: 11px; letter-spacing: 0.04em; padding: 0 6px; border-radius: 4px; text-transform: none; }
+.offered.yes { background: var(--ok-soft); color: var(--ok); }
+.offered.no { background: var(--bad-soft); color: var(--bad); }
+
+.masks { display: flex; flex-wrap: wrap; gap: 10px; }
+figure { margin: 0; display: grid; gap: 4px; min-width: 0; }
+.tile {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 4px;
+  padding: 6px; display: grid; place-items: center; width: 100%; box-sizing: border-box;
+}
+.tile img { image-rendering: pixelated; image-rendering: crisp-edges; display: block; width: 100%; height: auto; }
+.masks figure { flex: 1 1 120px; }
+figcaption { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.badge { font-family: var(--font-body); font-size: 11px; padding: 0 5px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); margin-left: 4px; }
+
+.judge { font-size: 13px; display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+.judge q { font-family: var(--font-mono); font-size: 12.5px; quotes: "“" "”"; }
+.mark { font-weight: 600; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+
+.call { display: grid; gap: 8px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button {
+  font: inherit; font-size: 13px; font-weight: 500; padding: 7px 6px; border: 0; cursor: pointer;
+  background: var(--surface); color: var(--ink);
+}
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button:hover:not(:disabled) { background: var(--bg); }
+.seg button[aria-pressed="true"].yes { background: var(--ok-soft); color: var(--ok); }
+.seg button[aria-pressed="true"].no { background: var(--bad-soft); color: var(--bad); }
+.seg button:disabled { cursor: default; opacity: 0.6; }
+button:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+textarea {
+  font: inherit; font-size: 13px; width: 100%; box-sizing: border-box; min-height: 52px; resize: vertical;
+  padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink);
+}
+.call-state { font-size: 12px; color: var(--muted); min-height: 1.2em; }
+.call-state.stale { color: var(--warn); }
+footer { color: var(--muted); font-size: 13px; }
+footer code { font-family: var(--font-mono); font-size: 12px; }
+@media (prefers-reduced-motion: no-preference) { .seg button { transition: background-color .12s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Picture library review</h1>
+    <p class="lede" id="lede"></p>
+    <div class="status">
+      <span class="progress" id="progress"></span>
+      <span class="save-note" id="save-note">Connecting to the saved verdicts…</span>
+    </div>
+  </header>
+  <main id="subjects" style="display:grid;gap:20px"></main>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const DATA = /*DATA*/null/*END*/;
+const PRESETS = ["easy", "medium", "hard"];
+const LABEL = { easy: "Easy", medium: "Medium", hard: "Hard" };
+const PAPER = { letter: "Letter", a4: "A4" };
+const state = { verdicts: {}, canWrite: false, db: null, saving: {} };
+
+function el(tag, attrs = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v; else if (k === "text") n.textContent = v;
+    else if (v !== null && v !== undefined) n.setAttribute(k, v);
+  }
+  for (const k of kids) if (k) n.append(k);
+  return n;
+}
+const key = (sid, preset) => `${sid}--${preset}`;
+const sameSet = (a, b) => a.length === b.length && a.every(x => b.includes(x));
+
+function build() {
+  document.getElementById("lede").textContent =
+    `${DATA.subjects.length} subjects from the ${DATA.batch}. For each difficulty, decide whether a child ` +
+    `would name the picture from the mask as it prints. Your call overrides the blind judge ` +
+    `for exactly these masks; if a mask is redrawn, it comes back for review. ` +
+    `Comments on a master go with that drawing.`;
+  document.getElementById("foot").innerHTML = "";
+  document.getElementById("foot").append(
+    "Built ", el("code", { text: DATA.built }), " by ", el("code", { text: "library/build.py --review" }),
+    ". Judge: ", el("code", { text: DATA.judge }), ".");
+  const root = document.getElementById("subjects");
+  for (const s of DATA.subjects) {
+    const cols = el("div", { class: "cols" });
+    const mk = key(s.id, "master");
+    const mnote = el("textarea", { id: `note-${mk}`, placeholder: "Comment on the drawing (optional)",
+                                   "aria-label": `Comment on the ${s.name} master` });
+    mnote.addEventListener("change", () => saveMaster(s));
+    cols.append(el("div", { class: "col" },
+      el("h3", { text: "Master" }),
+      el("figure", {}, el("div", { class: "tile" }, el("img", { src: s.master.img, alt: `${s.name} master, ${s.master.grid}` })),
+        el("figcaption", { text: `${s.master.grid} source` })),
+      el("div", { class: "call" }, mnote, el("div", { class: "call-state", id: `state-${mk}` }))));
+    for (const p of PRESETS) {
+      const d = s.presets[p];
+      const masks = el("div", { class: "masks" });
+      for (const m of d.masks) {
+        const cap = el("figcaption", { text: `${m.grid} · ${m.papers.map(x => PAPER[x]).join(" + ")}` });
+        if (m.override) cap.append(el("span", { class: "badge", text: "hand-drawn" }));
+        masks.append(el("figure", {}, el("div", { class: "tile" },
+          el("img", { src: m.img, alt: `${s.name} at ${LABEL[p]}, ${m.grid}` })), cap));
+      }
+      const judge = el("div", { class: "judge" });
+      const answers = [...new Set(d.masks.map(m => m.judge || "not judged"))];
+      judge.append("Judge:");
+      answers.forEach(a => judge.append(el("q", { text: a })));
+      judge.append(el("span", { class: "mark " + (d.judge_pass ? "ok" : "bad"), text: d.judge_pass ? "pass" : "fail" }));
+      const yes = el("button", { class: "yes", type: "button", id: `yes-${key(s.id, p)}`, "aria-pressed": "false", text: "Reads" });
+      const no = el("button", { class: "no", type: "button", id: `no-${key(s.id, p)}`, "aria-pressed": "false", text: "Doesn't read" });
+      const note = el("textarea", { id: `note-${key(s.id, p)}`, placeholder: "Note (optional)", "aria-label": `Note on ${s.name} at ${LABEL[p]}` });
+      const info = el("div", { class: "call-state", id: `state-${key(s.id, p)}` });
+      yes.addEventListener("click", () => save(s, p, "yes"));
+      no.addEventListener("click", () => save(s, p, "no"));
+      note.addEventListener("change", () => save(s, p, null));
+      const badge = el("span", { class: "offered", id: `off-${key(s.id, p)}` });
+      cols.append(el("div", { class: "col" },
+        el("h3", {}, LABEL[p], badge), masks, judge,
+        el("div", { class: "call" }, el("div", { class: "seg", role: "group", "aria-label": `${s.name} at ${LABEL[p]}` }, yes, no), note, info)));
+    }
+    const tags = el("div", { class: "tags" });
+    s.tags.forEach(t => tags.append(el("span", { class: "tag", text: t })));
+    root.append(el("section", { class: "subject", id: s.id },
+      el("div", { class: "subject-head" }, el("h2", { text: s.name }), el("span", { class: "slug", text: s.id }), tags),
+      s.notes ? el("p", { class: "notes", text: s.notes }) : null, cols));
+  }
+}
+
+function paint() {
+  let done = 0, total = 0;
+  for (const s of DATA.subjects) for (const p of PRESETS) {
+    total++;
+    const k = key(s.id, p), d = s.presets[p], v = state.verdicts[k];
+    const current = v && sameSet(v.hashes || [], d.hashes);
+    if (current && v.verdict) done++;
+    const yes = document.getElementById(`yes-${k}`), no = document.getElementById(`no-${k}`);
+    const note = document.getElementById(`note-${k}`), info = document.getElementById(`state-${k}`);
+    yes.setAttribute("aria-pressed", String(!!current && v.verdict === "yes"));
+    no.setAttribute("aria-pressed", String(!!current && v.verdict === "no"));
+    yes.disabled = no.disabled = note.disabled = !state.canWrite;
+    if (document.activeElement !== note) note.value = (current && v.note) || "";
+    info.className = "call-state" + (v && !current ? " stale" : "");
+    info.textContent = state.saving[k] ? "Saving…"
+      : v && !current ? "Your earlier call was on a different mask; decide again."
+      : current && v.verdict ? `Saved ${new Date(v.at).toLocaleDateString()}` : "";
+    const offered = current && v.verdict ? v.verdict === "yes" : d.judge_pass;
+    const b = document.getElementById(`off-${k}`);
+    b.className = "offered " + (offered ? "yes" : "no");
+    b.textContent = offered ? "offered" : "not offered";
+  }
+  for (const s of DATA.subjects) {
+    const k = key(s.id, "master"), v = state.verdicts[k];
+    const current = v && v.master === s.master.hash;
+    const note = document.getElementById(`note-${k}`), info = document.getElementById(`state-${k}`);
+    note.disabled = !state.canWrite;
+    if (document.activeElement !== note) note.value = (current && v.note) || "";
+    info.className = "call-state" + (v && v.note && !current ? " stale" : "");
+    info.textContent = state.saving[k] ? "Saving…"
+      : v && v.note && !current ? `Your comment was on an earlier drawing: “${v.note}”`
+      : current && v.note ? `Saved ${new Date(v.at).toLocaleDateString()}` : "";
+  }
+  document.getElementById("progress").textContent = `${done} of ${total} reviewed`;
+}
+
+async function save(s, p, verdict) {
+  if (!state.db || !state.canWrite) return;
+  const k = key(s.id, p), d = s.presets[p], prev = state.verdicts[k];
+  const current = prev && sameSet(prev.hashes || [], d.hashes);
+  const body = {
+    subject: s.id, preset: p, hashes: d.hashes,
+    verdict: verdict ?? (current ? prev.verdict || null : null),
+    note: document.getElementById(`note-${k}`).value.trim(),
+    at: new Date().toISOString(),
+  };
+  if (state.saving[k]) return;              // one write at a time per document
+  state.saving[k] = true; paint();
+  try {
+    await state.db.collection("verdicts").doc(k).set(body);
+    state.verdicts[k] = body;
+  } catch (e) {
+    document.getElementById(`state-${k}`).textContent = "Couldn't save this call. Try again in a moment.";
+    if (e && e.code === "invalid_argument") { state.canWrite = false; }
+  } finally { state.saving[k] = false; paint(); }
+}
+
+async function saveMaster(s) {
+  if (!state.db || !state.canWrite) return;
+  const k = key(s.id, "master");
+  if (state.saving[k]) return;
+  const body = { subject: s.id, master: s.master.hash,
+                 note: document.getElementById(`note-${k}`).value.trim(),
+                 at: new Date().toISOString() };
+  state.saving[k] = true; paint();
+  try {
+    await state.db.collection("verdicts").doc(k).set(body);
+    state.verdicts[k] = body;
+  } catch (e) {
+    document.getElementById(`state-${k}`).textContent = "Couldn't save this comment. Try again in a moment.";
+    if (e && e.code === "invalid_argument") { state.canWrite = false; }
+  } finally { state.saving[k] = false; paint(); }
+}
+
+build(); paint();
+
+(async () => {
+  const note = document.getElementById("save-note");
+  const db = await claude.use("db");
+  const user = await claude.use("user");
+  if (!db) {
+    note.textContent = "Verdicts can't be saved in this view. Open the page signed in to claude.ai.";
+    note.classList.add("off"); return;
+  }
+  state.db = db;
+  state.canWrite = user ? await user.canEdit() : true;
+  if (!state.canWrite) { note.textContent = "You can read the verdicts; only editors record them."; }
+  const timer = setTimeout(() => { note.textContent = "Saved verdicts can't be reached yet."; note.classList.add("off"); }, 10000);
+  db.collection("verdicts").onSnapshot(snap => {
+    if (!snap.metadata.fromCache) clearTimeout(timer);
+    for (const d of snap.docs) if (!state.saving[d.id]) state.verdicts[d.id] = d.data();
+    if (state.canWrite) { note.textContent = "Your calls save as you make them."; note.classList.remove("off"); }
+    paint();
+  }, () => { clearTimeout(timer); note.textContent = "Saved verdicts are unavailable right now."; note.classList.add("off"); });
+})();
+</script>

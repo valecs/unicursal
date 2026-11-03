@@ -1,0 +1,49 @@
+# Controlled tag vocabulary for the picture library (#14). A subject's tags
+# must all be listed here. Contexts are tags, not separate subjects: one
+# pumpkin is tagged both thanksgiving and halloween.
+
+[tags]
+# holidays and celebrations
+thanksgiving = "Thanksgiving (US, Canada)"
+halloween = "Halloween"
+christmas = "Christmas"
+easter = "Easter"
+hanukkah = "Hanukkah"
+ramadan = "Ramadan"
+eid = "Eid al-Fitr, Eid al-Adha"
+diwali = "Diwali"
+lunar-new-year = "Lunar New Year"
+mid-autumn = "Mid-Autumn Festival"
+childrens-day = "Children's Day (Japan, Korea)"
+valentines = "Valentine's Day"
+st-patricks = "St Patrick's Day"
+july-4th = "Independence Day (US)"
+kings-day = "King's Day (Netherlands)"
+epiphany = "Epiphany, Three Kings' Day"
+oktoberfest = "Oktoberfest"
+makar-sankranti = "Makar Sankranti, Uttarayan"
+
+# traditions (with a holiday, for browsing by tradition)
+christian = "Christian"
+jewish = "Jewish"
+muslim = "Muslim"
+hindu = "Hindu"
+
+# seasons
+autumn = "Autumn"
+winter = "Winter"
+spring = "Spring"
+summer = "Summer"
+
+# themes
+ocean = "Ocean and sea life"
+farm = "Farm"
+animals = "Animals"
+birds = "Birds"
+pets = "Pets"
+food = "Food"
+plants = "Plants and flowers"
+clothing = "Clothing and hats"
+vehicles = "Vehicles and boats"
+buildings = "Buildings"
+space = "Space and night sky"

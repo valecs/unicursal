@@ -1,0 +1,17 @@
+name = "Turkey"
+keywords = ["turkey"]
+tags = ["thanksgiving", "birds", "farm", "animals", "autumn"]
+edge = "S"
+notes = "Front view, fan spread behind, head outlined against the fan (after shapes/turkey.py on the add-turkey-shape branch)."
+# Spike: a side view took 6 drafts and never read below Hard. Review 1
+# (owner): redrawn as the front view from shapes/turkey.py on the
+# add-turkey-shape branch, simplified for a 2x-Hard master (6 feathers, no
+# spots, a wider gap around the head). Hard reads; Medium tries read as
+# "bird", "bat", "baseball glove"; owner marked the old Easy and Medium
+# "doesn't read". No overrides.
+# turkey.easy.txt is the downsampled Easy mask with the legs kept to the
+# bottom edge (they vanish at 9x8), so the entrance stays on the frame. It
+# is not offered at Easy.
+# Review 2 (owner): Hard reads; Easy and Medium don't ("side view better?").
+# The Easy and Medium overrides are now side views (fan left, head right),
+# kept as candidates for the owner: judge says "dinosaur" and "rooster".

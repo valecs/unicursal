@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 1100">
+  <!-- Turkey, front view, after shapes/turkey.py on the add-turkey-shape
+       branch (owner's pointer): a fan of 6 feathers over 210 degrees with
+       scalloped tips and notches between them; a round body; the head group
+       (neck, head, beak, wattle) outlined by a 55-unit white gap so it
+       reads in front of the fan; legs and toes on the bottom edge. Simplified
+       for a 2x-Hard master: fewer feathers, no spots on the feathers, a wider gap. -->
+  <g fill="#000">
+    <path d="M590 620 L222.9 718.4 A380 380 0 1 1 957.1 718.4 Z"/>
+    <circle cx="220.4" cy="603.9" r="88"/>
+    <circle cx="296.5" cy="394.8" r="88"/>
+    <circle cx="478.7" cy="267.1" r="88"/>
+    <circle cx="701.3" cy="267.1" r="88"/>
+    <circle cx="883.5" cy="394.8" r="88"/>
+    <circle cx="959.6" cy="603.9" r="88"/>
+  </g>
+  <g fill="#fff">
+    <path d="M355.1 534.5 L344.7 533.9 L323.9 532.7 L303.3 531.6 L282.8 530.5 L262.3 529.4 L241.9 528.4 L221.5 527.3 L202.3 521.4 L183.5 514.5 L164.6 507.7 L145.7 500.8 L173.0 425.7 L191.9 432.6 L210.8 439.5 L229.7 446.4 L248.1 454.1 L264.4 466.4 L280.7 478.7 L297.1 491.1 L313.6 503.4 L330.1 515.8 L346.7 528.3 Z"/>
+    <path d="M446.6 415.2 L438.4 408.8 L422.1 395.9 L405.9 383.2 L389.7 370.5 L373.5 357.8 L357.4 345.2 L341.3 332.7 L329.0 316.9 L317.5 300.4 L305.9 284.0 L294.4 267.5 L359.9 221.7 L371.4 238.1 L382.9 254.6 L394.4 271.1 L405.1 288.0 L411.4 307.4 L417.7 326.9 L424.0 346.4 L430.4 366.0 L436.9 385.6 L443.3 405.3 Z"/>
+    <path d="M590.0 370.0 L587.0 360.0 L581.0 340.1 L575.0 320.4 L569.0 300.7 L563.0 281.1 L557.0 261.5 L551.1 242.0 L550.1 222.0 L550.1 201.9 L550.1 181.8 L550.1 161.7 L629.9 161.7 L629.9 181.8 L629.9 201.9 L629.9 222.0 L628.9 242.0 L623.0 261.5 L617.0 281.1 L611.0 300.7 L605.0 320.4 L599.0 340.1 L593.0 360.0 Z"/>
+    <path d="M733.4 415.2 L736.7 405.3 L743.1 385.6 L749.6 366.0 L756.0 346.4 L762.3 326.9 L768.6 307.4 L774.9 288.0 L785.6 271.1 L797.1 254.6 L808.6 238.1 L820.1 221.7 L885.6 267.5 L874.1 284.0 L862.5 300.4 L851.0 316.9 L838.7 332.7 L822.6 345.2 L806.5 357.8 L790.3 370.5 L774.1 383.2 L757.9 395.9 L741.6 408.8 Z"/>
+    <path d="M824.9 534.5 L833.3 528.3 L849.9 515.8 L866.4 503.4 L882.9 491.1 L899.3 478.7 L915.6 466.4 L931.9 454.1 L950.3 446.4 L969.2 439.5 L988.1 432.6 L1007.0 425.7 L1034.3 500.8 L1015.4 507.7 L996.5 514.5 L977.7 521.4 L958.5 527.3 L938.1 528.4 L917.7 529.4 L897.2 530.5 L876.7 531.6 L856.1 532.7 L835.3 533.9 Z"/>
+  </g>
+  <g fill="#fff"><path d="M590 640 L575 530" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="210"/><circle cx="580" cy="515" r="130.0"/><path d="M520 490 L420 530 L520 560 Z" stroke="#fff" stroke-width="110" stroke-linejoin="round"/><ellipse cx="505" cy="615" rx="90.0" ry="125.0"/></g>
+  <ellipse cx="590" cy="760" rx="210" ry="200" fill="#000"/>
+  <g fill="#000"><path d="M590 640 L575 530" fill="none" stroke="#000" stroke-linecap="round" stroke-width="100"/><circle cx="580" cy="515" r="75.0"/><path d="M520 490 L420 530 L520 560 Z" stroke="#000" stroke-width="0" stroke-linejoin="round"/><ellipse cx="505" cy="615" rx="35.0" ry="70.0"/></g>
+  <circle cx="600" cy="510" r="28" fill="#fff"/>
+  <g stroke="#000" stroke-linecap="round" fill="none">
+    <path d="M530 930 L500 1060" stroke-width="40"/><path d="M500 1060 L440 1100" stroke-width="30"/><path d="M500 1060 L500 1100" stroke-width="30"/><path d="M500 1060 L560 1100" stroke-width="30"/><path d="M650 930 L680 1060" stroke-width="40"/><path d="M680 1060 L620 1100" stroke-width="30"/><path d="M680 1060 L680 1100" stroke-width="30"/><path d="M680 1060 L740 1100" stroke-width="30"/>
+  </g>
+</svg>
