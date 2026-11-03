@@ -7,6 +7,8 @@
 //! a puzzle link can regenerate its puzzle. Anything that changes outputs for
 //! an existing seed must bump [`GENERATOR_VERSION`].
 
+pub mod field;
+pub mod flow;
 pub mod mask;
 pub mod maze;
 pub mod page;
@@ -14,6 +16,7 @@ pub mod params;
 pub mod render;
 pub mod rng;
 pub mod scene;
+pub mod walls;
 
 pub use mask::{GreyImage, Mask};
 pub use maze::{Built, Grid, Opening, Side};
@@ -73,6 +76,94 @@ pub struct Puzzle {
     pub footer: String,
     /// Notes for the user (bridges added, pieces dropped, ...).
     pub notes: Vec<String>,
+    /// Flow style only: the relaxed geometry and its checks.
+    pub flow: Option<FlowResult>,
+}
+
+/// The relaxed flow geometry and the checks every flow puzzle must pass.
+#[derive(Clone, Debug)]
+pub struct FlowResult {
+    pub strands: Vec<flow::Strand>,
+    pub walls: Vec<(flow::Pt, flow::Pt)>,
+    /// Strand crossings (must be 0).
+    pub crossings: usize,
+    /// Open regions inside the frame (must equal the number of strands).
+    pub open_regions: usize,
+    /// Clear corridor width, mm: narrowest, 1st percentile, median.
+    pub width_mm: (f64, f64, f64),
+}
+
+impl FlowResult {
+    /// No crossings and no leaks.
+    pub fn verified(&self) -> bool {
+        self.crossings == 0 && self.open_regions == self.strands.len()
+    }
+}
+
+/// Linear-interpolated percentile of sorted data (`np.percentile`).
+fn percentile(sorted: &[f64], q: f64) -> f64 {
+    if sorted.is_empty() {
+        return f64::NAN;
+    }
+    let x = q / 100.0 * (sorted.len() - 1) as f64;
+    let (i, f) = (x.floor() as usize, x - x.floor());
+    let j = (i + 1).min(sorted.len() - 1);
+    sorted[i] + (sorted[j] - sorted[i]) * f
+}
+
+/// Relaxation settings for a puzzle, from its options (as the prototype's
+/// CLI sets them).
+pub fn flow_params(p: &Params, seed: u64) -> flow::FlowParams {
+    flow::FlowParams {
+        iters: p.flow_iters,
+        length: p.flow_length,
+        bend: p.flow_bend,
+        tol: p.flow_tol,
+        pic: if p.flow_tol >= 1.0 { 0.3 } else { 0.6 },
+        noise: 0.02,
+        seed,
+        ..flow::FlowParams::default()
+    }
+}
+
+/// Relax a labyrinth into flow strands and check them: crossings, leaks
+/// (rasterised at 30 px per corridor) and clear width (in corridors).
+pub fn flow_check(built: &Built, strands: Vec<flow::Strand>) -> (FlowResult, Vec<f64>) {
+    let (h, w) = (built.grid.rows, built.grid.cols);
+    let walls = walls::flow_walls(&strands, h, w);
+    let crossings = flow::count_crossings(&strands);
+    let sol = render::extended_solution(&strands, built.opening.side);
+    let stubs = if built.opening.side.is_some() {
+        vec![(sol[1], sol[0]), (sol[sol.len() - 2], sol[sol.len() - 1])]
+    } else {
+        vec![]
+    };
+    let space = walls::OpenSpace {
+        tubes: strands
+            .iter()
+            .map(|s| {
+                if s.solution {
+                    (sol.clone(), false)
+                } else {
+                    (s.pts.clone(), s.closed)
+                }
+            })
+            .collect(),
+        walls: &walls,
+        stubs,
+    };
+    let open_regions = walls::open_regions(&space, h, w, 30);
+    let widths = walls::corridor_widths(&strands, &walls, h, w);
+    (
+        FlowResult {
+            strands,
+            walls,
+            crossings,
+            open_regions,
+            width_mm: (f64::NAN, f64::NAN, f64::NAN),
+        },
+        widths,
+    )
 }
 
 impl Puzzle {
@@ -88,9 +179,6 @@ pub fn generate(img: &GreyImage, p: &Params) -> Result<Puzzle, Error> {
         return Err(Error::BadOption(
             "flow needs mode labyrinth (it relies on there being no junctions)".into(),
         ));
-    }
-    if p.flow {
-        return Err(Error::NotYetPorted("the flow style"));
     }
     if p.curvy {
         return Err(Error::NotYetPorted("the curvy style"));
@@ -161,12 +249,48 @@ pub fn generate(img: &GreyImage, p: &Params) -> Result<Puzzle, Error> {
         p.seed
     );
     let footer_top = built.opening.side == Some(Side::S);
-    let page_of = |solution: Option<&Mask>| {
-        let drawing = render::render_grid(&built, cell, solution, fill);
-        page::place_on_page(&drawing, paper, Some(&footer), footer_top, p.paper_margin)
+    let place = |drawing: &Scene| {
+        page::place_on_page(drawing, paper, Some(&footer), footer_top, p.paper_margin)
     };
-    let puzzle = page_of(None);
-    let solution = page_of(Some(&sol));
+    let (puzzle, solution, flow) = if p.flow {
+        let strands = flow::extract_strands(&built.grid, &path);
+        let mut relax =
+            flow::Relaxation::new(&strands, &built.fine_fg, flow_params(p, rng.derive_seed()));
+        relax.run();
+        let (mut fr, mut widths) = flow_check(&built, relax.strands());
+        widths.sort_by(f64::total_cmp);
+        fr.width_mm = (
+            percentile(&widths, 0.0) * pitch,
+            percentile(&widths, 1.0) * pitch,
+            percentile(&widths, 50.0) * pitch,
+        );
+        if fr.crossings > 0 {
+            notes.push(format!("{} strand crossings", fr.crossings));
+        }
+        if fr.open_regions != fr.strands.len() {
+            notes.push(format!(
+                "{} open regions for {} strands: a wall leaks",
+                fr.open_regions,
+                fr.strands.len()
+            ));
+        }
+        let mut style = render::FlowStyle {
+            void: Color::parse(&p.void)?,
+            fill,
+            show_solution: false,
+            outline: p.ink_saver,
+        };
+        let draw = |style: &render::FlowStyle| {
+            render::render_flow(&fr.strands, &fr.walls, &built.opening, h, w, cell, style)
+        };
+        let puzzle = place(&draw(&style));
+        style.show_solution = true;
+        let solution = place(&draw(&style));
+        (puzzle, solution, Some(fr))
+    } else {
+        let grid_page = |s: Option<&Mask>| place(&render::render_grid(&built, cell, s, fill));
+        (grid_page(None), grid_page(Some(&sol)), None)
+    };
     Ok(Puzzle {
         built,
         seed: p.seed,
@@ -176,6 +300,7 @@ pub fn generate(img: &GreyImage, p: &Params) -> Result<Puzzle, Error> {
         solution,
         footer,
         notes,
+        flow,
     })
 }
 
@@ -200,8 +325,8 @@ mod tests {
             "unknown paper 'napkin' (try letter, a4, or e.g. 8.5x11in / 200x200mm)"
         );
         assert_eq!(
-            Error::NotYetPorted("the flow style").to_string(),
-            "the flow style is not in the Rust core yet"
+            Error::NotYetPorted("the curvy style").to_string(),
+            "the curvy style is not in the Rust core yet"
         );
         let boxed: Box<dyn std::error::Error> = Box::new(Error::EmptyPicture);
         assert_eq!(boxed.to_string(), "image has no foreground pixels");

@@ -124,6 +124,52 @@ fn cases() -> Vec<(&'static str, GreyImage, Params)> {
                 ..p()
             },
         ),
+        (
+            "ghost-medium-flow-3",
+            common::shape("ghost"),
+            Params {
+                corridor: 7.0,
+                flow: true,
+                seed: 3,
+                ..p()
+            },
+        ),
+        (
+            "ring-cells14-flow-4",
+            common::ring(),
+            Params {
+                cells: Some(14),
+                flow: true,
+                seed: 4,
+                ..p()
+            },
+        ),
+        (
+            "witch-cells24-flow-inksaver-19",
+            common::shape("witch"),
+            Params {
+                cells: Some(24),
+                flow: true,
+                ink_saver: true,
+                void: "#cfcfcf".into(),
+                flow_tol: 0.4,
+                seed: 19,
+                ..p()
+            },
+        ),
+        (
+            "skull-flow-loopy-7",
+            common::shape("skull"),
+            Params {
+                corridor: 9.0,
+                flow: true,
+                flow_length: 0.7,
+                flow_bend: 0.5,
+                flow_iters: 900,
+                seed: 7,
+                ..p()
+            },
+        ),
     ]
 }
 
@@ -143,6 +189,21 @@ fn hashes(pz: &Puzzle) -> (String, String) {
             .map(|&x| x as u8)
             .collect::<Vec<_>>(),
     );
+    if let Some(fr) = &pz.flow {
+        // the relaxed geometry to the last bit, not just as printed
+        for s in &fr.strands {
+            for p in &s.pts {
+                h.update(p[0].to_bits().to_le_bytes());
+                h.update(p[1].to_bits().to_le_bytes());
+            }
+        }
+        h.update(format!(
+            "{} {} {}",
+            fr.walls.len(),
+            fr.crossings,
+            fr.open_regions
+        ));
+    }
     let construction = hex(h.finalize());
     let mut h = Sha256::new();
     for page in [&pz.puzzle, &pz.solution] {
