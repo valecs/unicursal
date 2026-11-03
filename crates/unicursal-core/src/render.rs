@@ -166,6 +166,135 @@ fn runs(n: usize, pred: impl Fn(usize) -> bool) -> Vec<(usize, usize)> {
     out
 }
 
+/// What a flow drawing needs besides the relaxed strands.
+pub struct FlowStyle {
+    pub void: Color,
+    pub fill: Color,
+    pub show_solution: bool,
+    /// Ink saver: outline each corridor where it meets a void, so voids can
+    /// be light without corridors seeming to leak into them.
+    pub outline: bool,
+}
+
+/// The solution strand with a stub poking 0.3 corridors out through the frame
+/// at each end, when the entrance is on the frame.
+pub fn extended_solution(strands: &[crate::flow::Strand], side: Option<Side>) -> Vec<[f64; 2]> {
+    let sol = &strands
+        .iter()
+        .find(|s| s.solution)
+        .expect("a solution strand")
+        .pts;
+    match side {
+        None => sol.clone(),
+        Some(side) => {
+            let (ox, oy) = side.out();
+            let (a, b) = (sol[0], sol[sol.len() - 1]);
+            let mut v = vec![[a[0] + ox * 0.8, a[1] + oy * 0.8]];
+            v.extend_from_slice(sol);
+            v.push([b[0] + ox * 0.8, b[1] + oy * 0.8]);
+            v
+        }
+    }
+}
+
+/// Flow-style drawing, `cell` pt per corridor, with a [`MARGIN`]-corridor
+/// border: void-coloured frame, white tubes along the strands, Voronoi walls,
+/// the frame, white stubs through the entrance gap, and the arrow.
+pub fn render_flow(
+    strands: &[crate::flow::Strand],
+    walls: &[([f64; 2], [f64; 2])],
+    opening: &Opening,
+    rows: usize,
+    cols: usize,
+    cell: f64,
+    style: &FlowStyle,
+) -> Scene {
+    use crate::walls::{RMAX, WALL};
+    let o = MARGIN * cell;
+    let mut s = Scene::new(cols as f64 * cell + 2.0 * o, rows as f64 * cell + 2.0 * o);
+    let t = |p: [f64; 2]| (o + p[0] * cell, o + p[1] * cell);
+    let poly = |pts: &[[f64; 2]], closed: bool, d: &mut Vec<Cmd>| {
+        for (k, &p) in pts.iter().enumerate() {
+            let (x, y) = t(p);
+            d.push(if k == 0 { Cmd::M(x, y) } else { Cmd::L(x, y) });
+        }
+        if closed {
+            d.push(Cmd::Z);
+        }
+    };
+    let round = |color: Color, width: f64| Stroke {
+        color,
+        width,
+        cap: Cap::Round,
+        join: Join::Round,
+    };
+    let frame = rect(o, o, cols as f64 * cell, rows as f64 * cell);
+    s.items.push(Item::fill(frame.clone(), style.void));
+
+    let sol = extended_solution(strands, opening.side);
+    let mut tubes = vec![];
+    for st in strands {
+        if st.solution {
+            poly(&sol, false, &mut tubes);
+        } else {
+            poly(&st.pts, st.closed, &mut tubes);
+        }
+    }
+    if style.outline {
+        // black halo under the tubes; survives only where no tube covers it
+        s.items.push(Item::stroke(
+            tubes.clone(),
+            round(Color::BLACK, (2.0 * RMAX + WALL) * cell),
+        ));
+    }
+    s.items
+        .push(Item::stroke(tubes, round(Color::WHITE, 2.0 * RMAX * cell)));
+    if style.show_solution {
+        let mut d = vec![];
+        poly(&sol, false, &mut d);
+        s.items.push(Item::stroke(
+            d,
+            round(style.fill, (2.0 * RMAX - WALL) * 0.9 * cell),
+        ));
+    }
+    let mut d = vec![];
+    for &(a, b) in walls {
+        poly(&[a, b], false, &mut d);
+    }
+    s.items
+        .push(Item::stroke(d, round(Color::BLACK, WALL * cell)));
+    s.items.push(Item::stroke(
+        frame,
+        Stroke {
+            color: Color::BLACK,
+            width: WALL * cell,
+            cap: Cap::Butt,
+            join: Join::Miter,
+        },
+    ));
+    if opening.side.is_some() {
+        let n = sol.len();
+        let mut d = vec![];
+        poly(&[sol[1], sol[0]], false, &mut d);
+        poly(&[sol[n - 2], sol[n - 1]], false, &mut d);
+        s.items.push(Item::stroke(
+            d,
+            Stroke {
+                color: Color::WHITE,
+                width: (2.0 * RMAX - WALL) * cell,
+                cap: Cap::Butt,
+                join: Join::Miter,
+            },
+        ));
+    }
+    // outside the frame: clear of the stub that pokes 0.3 through it
+    let gap = if opening.side.is_some() { 0.45 } else { 0.25 };
+    let arrow = entrance_arrow(opening, rows, cols, cell, gap);
+    s.items
+        .push(arrow_item(&arrow, |(x, y)| (o + x * cell, o + y * cell)));
+    s
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
